@@ -1,7 +1,7 @@
 import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { NewMessage } from "./NewMessage";
+import { Conversation } from "./Conversation";
 
 interface IState {
   [key: string]: any;
@@ -11,17 +11,17 @@ class Dashboard extends React.Component<RouteComponentProps, IState> {
   constructor(props: RouteComponentProps) {
     super(props);
     this.state = {
-      messages: []
+      conversations: []
     };
   }
 
   public componentDidMount() {
-    Axios.get("/api/messages", {
+    Axios.get("/api/conversations", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     })
       .then(response => {
         console.log(response);
-        this.setState({ messages: response.data.messages });
+        this.setState({ conversations: response.data.conversations });
       })
       .catch(err => {
         //   if (err.response.status === 401) {
@@ -35,11 +35,10 @@ class Dashboard extends React.Component<RouteComponentProps, IState> {
   public render() {
     return (
       <div>
-        <h1>Messages</h1>
-        {this.state.messages.map((message: any) => (
-          <h1 key={message.id}>{JSON.stringify(message)}</h1>
+        <h1>Conversations</h1>
+        {this.state.conversations.map((conversation: any) => (
+          <Conversation key={conversation.id} {...conversation} />
         ))}
-        <NewMessage />
       </div>
     );
   }
