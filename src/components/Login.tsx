@@ -1,27 +1,21 @@
-import { default as axios } from "axios";
+import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
 interface IState {
-  email: string;
-  error: string;
-  password: string;
   username: string;
-}
-
-interface IProps extends RouteComponentProps {
-  test: string;
+  password: string;
+  error: string;
 }
 
 const initialState = {
-  email: "",
   error: "",
   password: "",
   username: ""
 };
 
-class SignUp extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
+class Login extends React.Component<RouteComponentProps, IState> {
+  constructor(props: RouteComponentProps) {
     super(props);
     this.state = initialState;
   }
@@ -32,57 +26,43 @@ class SignUp extends React.Component<IProps, IState> {
     target: { value: string; name: string };
   }) => this.setState({ [name]: value } as Pick<IState, keyof IState>);
 
-  public submit = () =>
-    axios
-      .post("/api/signup", this.state)
-      .then((response: { data: { token: string } }) => {
+  public handleSubmit = () => {
+    Axios.post("/auth/login", {
+      password: this.state.password,
+      username: this.state.username
+    })
+      .then(response => {
         localStorage.setItem("token", response.data.token);
         this.props.history.push("/dashboard");
       })
-      .catch(err => {
-        this.setState({ error: "Unsuccessful" });
-      });
-
-  public clear = () => {
-    this.setState(initialState);
+      .catch(err => this.setState({ error: "Unsuccessful" }));
   };
 
   public render() {
     return (
       <div>
         <label htmlFor="username">
-          Username
           <input
+            placeholder="Username"
             onChange={this.handleChange}
             name="username"
             type="text"
             value={this.state.username}
           />
         </label>
-        <label htmlFor="email">
-          Email
-          <input
-            onChange={this.handleChange}
-            name="email"
-            type="text"
-            value={this.state.email}
-          />
-        </label>
         <label htmlFor="password">
-          Password
           <input
+            placeholder="Passsword"
             onChange={this.handleChange}
             name="password"
             type="text"
             value={this.state.password}
           />
         </label>
-        <p>{this.state.error}</p>
-        <button onClick={this.submit}>Sign Up</button>
-        <button onClick={this.clear}>Cancel</button>
+        <button onClick={this.handleSubmit}>Submit</button>
       </div>
     );
   }
 }
 
-export { SignUp };
+export { Login };
