@@ -1,7 +1,7 @@
 import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Conversation } from "./Conversation";
+import { ConversationPreview } from "./ConversationPreview";
 
 interface IState {
   [key: string]: any;
@@ -37,7 +37,7 @@ class Dashboard extends React.Component<RouteComponentProps, IState> {
       <div>
         <h1>Conversations</h1>
         {this.state.conversations.map((conversation: any) => (
-          <Conversation key={conversation.id} {...conversation} />
+          <ConversationPreview key={conversation.id} {...conversation} />
         ))}
       </div>
     );

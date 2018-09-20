@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
-const Conversation = ({ sent_at, users, content, id }: any) => {
+const ConversationPreview = ({ sent_at, users, content, id }: any) => {
   return (
     <Link to={`/conversations/${id}`}>
       <div className="conversation-container">
@@ -13,4 +13,4 @@ const Conversation = ({ sent_at, users, content, id }: any) => {
   );
 };
 
-export { Conversation };
+export { ConversationPreview };
