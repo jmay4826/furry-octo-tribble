@@ -20,7 +20,6 @@ class Dashboard extends React.Component<RouteComponentProps, IState> {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     })
       .then(response => {
-        console.log(response);
         this.setState({ conversations: response.data.conversations });
       })
       .catch(err => {
