@@ -29,7 +29,6 @@ class Messages extends React.Component<RouteComponentProps, IState> {
     Axios.get(`/api/conversations/${this.props.match.params.conversation_id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     }).then(response => {
-      console.log(response);
       this.setState({ messages: response.data.messages });
     });
   }

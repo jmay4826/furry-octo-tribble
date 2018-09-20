@@ -61,13 +61,11 @@ class NewMessage extends React.Component<{ conversation_id: string }, IState> {
       },
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     ).then(response => {
-      console.log(response);
-      return response;
+      location.reload();
     });
   };
 
   public render() {
-    console.log(this.props);
     return (
       <div className="new-message-container">
         <div className="message-icons">
