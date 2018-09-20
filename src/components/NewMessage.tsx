@@ -1,12 +1,13 @@
+import Axios from "axios";
 import * as React from "react";
 
 interface IState {
   [key: string]: any;
 }
 
-class NewMessage extends React.Component<{}, IState> {
+class NewMessage extends React.Component<{ conversation_id: string }, IState> {
   public textarea: any;
-  constructor(props: {}) {
+  constructor(props: { conversation_id: string }) {
     super(props);
     this.state = {
       selectionEnd: 0,
@@ -51,10 +52,25 @@ class NewMessage extends React.Component<{}, IState> {
     this.setState({ selectionEnd, selectionStart });
   };
 
+  public sendMessage = () => {
+    Axios.post(
+      "/api/message",
+      {
+        content: this.state.value,
+        conversation_id: this.props.conversation_id
+      },
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+    ).then(response => {
+      console.log(response);
+      return response;
+    });
+  };
+
   public render() {
+    console.log(this.props);
     return (
-      <div>
-        <div>
+      <div className="new-message-container">
+        <div className="message-icons">
           <button name="á" onClick={this.addCharacter}>
             á
           </button>
@@ -77,7 +93,7 @@ class NewMessage extends React.Component<{}, IState> {
             ¿
           </button>
         </div>
-        <div>
+        <div className="message-icons">
           <button name="Á" onClick={this.addCharacter}>
             Á
           </button>
@@ -101,11 +117,13 @@ class NewMessage extends React.Component<{}, IState> {
           </button>
         </div>
         <textarea
+          className="new-message"
           ref={this.setRef}
           onSelect={this.handleSelect}
           value={this.state.value}
           onChange={this.handleChange}
         />
+        <button onClick={this.sendMessage}>Send</button>
       </div>
     );
   }
