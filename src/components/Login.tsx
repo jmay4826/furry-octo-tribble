@@ -1,6 +1,7 @@
 import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Paper, TextField, Button } from "@material-ui/core";
 
 interface IState {
   username: string;
@@ -40,27 +41,34 @@ class Login extends React.Component<RouteComponentProps, IState> {
 
   public render() {
     return (
-      <div>
-        <label htmlFor="username">
-          <input
-            placeholder="Username"
-            onChange={this.handleChange}
-            name="username"
-            type="text"
-            value={this.state.username}
-          />
-        </label>
-        <label htmlFor="password">
-          <input
-            placeholder="Passsword"
-            onChange={this.handleChange}
-            name="password"
-            type="text"
-            value={this.state.password}
-          />
-        </label>
-        <button onClick={this.handleSubmit}>Submit</button>
-      </div>
+      <Paper
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          margin: "20%"
+        }}
+      >
+        <h2>Login</h2>
+        <TextField
+          placeholder="Username"
+          onChange={this.handleChange}
+          name="username"
+          type="text"
+          value={this.state.username}
+        />
+
+        <TextField
+          placeholder="Passsword"
+          onChange={this.handleChange}
+          name="password"
+          type="text"
+          value={this.state.password}
+        />
+
+        <Button onClick={this.handleSubmit}>Submit</Button>
+        <h3>Don't have a username? Ask your instructor</h3>
+      </Paper>
     );
   }
 }
