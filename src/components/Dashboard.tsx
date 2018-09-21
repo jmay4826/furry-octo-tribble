@@ -36,6 +36,7 @@ class Dashboard extends React.Component<IProps, IState> {
         {this.state.conversations.map((conversation: any) => (
           <ConversationPreview key={conversation.id} {...conversation} />
         ))}
+        <p>{JSON.stringify(this.state.error)}</p>
       </div>
     );
   }
