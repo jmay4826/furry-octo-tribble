@@ -6,12 +6,14 @@
   "dependencies": {
     "@types/react-router": "^4.0.31",
     "@types/react-router-dom": "^4.3.1",
+    "@types/socket.io-client": "^1.4.32",
     "axios": "^0.18.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts-ts": "2.17.0"
+    "react-scripts-ts": "2.17.0",
+    "socket.io-client": "^2.1.1"
   },
   "scripts": {
     "start": "react-scripts-ts start",
