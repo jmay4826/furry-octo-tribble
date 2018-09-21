@@ -6,12 +6,14 @@ import { ConversationPreview } from "./ConversationPreview";
 interface IState {
   [key: string]: any;
 }
+interface IProps extends RouteComponentProps {}
 
-class Dashboard extends React.Component<RouteComponentProps, IState> {
-  constructor(props: RouteComponentProps) {
+class Dashboard extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      conversations: []
+      conversations: [],
+      error: undefined
     };
   }
 
@@ -22,12 +24,8 @@ class Dashboard extends React.Component<RouteComponentProps, IState> {
       .then(response => {
         this.setState({ conversations: response.data.conversations });
       })
-      .catch(err => {
-        //   if (err.response.status === 401) {
-        //   this.props.history.push("/login");
-        // } else {
-        console.dir(err);
-        // }
+      .catch(error => {
+        this.setState({ error });
       });
   }
 
