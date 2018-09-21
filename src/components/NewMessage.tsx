@@ -1,5 +1,6 @@
 // import Axios from "axios";
 import * as React from "react";
+import { TextField } from "@material-ui/core";
 
 interface IState {
   [key: string]: any;
@@ -67,8 +68,8 @@ class NewMessage extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <div className="new-message-container">
-        <div className="message-icons">
+      <div>
+        <div>
           <button name="á" onClick={this.addCharacter}>
             á
           </button>
@@ -91,7 +92,7 @@ class NewMessage extends React.Component<IProps, IState> {
             ¿
           </button>
         </div>
-        <div className="message-icons">
+        <div>
           <button name="Á" onClick={this.addCharacter}>
             Á
           </button>
@@ -114,12 +115,15 @@ class NewMessage extends React.Component<IProps, IState> {
             ¡
           </button>
         </div>
-        <textarea
-          className="new-message"
-          ref={this.setRef}
+        <TextField
+          style={{ minWidth: "80%", margin: "0 auto" }}
+          variant="outlined"
+          multiline={true}
+          inputRef={this.setRef}
           onSelect={this.handleSelect}
           value={this.state.value}
           onChange={this.handleChange}
+          rows={10}
         />
         <button onClick={this.sendMessage}>Send</button>
       </div>
