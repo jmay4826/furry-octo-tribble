@@ -1,13 +1,19 @@
-import Axios from "axios";
+// import Axios from "axios";
 import * as React from "react";
 
 interface IState {
   [key: string]: any;
 }
 
-class NewMessage extends React.Component<{ conversation_id: string }, IState> {
+interface IProps {
+  conversation_id: string;
+  socket: SocketIOClient.Socket;
+}
+
+class NewMessage extends React.Component<IProps, IState> {
   public textarea: any;
-  constructor(props: { conversation_id: string }) {
+
+  constructor(props: IProps) {
     super(props);
     this.state = {
       selectionEnd: 0,
@@ -53,15 +59,9 @@ class NewMessage extends React.Component<{ conversation_id: string }, IState> {
   };
 
   public sendMessage = () => {
-    Axios.post(
-      "/api/message",
-      {
-        content: this.state.value,
-        conversation_id: this.props.conversation_id
-      },
-      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-    ).then(response => {
-      location.reload();
+    this.props.socket.emit("message sent", {
+      content: this.state.value,
+      conversation_id: this.props.conversation_id
     });
   };
 

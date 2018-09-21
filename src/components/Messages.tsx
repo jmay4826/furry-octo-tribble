@@ -1,16 +1,11 @@
-import Axios from "axios";
+// import Axios from "axios";
 import * as React from "react";
-// import { RouteComponentProps } from "react-router";
+import { RouteComponentProps } from "react-router";
+import * as io from "socket.io-client";
 import { Message } from "./Message";
 import { NewMessage } from "./NewMessage";
 
-interface RouteComponentProps {
-  match: {
-    params: {
-      conversation_id: string;
-    };
-  };
-}
+interface IProps extends RouteComponentProps<{ conversation_id: string }> {}
 
 interface IState {
   messages: any[];
@@ -19,18 +14,25 @@ const initialState = {
   messages: []
 };
 
-class Messages extends React.Component<RouteComponentProps, IState> {
-  constructor(props: RouteComponentProps) {
+class Messages extends React.Component<IProps, IState> {
+  public socket: SocketIOClient.Socket;
+  constructor(props: IProps) {
     super(props);
     this.state = initialState;
   }
 
   public componentDidMount() {
-    Axios.get(`/api/conversations/${this.props.match.params.conversation_id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    }).then(response => {
-      this.setState({ messages: response.data.messages });
+    this.socket = io();
+    this.socket.emit("authenticate", {
+      conversation_id: this.props.match.params.conversation_id,
+      token: localStorage.getItem("token")
     });
+    this.socket.on("new message", (messages: any[]) => {
+      this.setState({ messages });
+    });
+  }
+  public componentWillUnmount() {
+    this.socket.close();
   }
 
   public render() {
@@ -40,7 +42,10 @@ class Messages extends React.Component<RouteComponentProps, IState> {
         {this.state.messages.map(message => (
           <Message key={message.message_id} {...message} />
         ))}
-        <NewMessage conversation_id={this.props.match.params.conversation_id} />
+        <NewMessage
+          socket={this.socket}
+          conversation_id={this.props.match.params.conversation_id}
+        />
       </div>
     );
   }
