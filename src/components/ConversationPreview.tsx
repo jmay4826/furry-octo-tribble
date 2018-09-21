@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 
 const ConversationPreview = ({ sent_at, users, content, id }: any) => {
   return (
-    <Link to={`/conversations/${id}`}>
-      <div className="conversation-container">
-        <b>{JSON.stringify(users)}</b>
-        <p>{content}</p>
-        <p>{sent_at}</p>
-      </div>
+    <Link className="conversation-preview" to={`/conversations/${id}`}>
+      {users.map((user: string) => (
+        <span className="conversation-users" key={user}>
+          {user}
+        </span>
+      ))}
+      <p>{content}</p>
+      <p>Last Message: {new Date(sent_at).toLocaleString()}</p>
     </Link>
   );
 };
