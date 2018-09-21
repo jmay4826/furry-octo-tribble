@@ -2,6 +2,7 @@ import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { ConversationPreview } from "./ConversationPreview";
+import { List } from "@material-ui/core";
 
 interface IState {
   [key: string]: any;
@@ -32,10 +33,13 @@ class Dashboard extends React.Component<IProps, IState> {
   public render() {
     return (
       <div>
+        <nav>Logout</nav>
         <h1>Conversations</h1>
-        {this.state.conversations.map((conversation: any) => (
-          <ConversationPreview key={conversation.id} {...conversation} />
-        ))}
+        <List>
+          {this.state.conversations.map((conversation: any) => (
+            <ConversationPreview key={conversation.id} {...conversation} />
+          ))}
+        </List>
         <p>{JSON.stringify(this.state.error)}</p>
       </div>
     );
