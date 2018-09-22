@@ -1,6 +1,6 @@
 // import Axios from "axios";
+import { Button, TextField } from "@material-ui/core";
 import * as React from "react";
-import { TextField } from "@material-ui/core";
 
 interface IState {
   [key: string]: any;
@@ -19,7 +19,7 @@ class NewMessage extends React.Component<IProps, IState> {
     this.state = {
       selectionEnd: 0,
       selectionStart: 0,
-      value: "is this even possible"
+      value: ""
     };
   }
 
@@ -32,11 +32,11 @@ class NewMessage extends React.Component<IProps, IState> {
     target: { value: string };
   }) => this.setState({ value });
 
-  public addCharacter = ({ target: { name } }: { target: any }) => {
+  public addCharacter = (character: string) => () => {
     this.setState(
       prevState => {
         let value = prevState.value.substring(0, prevState.selectionStart);
-        value += name;
+        value += character;
         value += prevState.value.substring(
           prevState.selectionEnd,
           prevState.value.length
@@ -64,58 +64,79 @@ class NewMessage extends React.Component<IProps, IState> {
       content: this.state.value,
       conversation_id: this.props.conversation_id
     });
+    this.setState({ value: "" });
   };
 
   public render() {
+    const style = { textTransform: "initial" } as any;
     return (
-      <div>
-        <div>
-          <button name="á" onClick={this.addCharacter}>
-            á
-          </button>
-          <button name="é" onClick={this.addCharacter}>
-            é
-          </button>
-          <button name="í" onClick={this.addCharacter}>
-            í
-          </button>
-          <button name="ó" onClick={this.addCharacter}>
-            ó
-          </button>
-          <button name="ú" onClick={this.addCharacter}>
-            ú
-          </button>
-          <button name="ñ" onClick={this.addCharacter}>
-            ñ
-          </button>
-          <button name="¿" onClick={this.addCharacter}>
-            ¿
-          </button>
+      <div
+        style={{
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "column"
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            maxWidth: "80%"
+          }}
+        >
+          <div>
+            <Button style={style} onClick={this.addCharacter("¡")}>
+              ¡
+            </Button>
+            <Button style={style} onClick={this.addCharacter("¿")}>
+              ¿
+            </Button>
+            <Button style={style} onClick={this.addCharacter("Á")}>
+              Á
+            </Button>
+            <Button style={style} onClick={this.addCharacter("á")}>
+              á
+            </Button>
+            <Button style={style} onClick={this.addCharacter("É")}>
+              É
+            </Button>
+            <Button style={style} onClick={this.addCharacter("é")}>
+              é
+            </Button>
+            <Button style={style} onClick={this.addCharacter("Í")}>
+              Í
+            </Button>
+          </div>
+          <div>
+            <Button style={style} onClick={this.addCharacter("í")}>
+              í
+            </Button>
+            <Button style={style} onClick={this.addCharacter("Ó")}>
+              Ó
+            </Button>
+            <Button style={style} onClick={this.addCharacter("ó")}>
+              ó
+            </Button>
+            <Button style={style} onClick={this.addCharacter("Ú")}>
+              Ú
+            </Button>
+            <Button style={style} onClick={this.addCharacter("ú")}>
+              ú
+            </Button>
+            <Button style={style} onClick={this.addCharacter("Ñ")}>
+              Ñ
+            </Button>
+            <Button style={style} onClick={this.addCharacter("ñ")}>
+              ñ
+            </Button>
+          </div>
         </div>
-        <div>
-          <button name="Á" onClick={this.addCharacter}>
-            Á
-          </button>
-          <button name="É" onClick={this.addCharacter}>
-            É
-          </button>
-          <button name="Í" onClick={this.addCharacter}>
-            Í
-          </button>
-          <button name="Ó" onClick={this.addCharacter}>
-            Ó
-          </button>
-          <button name="Ú" onClick={this.addCharacter}>
-            Ú
-          </button>
-          <button name="Ñ" onClick={this.addCharacter}>
-            Ñ
-          </button>
-          <button name="¡" onClick={this.addCharacter}>
-            ¡
-          </button>
-        </div>
+
         <TextField
+          required={true}
+          placeholder="Enter message"
           style={{ minWidth: "80%", margin: "0 auto" }}
           variant="outlined"
           multiline={true}
@@ -123,9 +144,10 @@ class NewMessage extends React.Component<IProps, IState> {
           onSelect={this.handleSelect}
           value={this.state.value}
           onChange={this.handleChange}
-          rows={10}
+          rows={8}
         />
-        <button onClick={this.sendMessage}>Send</button>
+
+        <Button onClick={this.sendMessage}>Send</Button>
       </div>
     );
   }
