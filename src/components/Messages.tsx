@@ -44,13 +44,7 @@ class Messages extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <div
-      // style={{
-      //   display: "flex",
-      //   flexDirection: "column",
-      //   alignItems: "center"
-      // }}
-      >
+      <div>
         <h1>Messages</h1>
         <div
           ref={this.createRef}
@@ -61,7 +55,7 @@ class Messages extends React.Component<IProps, IState> {
             width: "100%"
           }}
         >
-          {this.state.messages.map((message, i, arr) => (
+          {this.state.messages.map(message => (
             <Message key={message.message_id} {...message} />
           ))}
           {this.state.loading && "Loading..."}

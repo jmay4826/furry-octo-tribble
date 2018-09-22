@@ -9,7 +9,7 @@ interface IState {
 }
 interface IProps extends RouteComponentProps {}
 
-class Dashboard extends React.Component<IProps, IState> {
+class Conversations extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -46,4 +46,4 @@ class Dashboard extends React.Component<IProps, IState> {
   }
 }
 
-export { Dashboard };
+export { Conversations };

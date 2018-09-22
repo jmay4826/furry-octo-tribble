@@ -34,7 +34,7 @@ class Login extends React.Component<RouteComponentProps, IState> {
     })
       .then(response => {
         localStorage.setItem("token", response.data.token);
-        this.props.history.push("/dashboard");
+        this.props.history.push("/conversations");
       })
       .catch(err => this.setState({ error: "Unsuccessful" }));
   };
