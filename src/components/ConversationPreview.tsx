@@ -1,12 +1,13 @@
-import * as React from "react";
-import { Link } from "react-router-dom";
-import { ListItem, Avatar, ListItemText } from "@material-ui/core";
+import { Avatar, ListItem, ListItemText } from "@material-ui/core";
 import { default as EmailIcon } from "@material-ui/icons/Email";
+import * as React from "react";
+import { withRouter } from "react-router-dom";
 
-const ConversationPreview = ({ sent_at, users, content, id }: any) => {
-  return (
-    <Link to={`/conversations/${id}`}>
-      <ListItem button={true}>
+const ConversationPreview = withRouter(
+  ({ sent_at, users, content, id, selected, ...props }: any) => {
+    const handleClick = () => props.history.push(`/conversations/${id}`);
+    return (
+      <ListItem selected={id === +selected} button={true} onClick={handleClick}>
         <Avatar>
           <EmailIcon />
         </Avatar>
@@ -15,11 +16,13 @@ const ConversationPreview = ({ sent_at, users, content, id }: any) => {
             (acc: string, user: string, i: number, arr: string[]) =>
               i < arr.length - 1 ? `${acc} ${user},` : `${acc} ${user}`
           )}
-          secondary={new Date(sent_at).toLocaleString()}
+          secondary={
+            sent_at ? new Date(sent_at).toLocaleString() : "No messages yet"
+          }
         />
       </ListItem>
-    </Link>
-  );
-};
+    );
+  }
+);
 
 export { ConversationPreview };

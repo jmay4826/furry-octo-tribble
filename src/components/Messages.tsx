@@ -1,11 +1,10 @@
-// import Axios from "axios";
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import * as io from "socket.io-client";
 import { Message } from "./Message";
-import { NewMessage } from "./NewMessage";
 
-interface IProps extends RouteComponentProps<{ conversation_id: string }> {}
+interface IProps {
+  conversation_id: string;
+  socket: SocketIOClient.Socket;
+}
 
 interface IState {
   loading: boolean;
@@ -19,25 +18,35 @@ const initialState = {
 class Messages extends React.Component<IProps, IState> {
   public div: any;
   public messagesBottom: any;
-  public socket: SocketIOClient.Socket;
+
   constructor(props: IProps) {
     super(props);
     this.state = initialState;
   }
 
   public componentDidMount() {
-    this.socket = io();
-    this.socket.emit("authenticate", {
-      conversation_id: this.props.match.params.conversation_id,
+    this.props.socket.emit("authenticate", {
+      conversation_id: this.props.conversation_id,
       token: localStorage.getItem("token")
     });
-    this.socket.on("new message", (messages: any[]) => {
+    this.props.socket.on("new message", (messages: any[]) => {
       this.setState({ messages, loading: false });
       this.div.scrollTo(0, this.messagesBottom.offsetTop);
     });
   }
+
+  public componentDidUpdate(prevProps: IProps) {
+    if (prevProps.conversation_id !== this.props.conversation_id) {
+      this.setState({ messages: [], loading: true });
+      this.props.socket.emit("authenticate", {
+        conversation_id: this.props.conversation_id,
+        token: localStorage.getItem("token")
+      });
+    }
+  }
+
   public componentWillUnmount() {
-    this.socket.close();
+    this.props.socket.close();
   }
 
   public createRef = (element: any) => (this.div = element);
@@ -45,11 +54,9 @@ class Messages extends React.Component<IProps, IState> {
   public render() {
     return (
       <div>
-        <h1>Messages</h1>
         <div
           ref={this.createRef}
           style={{
-            borderBottom: "1px solid gray",
             height: "60vh",
             overflow: "auto",
             width: "100%"
@@ -58,16 +65,13 @@ class Messages extends React.Component<IProps, IState> {
           {this.state.messages.map(message => (
             <Message key={message.message_id} {...message} />
           ))}
-          {this.state.loading && "Loading..."}
+
+          {this.state.loading && <Message from_username="Loading..." />}
           {!this.state.messages.length &&
             !this.state.loading &&
             "No messagse yet"}
           <div ref={e => (this.messagesBottom = e)} />
         </div>
-        <NewMessage
-          socket={this.socket}
-          conversation_id={this.props.match.params.conversation_id}
-        />
       </div>
     );
   }

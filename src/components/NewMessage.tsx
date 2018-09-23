@@ -72,6 +72,7 @@ class NewMessage extends React.Component<IProps, IState> {
     return (
       <div
         style={{
+          borderTop: "1px solid rgba(0, 0, 0, 0.1)",
           alignItems: "center",
           display: "flex",
           flexDirection: "column"

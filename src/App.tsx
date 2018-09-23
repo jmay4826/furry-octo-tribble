@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 import { Conversations } from "./components/Conversations";
 import { Login } from "./components/Login";
-import { Messages } from "./components/Messages";
+// import { Messages } from "./components/Messages";
 import { SignUp } from "./components/SignUp";
 
 class App extends React.Component {
@@ -16,11 +16,11 @@ class App extends React.Component {
           <Switch>
             <Route path="/signup" component={SignUp} />
             <Route path="/login" component={Login} />
-            <Route path="/conversations" component={Conversations} />
             <Route
               path="/conversations/:conversation_id"
-              component={Messages}
+              component={Conversations}
             />
+            <Route path="/conversations" component={Conversations} />
             <Route path="/" component={Login} />
           </Switch>
         </Router>

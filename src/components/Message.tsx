@@ -1,19 +1,21 @@
+import { default as Card } from "@material-ui/core/Card";
+import { default as CardContent } from "@material-ui/core/CardContent";
+import { default as Typography } from "@material-ui/core/Typography";
 import * as React from "react";
-import { Card, CardContent, Typography } from "@material-ui/core";
 
 const Message = ({ from_username, content, sent_at }: any) => {
   return (
     <div
       style={{
-        margin: "10px",
+        alignItems: from_username === "jonathanm" ? "flex-end" : "flex-start",
         display: "flex",
         flexDirection: "column",
-        alignItems: from_username === "jonathanm" ? "flex-end" : "flex-start"
+        margin: "10px"
       }}
     >
       <Card
         style={{
-          width: "80vw"
+          width: "80%"
         }}
       >
         <CardContent>
