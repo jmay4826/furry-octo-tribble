@@ -36,7 +36,15 @@ class Login extends React.Component<RouteComponentProps, IState> {
         localStorage.setItem("token", response.data.token);
         this.props.history.push("/conversations");
       })
-      .catch(err => this.setState({ error: "Unsuccessful" }));
+      .catch(err => {
+        let error;
+        if (err.response.status === 401) {
+          error = "Incorrect username or password. Please try again.";
+        } else {
+          error = "An unknown error occurred. Please try again.";
+        }
+        this.setState({ error });
+      });
   };
 
   public render() {
@@ -68,6 +76,7 @@ class Login extends React.Component<RouteComponentProps, IState> {
 
         <Button onClick={this.handleSubmit}>Submit</Button>
         <h3>Don't have a username? Ask your instructor</h3>
+        {this.state.error && <p className="error">{this.state.error}</p>}
       </Paper>
     );
   }
