@@ -1,18 +1,20 @@
 import Axios from "axios";
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, Redirect } from "react-router";
 import { Paper, TextField, Button } from "@material-ui/core";
 
 interface IState {
   username: string;
   password: string;
   error: string;
+  loggedIn: boolean | string;
 }
 
 const initialState = {
   error: "",
   password: "",
-  username: ""
+  username: "",
+  loggedIn: false
 };
 
 class Login extends React.Component<RouteComponentProps, IState> {
@@ -34,7 +36,7 @@ class Login extends React.Component<RouteComponentProps, IState> {
     })
       .then(response => {
         localStorage.setItem("token", response.data.token);
-        this.props.history.push("/conversations");
+        this.setState({ loggedIn: true });
       })
       .catch(err => {
         let error;
@@ -48,7 +50,9 @@ class Login extends React.Component<RouteComponentProps, IState> {
   };
 
   public render() {
-    return (
+    return this.state.loggedIn ? (
+      <Redirect to="/conversations" push={true} />
+    ) : (
       <Paper
         style={{
           display: "flex",
