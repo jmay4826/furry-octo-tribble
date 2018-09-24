@@ -8,7 +8,7 @@ import { ConversationPreview } from "./ConversationPreview";
 import { Messages } from "./Messages";
 import { NewMessage } from "./NewMessage";
 
-interface IConversation {
+export interface IConversation {
   id: number;
   sent_at: string;
   users: string[];
@@ -64,7 +64,12 @@ class Conversations extends React.Component<IProps, IState> {
                 <ConversationPreview
                   key={conversation.id}
                   {...conversation}
-                  selected={this.props.match.params.conversation_id}
+                  selected={
+                    this.props.match.params.conversation_id
+                      ? +this.props.match.params.conversation_id ===
+                        conversation.id
+                      : false
+                  }
                 />
               ))}
             </List>
