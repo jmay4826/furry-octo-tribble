@@ -1,9 +1,13 @@
-// import Axios from "axios";
 import { Button, TextField } from "@material-ui/core";
 import * as React from "react";
+import { AccentButtons } from "./AccentButtons";
 
 interface IState {
-  [key: string]: any;
+  accent: boolean;
+  error: boolean;
+  selectionEnd: number;
+  selectionStart: number;
+  value: string;
 }
 
 interface IProps {
@@ -11,28 +15,45 @@ interface IProps {
   socket: SocketIOClient.Socket;
 }
 
+interface ISelectionEvent extends React.SyntheticEvent<HTMLDivElement> {
+  target: EventTarget & HTMLDivElement & HTMLTextAreaElement;
+}
+
+const initialState: IState = {
+  accent: false,
+  error: false,
+  selectionEnd: 0,
+  selectionStart: 0,
+  value: ""
+};
+
 class NewMessage extends React.Component<IProps, IState> {
-  public textarea: any;
+  public textarea: HTMLTextAreaElement;
+  public accents: { [key: string]: string };
 
   constructor(props: IProps) {
     super(props);
-    this.state = {
-      selectionEnd: 0,
-      selectionStart: 0,
-      value: ""
+    this.state = initialState;
+
+    this.accents = {
+      "!": "¡",
+      "?": "¿",
+      A: "Á",
+      E: "É",
+      I: "Í",
+      N: "Ñ",
+      O: "Ó",
+      U: "Ú",
+      a: "á",
+      e: "é",
+      i: "í",
+      n: "ñ",
+      o: "ó",
+      u: "ú"
     };
   }
 
-  public setRef = (element: any) => {
-    this.textarea = element;
-  };
-  public handleChange = ({
-    target: { value }
-  }: {
-    target: { value: string };
-  }) => this.setState({ value });
-
-  public addCharacter = (character: string) => () => {
+  public addCharacter = (character: string) =>
     this.setState(
       prevState => {
         let value = prevState.value.substring(0, prevState.selectionStart);
@@ -43,7 +64,7 @@ class NewMessage extends React.Component<IProps, IState> {
         );
         const selectionStart = prevState.selectionStart + 1;
         const selectionEnd = prevState.selectionStart + 1;
-        return { value, selectionStart, selectionEnd };
+        return { value, selectionStart, selectionEnd, accent: false };
       },
       () => {
         this.textarea.focus();
@@ -53,89 +74,61 @@ class NewMessage extends React.Component<IProps, IState> {
         );
       }
     );
+
+  public handleAccentClick = (e: React.MouseEvent<HTMLButtonElement>) =>
+    this.addCharacter(e.currentTarget.name);
+
+  public handleChange = ({
+    target: { value }
+  }: React.ChangeEvent<HTMLTextAreaElement>) =>
+    this.setState({ value, error: false });
+
+  public handleKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.which === 96) {
+      e.preventDefault();
+      this.setState({ accent: true });
+    } else if (this.state.accent) {
+      e.preventDefault();
+      this.addCharacter(this.accents[e.key] || e.key);
+    }
   };
 
-  public handleSelect = ({ target: { selectionEnd, selectionStart } }: any) => {
-    this.setState({ selectionEnd, selectionStart });
-  };
+  public handleSelect = ({
+    target: { selectionEnd, selectionStart }
+  }: ISelectionEvent) =>
+    this.setState({
+      selectionEnd,
+      selectionStart
+    });
 
   public sendMessage = () => {
-    this.props.socket.emit("message sent", {
-      content: this.state.value,
-      conversation_id: this.props.conversation_id
-    });
-    this.setState({ value: "" });
+    if (this.state.value) {
+      this.props.socket.emit("message sent", {
+        content: this.state.value,
+        conversation_id: this.props.conversation_id
+      });
+      this.setState(initialState);
+    } else {
+      this.setState({ error: true });
+    }
   };
 
+  public setRef = (element: HTMLTextAreaElement) => (this.textarea = element);
+
   public render() {
-    const style = { textTransform: "initial" } as any;
     return (
       <div
         style={{
-          borderTop: "1px solid rgba(0, 0, 0, 0.1)",
           alignItems: "center",
+          borderTop: "1px solid rgba(0, 0, 0, 0.1)",
           display: "flex",
           flexDirection: "column"
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            maxWidth: "80%"
-          }}
-        >
-          <div>
-            <Button style={style} onClick={this.addCharacter("¡")}>
-              ¡
-            </Button>
-            <Button style={style} onClick={this.addCharacter("¿")}>
-              ¿
-            </Button>
-            <Button style={style} onClick={this.addCharacter("Á")}>
-              Á
-            </Button>
-            <Button style={style} onClick={this.addCharacter("á")}>
-              á
-            </Button>
-            <Button style={style} onClick={this.addCharacter("É")}>
-              É
-            </Button>
-            <Button style={style} onClick={this.addCharacter("é")}>
-              é
-            </Button>
-            <Button style={style} onClick={this.addCharacter("Í")}>
-              Í
-            </Button>
-          </div>
-          <div>
-            <Button style={style} onClick={this.addCharacter("í")}>
-              í
-            </Button>
-            <Button style={style} onClick={this.addCharacter("Ó")}>
-              Ó
-            </Button>
-            <Button style={style} onClick={this.addCharacter("ó")}>
-              ó
-            </Button>
-            <Button style={style} onClick={this.addCharacter("Ú")}>
-              Ú
-            </Button>
-            <Button style={style} onClick={this.addCharacter("ú")}>
-              ú
-            </Button>
-            <Button style={style} onClick={this.addCharacter("Ñ")}>
-              Ñ
-            </Button>
-            <Button style={style} onClick={this.addCharacter("ñ")}>
-              ñ
-            </Button>
-          </div>
-        </div>
-
+        <AccentButtons handleClick={this.handleAccentClick} />
         <TextField
+          error={this.state.error}
+          onKeyPress={this.handleKey}
           required={true}
           placeholder="Enter message"
           style={{ minWidth: "80%", margin: "0 auto" }}
