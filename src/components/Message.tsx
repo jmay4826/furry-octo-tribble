@@ -10,7 +10,8 @@ const Message = ({ from_username, content, sent_at }: any) => {
         alignItems: from_username === "jonathanm" ? "flex-end" : "flex-start",
         display: "flex",
         flexDirection: "column",
-        margin: "10px"
+        margin: "10px",
+        whiteSpace: "pre-line"
       }}
     >
       <Card
