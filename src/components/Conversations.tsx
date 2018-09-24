@@ -1,4 +1,5 @@
-import { List } from "@material-ui/core";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
 import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -7,10 +8,17 @@ import { ConversationPreview } from "./ConversationPreview";
 import { Messages } from "./Messages";
 import { NewMessage } from "./NewMessage";
 
-interface IState {
-  [key: string]: any;
+interface IConversation {
+  id: number;
+  sent_at: string;
+  users: string[];
 }
-interface IProps extends RouteComponentProps<{ conversation_id: string }> {}
+
+interface IState {
+  conversations: IConversation[];
+  error?: string;
+}
+interface IProps extends RouteComponentProps<{ conversation_id?: string }> {}
 
 class Conversations extends React.Component<IProps, IState> {
   public socket: SocketIOClient.Socket;
@@ -23,16 +31,20 @@ class Conversations extends React.Component<IProps, IState> {
     this.socket = io();
   }
 
-  public componentDidMount() {
-    Axios.get("/api/conversations", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    })
-      .then(response => {
-        this.setState({ conversations: response.data.conversations });
-      })
-      .catch(error => {
-        this.setState({ error });
-      });
+  public async componentDidMount() {
+    try {
+      const {
+        data: { conversations }
+      }: { data: { conversations: IConversation[] } } = await Axios.get(
+        "/api/conversations",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        }
+      );
+      this.setState({ conversations });
+    } catch (e) {
+      this.setState({ error: "Error" });
+    }
   }
 
   public componentWillUnmount() {
@@ -42,14 +54,13 @@ class Conversations extends React.Component<IProps, IState> {
   }
 
   public render() {
-    console.log(this.props);
     return (
       <div>
         <h1>Messages</h1>
         <div style={{ display: "flex" }}>
           <div style={{ flexGrow: 1 }}>
             <List>
-              {this.state.conversations.map((conversation: any) => (
+              {this.state.conversations.map(conversation => (
                 <ConversationPreview
                   key={conversation.id}
                   {...conversation}
@@ -58,6 +69,7 @@ class Conversations extends React.Component<IProps, IState> {
               ))}
             </List>
           </div>
+
           {this.props.match.params.conversation_id && (
             <div style={{ flexGrow: 5 }}>
               <Messages
@@ -73,12 +85,10 @@ class Conversations extends React.Component<IProps, IState> {
             conversation_id={this.props.match.params.conversation_id}
           />
         )}
-        <p>{JSON.stringify(this.state.error)}</p>
+        <Typography color="error">{this.state.error}</Typography>
       </div>
     );
   }
 }
-
-// Conversations = withRouter(Conversations)
 
 export { Conversations };
