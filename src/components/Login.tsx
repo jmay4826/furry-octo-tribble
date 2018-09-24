@@ -1,20 +1,23 @@
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 import Axios from "axios";
 import * as React from "react";
-import { RouteComponentProps, Redirect } from "react-router";
-import { Paper, TextField, Button } from "@material-ui/core";
+import { Redirect, RouteComponentProps } from "react-router";
 
 interface IState {
   username: string;
   password: string;
   error: string;
-  loggedIn: boolean | string;
+  loggedIn: boolean;
 }
 
 const initialState = {
   error: "",
+  loggedIn: false,
   password: "",
-  username: "",
-  loggedIn: false
+  username: ""
 };
 
 class Login extends React.Component<RouteComponentProps, IState> {
@@ -23,30 +26,34 @@ class Login extends React.Component<RouteComponentProps, IState> {
     this.state = initialState;
   }
 
-  public handleChange = ({
-    target: { value, name }
-  }: {
-    target: { value: string; name: string };
-  }) => this.setState({ [name]: value } as Pick<IState, keyof IState>);
+  public handleUsername = ({
+    target: { value }
+  }: React.ChangeEvent<HTMLInputElement>) => this.setState({ username: value });
 
-  public handleSubmit = () => {
-    Axios.post("/auth/login", {
-      password: this.state.password,
-      username: this.state.username
-    })
-      .then(response => {
-        localStorage.setItem("token", response.data.token);
-        this.setState({ loggedIn: true });
-      })
-      .catch(err => {
-        let error;
-        if (err.response.status === 401) {
-          error = "Incorrect username or password. Please try again.";
-        } else {
-          error = "An unknown error occurred. Please try again.";
-        }
-        this.setState({ error });
+  public handlePassword = ({
+    target: { value }
+  }: React.ChangeEvent<HTMLInputElement>) => this.setState({ password: value });
+
+  public handleSubmit = async () => {
+    try {
+      const {
+        data: { token }
+      }: { data: { token: string } } = await Axios.post("/auth/login", {
+        password: this.state.password,
+        username: this.state.username
       });
+
+      localStorage.setItem("token", token);
+      this.setState({ loggedIn: true });
+    } catch (err) {
+      let error: string;
+      if (err.response.status === 401) {
+        error = "Incorrect username or password. Please try again.";
+      } else {
+        error = "An unknown error occurred. Please try again.";
+      }
+      this.setState({ error });
+    }
   };
 
   public render() {
@@ -55,16 +62,16 @@ class Login extends React.Component<RouteComponentProps, IState> {
     ) : (
       <Paper
         style={{
+          alignItems: "center",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
           margin: "20%"
         }}
       >
         <h2>Login</h2>
         <TextField
           placeholder="Username"
-          onChange={this.handleChange}
+          onChange={this.handleUsername}
           name="username"
           type="text"
           value={this.state.username}
@@ -72,15 +79,17 @@ class Login extends React.Component<RouteComponentProps, IState> {
 
         <TextField
           placeholder="Passsword"
-          onChange={this.handleChange}
+          type="pasword"
+          onChange={this.handlePassword}
           name="password"
-          type="text"
           value={this.state.password}
         />
 
         <Button onClick={this.handleSubmit}>Submit</Button>
         <h3>Don't have a username? Ask your instructor</h3>
-        {this.state.error && <p className="error">{this.state.error}</p>}
+        {this.state.error && (
+          <Typography color="error">{this.state.error}</Typography>
+        )}
       </Paper>
     );
   }
