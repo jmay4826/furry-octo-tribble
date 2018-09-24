@@ -1,6 +1,6 @@
 import { Button, TextField } from "@material-ui/core";
 import * as React from "react";
-import { AccentButtons } from "./AccentButtons";
+import { AccentButtons, defaultAccents as accents } from "./AccentButtons";
 
 interface IState {
   accent: boolean;
@@ -29,28 +29,10 @@ const initialState: IState = {
 
 class NewMessage extends React.Component<IProps, IState> {
   public textarea: HTMLTextAreaElement;
-  public accents: { [key: string]: string };
 
   constructor(props: IProps) {
     super(props);
     this.state = initialState;
-
-    this.accents = {
-      "!": "¡",
-      "?": "¿",
-      A: "Á",
-      E: "É",
-      I: "Í",
-      N: "Ñ",
-      O: "Ó",
-      U: "Ú",
-      a: "á",
-      e: "é",
-      i: "í",
-      n: "ñ",
-      o: "ó",
-      u: "ú"
-    };
   }
 
   public addCharacter = (character: string) =>
@@ -89,7 +71,7 @@ class NewMessage extends React.Component<IProps, IState> {
       this.setState({ accent: true });
     } else if (this.state.accent) {
       e.preventDefault();
-      this.addCharacter(this.accents[e.key] || e.key);
+      this.addCharacter(accents[e.key] || e.key);
     }
   };
 

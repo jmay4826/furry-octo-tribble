@@ -3,10 +3,29 @@ import * as React from "react";
 
 const originalCaps: React.CSSProperties = { textTransform: "initial" };
 
+export const defaultAccents = {
+  "!": "¡",
+  "?": "¿",
+  A: "Á",
+  E: "É",
+  I: "Í",
+  N: "Ñ",
+  O: "Ó",
+  U: "Ú",
+  a: "á",
+  e: "é",
+  i: "í",
+  n: "ñ",
+  o: "ó",
+  u: "ú"
+};
+
 const AccentButtons = ({
-  handleClick
+  handleClick,
+  accents = defaultAccents
 }: {
   handleClick: React.MouseEventHandler;
+  accents?: { [key: string]: string };
 }) => (
   <div
     style={{
@@ -17,52 +36,16 @@ const AccentButtons = ({
       maxWidth: "80%"
     }}
   >
-    <div>
-      <Button style={originalCaps} onClick={handleClick} name="¡">
-        ¡
+    {Object.keys(accents).map(char => (
+      <Button
+        key={char}
+        style={originalCaps}
+        onClick={handleClick}
+        name={accents[char]}
+      >
+        {accents[char]}
       </Button>
-      <Button style={originalCaps} onClick={handleClick} name="¿">
-        ¿
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="Á">
-        Á
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="á">
-        á
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="É">
-        É
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="é">
-        é
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="Í">
-        Í
-      </Button>
-    </div>
-    <div>
-      <Button style={originalCaps} onClick={handleClick} name="í">
-        í
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="Ó">
-        Ó
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="ó">
-        ó
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="Ú">
-        Ú
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="ú">
-        ú
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="Ñ">
-        Ñ
-      </Button>
-      <Button style={originalCaps} onClick={handleClick} name="ñ">
-        ñ
-      </Button>
-    </div>
+    ))}
   </div>
 );
 
