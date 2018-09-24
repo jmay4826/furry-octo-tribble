@@ -8,16 +8,24 @@ interface IProps {
 
 interface IState {
   loading: boolean;
-  messages: any[];
+  messages: IMessage[];
 }
+
+interface IMessage {
+  content: string;
+  from_username: string;
+  message_id: number;
+  sent_at: string;
+}
+
 const initialState = {
   loading: true,
   messages: []
 };
 
 class Messages extends React.Component<IProps, IState> {
-  public div: any;
-  public messagesBottom: any;
+  public container: HTMLDivElement;
+  public messagesBottom: HTMLDivElement;
 
   constructor(props: IProps) {
     super(props);
@@ -29,9 +37,9 @@ class Messages extends React.Component<IProps, IState> {
       conversation_id: this.props.conversation_id,
       token: localStorage.getItem("token")
     });
-    this.props.socket.on("new message", (messages: any[]) => {
+    this.props.socket.on("new message", (messages: IMessage[]) => {
       this.setState({ messages, loading: false });
-      this.div.scrollTo(0, this.messagesBottom.offsetTop);
+      this.container.scrollTo(0, this.messagesBottom.offsetTop);
     });
   }
 
@@ -49,29 +57,32 @@ class Messages extends React.Component<IProps, IState> {
     this.props.socket.close();
   }
 
-  public createRef = (element: any) => (this.div = element);
+  public createContainerRef = (element: HTMLDivElement) =>
+    (this.container = element);
+  public createBottomRef = (element: HTMLDivElement) =>
+    (this.messagesBottom = element);
 
   public render() {
     return (
-      <div>
-        <div
-          ref={this.createRef}
-          style={{
-            height: "60vh",
-            overflow: "auto",
-            width: "100%"
-          }}
-        >
-          {this.state.messages.map(message => (
-            <Message key={message.message_id} {...message} />
-          ))}
+      <div
+        ref={this.createContainerRef}
+        style={{
+          height: "60vh",
+          overflow: "auto",
+          width: "100%"
+        }}
+      >
+        {this.state.messages.map(message => (
+          <Message key={message.message_id} {...message} />
+        ))}
 
-          {this.state.loading && <Message from_username="Loading..." />}
-          {!this.state.messages.length &&
-            !this.state.loading &&
-            "No messagse yet"}
-          <div ref={e => (this.messagesBottom = e)} />
-        </div>
+        {this.state.loading && "Loading messages"}
+        {!this.state.messages.length &&
+          !this.state.loading &&
+          "No messages yet"}
+        <div
+          ref={(element: HTMLDivElement) => (this.messagesBottom = element)}
+        />
       </div>
     );
   }
