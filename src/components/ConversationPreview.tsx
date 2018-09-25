@@ -7,11 +7,11 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import { IConversation } from "./Conversations";
 
 interface IProps extends IConversation, RouteComponentProps {
-  selected: boolean;
+  selected?: boolean;
 }
 
 const ConversationPreview = withRouter(
-  ({ sent_at, users, id, selected, ...props }: IProps) => {
+  ({ sent_at, users, id, selected = false, ...props }: IProps) => {
     const handleClick = () => props.history.push(`/conversations/${id}`);
     return (
       <ListItem selected={selected} button={true} onClick={handleClick}>
