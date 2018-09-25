@@ -1,13 +1,23 @@
-import { default as Card } from "@material-ui/core/Card";
-import { default as CardContent } from "@material-ui/core/CardContent";
-import { default as Typography } from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 import * as React from "react";
+import { IMessage } from ".";
 
-const Message = ({ from_username, content, sent_at }: any) => {
+interface IMessageWithUser extends IMessage {
+  current_user: string;
+}
+
+const Message = ({
+  from_username,
+  content,
+  sent_at,
+  current_user
+}: IMessageWithUser) => {
   return (
     <div
       style={{
-        alignItems: from_username === "jonathanm" ? "flex-end" : "flex-start",
+        alignItems: from_username === current_user ? "flex-end" : "flex-start",
         display: "flex",
         flexDirection: "column",
         margin: "10px",
@@ -22,8 +32,7 @@ const Message = ({ from_username, content, sent_at }: any) => {
         <CardContent>
           <Typography variant="headline">{from_username}</Typography>
           <Typography variant="subheading">
-            {new Date(sent_at).toLocaleDateString()}{" "}
-            {new Date(sent_at).toLocaleTimeString()}
+            {new Date(sent_at).toLocaleString()}
           </Typography>
           <p>{content}</p>
         </CardContent>

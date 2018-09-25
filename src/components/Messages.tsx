@@ -1,4 +1,6 @@
+import Typography from "@material-ui/core/Typography";
 import * as React from "react";
+import { IMessage } from ".";
 import { Message } from "./Message";
 
 interface IProps {
@@ -7,18 +9,15 @@ interface IProps {
 }
 
 interface IState {
+  error: string;
   loading: boolean;
   messages: IMessage[];
-}
-
-interface IMessage {
-  content: string;
-  from_username: string;
-  message_id: number;
-  sent_at: string;
+  current_user: string;
 }
 
 const initialState = {
+  current_user: "",
+  error: "",
   loading: true,
   messages: []
 };
@@ -37,9 +36,24 @@ class Messages extends React.Component<IProps, IState> {
       conversation_id: this.props.conversation_id,
       token: localStorage.getItem("token")
     });
-    this.props.socket.on("new message", (messages: IMessage[]) => {
-      this.setState({ messages, loading: false });
-      this.container.scrollTo(0, this.messagesBottom.offsetTop);
+    this.props.socket.on(
+      "new message",
+      ({
+        messages,
+        current_user
+      }: {
+        messages: IMessage[];
+        current_user: string;
+      }) => {
+        this.setState({ messages, loading: false, current_user });
+        this.container.scrollTo(0, this.messagesBottom.offsetTop);
+      }
+    );
+
+    this.props.socket.on("unauthorized", () => {
+      this.setState({
+        error: "Could not load messages. Please try logging in again."
+      });
     });
   }
 
@@ -63,7 +77,9 @@ class Messages extends React.Component<IProps, IState> {
     (this.messagesBottom = element);
 
   public render() {
-    return (
+    return this.state.error ? (
+      <Typography color="error">{this.state.error}</Typography>
+    ) : (
       <div
         ref={this.createContainerRef}
         style={{
@@ -73,7 +89,11 @@ class Messages extends React.Component<IProps, IState> {
         }}
       >
         {this.state.messages.map(message => (
-          <Message key={message.message_id} {...message} />
+          <Message
+            key={message.message_id}
+            {...message}
+            current_user={this.state.current_user}
+          />
         ))}
 
         {this.state.loading && "Loading messages"}
