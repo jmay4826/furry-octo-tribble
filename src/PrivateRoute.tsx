@@ -34,8 +34,9 @@ const PrivateRoute = (props: any) => {
             />
           </NavLink>
         </div>
-
-        <props.component {...routerProps} />
+        <div style={{ flexGrow: 1 }}>
+          <props.component {...routerProps} />
+        </div>
       </div>
     ) : props.loading ? null : (
       <Redirect to="/" />
