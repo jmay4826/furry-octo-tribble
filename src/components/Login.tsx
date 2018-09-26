@@ -13,6 +13,10 @@ interface IState {
   loggedIn: boolean;
 }
 
+interface IProps extends RouteComponentProps {
+  handleLogin: (token: string) => void;
+}
+
 const initialState = {
   error: "",
   loggedIn: false,
@@ -20,8 +24,8 @@ const initialState = {
   username: ""
 };
 
-class Login extends React.Component<RouteComponentProps, IState> {
-  constructor(props: RouteComponentProps) {
+class Login extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = initialState;
   }
@@ -44,6 +48,7 @@ class Login extends React.Component<RouteComponentProps, IState> {
       });
 
       localStorage.setItem("token", token);
+      this.props.handleLogin(token);
       this.setState({ loggedIn: true });
     } catch (err) {
       let error: string;

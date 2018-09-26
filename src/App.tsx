@@ -7,6 +7,7 @@ import { InstructorDashboard } from "./components/InstructorDashboard";
 import { Login } from "./components/Login";
 import { SignUp } from "./components/SignUp";
 import { PrivateRoute } from "./PrivateRoute";
+import { Logout } from "./components/Logout";
 
 class App extends React.Component<any, any> {
   constructor(props: any) {
@@ -17,17 +18,40 @@ class App extends React.Component<any, any> {
       role: ""
     };
   }
+
   public async componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.checkAuth(token);
+    } else {
+      this.setState({ loading: false });
+    }
+  }
+
+  public checkAuth = async (token: string) => {
     try {
       const { data: role } = await Axios.get("/auth/me", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       this.setState({ role, loading: false });
     } catch (e) {
-      this.setState({ error: "An unknown error occurred" });
+      if (e.response.status !== 401) {
+        this.setState({ error: "An unknown error occurred" });
+      }
     }
-  }
+  };
+
+  public handleLogin = (token: string) => {
+    this.setState({ loading: true });
+    this.checkAuth(token);
+  };
+
+  public handleLogout = () => {
+    this.setState({ error: "", role: "" });
+  };
+
   public render() {
+    console.log("rending app.tsx");
     return (
       <React.Fragment>
         {!!this.state.error && <p>{this.state.error}</p>}
@@ -35,7 +59,16 @@ class App extends React.Component<any, any> {
         <Router>
           <Switch>
             <Route path="/signup" component={SignUp} />
-            <Route path="/login" component={Login} />
+            <Route
+              path="/login"
+              render={props => (
+                <Login {...props} handleLogin={this.handleLogin} />
+              )}
+            />
+            <Route
+              path="/logout"
+              render={() => <Logout logout={this.handleLogout} />}
+            />
 
             <PrivateRoute
               path="/conversations/:conversation_id"

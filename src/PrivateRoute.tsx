@@ -6,8 +6,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { Redirect, Route } from "react-router";
+import { Link } from "react-router-dom";
 
 const PrivateRoute = (props: any) => {
+  console.log("rendering privateRoute", props.loading, props.authenticated);
   const render = (routerProps: any) =>
     props.authenticated ? (
       <div className="container">
@@ -19,11 +21,13 @@ const PrivateRoute = (props: any) => {
             className="sidebar-icon"
           />
           <FontAwesomeIcon icon={faUser} size="2x" className="sidebar-icon" />
-          <FontAwesomeIcon
-            icon={faSignOutAlt}
-            size="2x"
-            className="sidebar-icon"
-          />
+          <Link to="/logout">
+            <FontAwesomeIcon
+              icon={faSignOutAlt}
+              size="2x"
+              className="sidebar-icon"
+            />
+          </Link>
         </div>
 
         <props.component {...routerProps} />
