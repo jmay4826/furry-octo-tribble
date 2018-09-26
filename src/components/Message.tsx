@@ -2,7 +2,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
-import { IMessage } from ".";
+// import { IMessage } from "..";
 
 interface IMessageWithUser extends IMessage {
   current_user: string;
@@ -24,11 +24,7 @@ const Message = ({
         whiteSpace: "pre-line"
       }}
     >
-      <Card
-        style={{
-          width: "80%"
-        }}
-      >
+      <Card>
         <CardContent>
           <Typography variant="headline">{from_username}</Typography>
           <Typography variant="subheading">

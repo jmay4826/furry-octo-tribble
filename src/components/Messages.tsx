@@ -1,6 +1,5 @@
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
-import { IMessage } from ".";
 import { Message } from "./Message";
 
 interface IProps {
