@@ -61,7 +61,6 @@ class App extends React.Component<any, any> {
   };
 
   public render() {
-    console.log("rending app.tsx");
     return (
       <React.Fragment>
         {!!this.state.error && <p>{this.state.error}</p>}

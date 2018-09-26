@@ -6,28 +6,33 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { Redirect, Route } from "react-router";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const PrivateRoute = (props: any) => {
-  console.log("rendering privateRoute", props.loading, props.authenticated);
-  const render = (routerProps: any) =>
-    props.authenticated ? (
+  const render = (routerProps: any) => {
+    return props.authenticated ? (
       <div className="container">
-        {/* TODO: Move to separate component and add labels */}
+        {/* TODO: 
+          * Move to separate component 
+          * Add labels
+          
+          *  */}
         <div className="sidebar">
-          <FontAwesomeIcon
-            icon={faComments}
-            size="2x"
-            className="sidebar-icon"
-          />
+          <NavLink to="/conversations" activeClassName="active">
+            <FontAwesomeIcon
+              icon={faComments}
+              size="2x"
+              className="sidebar-icon"
+            />
+          </NavLink>
           <FontAwesomeIcon icon={faUser} size="2x" className="sidebar-icon" />
-          <Link to="/logout">
+          <NavLink to="/logout">
             <FontAwesomeIcon
               icon={faSignOutAlt}
               size="2x"
               className="sidebar-icon"
             />
-          </Link>
+          </NavLink>
         </div>
 
         <props.component {...routerProps} />
@@ -35,6 +40,7 @@ const PrivateRoute = (props: any) => {
     ) : props.loading ? null : (
       <Redirect to="/" />
     );
+  };
   return <Route path={props.path} render={render} />;
 };
 
