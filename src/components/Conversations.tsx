@@ -17,6 +17,7 @@ export interface IConversation {
 interface IState {
   conversations: IConversation[];
   error?: string;
+  filter: string;
 }
 interface IProps extends RouteComponentProps<{ conversation_id?: string }> {}
 
@@ -26,7 +27,8 @@ class Conversations extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       conversations: [],
-      error: undefined
+      error: undefined,
+      filter: ""
     };
     this.socket = io();
   }
@@ -52,26 +54,40 @@ class Conversations extends React.Component<IProps, IState> {
       this.socket.close();
     }
   }
+  public filter = (conversation: IConversation) =>
+    conversation.users.toString().indexOf(this.state.filter) !== -1;
+
+  public handleChange = ({
+    target: { value: filter }
+  }: React.ChangeEvent<HTMLInputElement>) => this.setState({ filter });
 
   public render() {
     return (
       <div>
-        <h1>Messages</h1>
         <div style={{ display: "flex" }}>
-          <div style={{ flexGrow: 1 }}>
+          <div style={{ flexGrow: 1, flexBasis: "20%" }}>
+            <h2>Messages</h2>
+            <input
+              type="text"
+              value={this.state.filter}
+              placeholder="Search by username"
+              onChange={this.handleChange}
+            />
             <List>
-              {this.state.conversations.map(conversation => (
-                <ConversationPreview
-                  key={conversation.id}
-                  {...conversation}
-                  selected={
-                    this.props.match.params.conversation_id
-                      ? +this.props.match.params.conversation_id ===
-                        conversation.id
-                      : false
-                  }
-                />
-              ))}
+              {this.state.conversations
+                .filter(this.filter)
+                .map(conversation => (
+                  <ConversationPreview
+                    key={conversation.id}
+                    {...conversation}
+                    selected={
+                      this.props.match.params.conversation_id
+                        ? +this.props.match.params.conversation_id ===
+                          conversation.id
+                        : false
+                    }
+                  />
+                ))}
             </List>
           </div>
 
