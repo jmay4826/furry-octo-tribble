@@ -1,6 +1,11 @@
 import Axios from "axios";
 import * as React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  RouteComponentProps
+} from "react-router-dom";
 import "./App.css";
 import { Conversations } from "./components/Conversations";
 import { InstructorDashboard } from "./components/InstructorDashboard";
@@ -41,6 +46,11 @@ class App extends React.Component<any, any> {
     }
   };
 
+  public loginComponent = (props: RouteComponentProps) => (
+    <Login {...props} handleLogin={this.handleLogin} />
+  );
+  public logoutComponent = () => <Logout logout={this.handleLogout} />;
+
   public handleLogin = (token: string) => {
     this.setState({ loading: true });
     this.checkAuth(token);
@@ -59,16 +69,8 @@ class App extends React.Component<any, any> {
         <Router>
           <Switch>
             <Route path="/signup" component={SignUp} />
-            <Route
-              path="/login"
-              render={props => (
-                <Login {...props} handleLogin={this.handleLogin} />
-              )}
-            />
-            <Route
-              path="/logout"
-              render={() => <Logout logout={this.handleLogout} />}
-            />
+            <Route path="/login" render={this.loginComponent} />
+            <Route path="/logout" render={this.logoutComponent} />
 
             <PrivateRoute
               path="/conversations/:conversation_id"
