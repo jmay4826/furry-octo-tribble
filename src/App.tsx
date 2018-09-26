@@ -1,4 +1,3 @@
-import { CssBaseline } from "@material-ui/core";
 import Axios from "axios";
 import * as React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -31,8 +30,8 @@ class App extends React.Component<any, any> {
   public render() {
     return (
       <React.Fragment>
-        <CssBaseline />
-        <p>{this.state.error}</p>
+        {!!this.state.error && <p>{this.state.error}</p>}
+
         <Router>
           <Switch>
             <Route path="/signup" component={SignUp} />
