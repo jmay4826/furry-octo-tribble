@@ -232,7 +232,7 @@ textarea {
   flex-direction: row;
   width: 100%;
   padding: 0 15px;
-  margin: 10px;
+  margin: 10px 0;
 }
 
 .accent-button {
