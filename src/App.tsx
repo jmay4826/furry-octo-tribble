@@ -43,6 +43,8 @@ class App extends React.Component<any, any> {
     } catch (e) {
       if (e.response.status !== 401) {
         this.setState({ error: "An unknown error occurred" });
+      } else {
+        this.setState({ loading: false });
       }
     }
   };
