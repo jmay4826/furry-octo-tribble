@@ -91,7 +91,7 @@ class App extends React.Component<any, any> {
               loading={this.state.loading}
             />
 
-            <Route path="/" component={Login} />
+            <Route path="/" render={this.loginComponent} />
           </Switch>
         </Router>
       </React.Fragment>
