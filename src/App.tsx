@@ -2,10 +2,10 @@ import Axios from "axios";
 import * as React from "react";
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
   RouteComponentProps,
-  Switch,
-  Redirect
+  Switch
 } from "react-router-dom";
 import "./App.css";
 import { Conversations } from "./components/Conversations";
