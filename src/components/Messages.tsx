@@ -75,7 +75,14 @@ class Messages extends React.Component<IProps, IState> {
       <p className="error">{this.state.error}</p>
     ) : (
       <React.Fragment>
-        <div className="messages-header">Conversation Participants</div>
+        <div className="messages-header">
+          {!!this.state.messages.length &&
+            this.state.messages[0].users.reduce(
+              (acc, user, i, arr) =>
+                i !== arr.length - 1 ? `${acc} ${user},` : `${acc} ${user}`,
+              ""
+            )}
+        </div>
         <div ref={this.createContainerRef} className="messages-list">
           {this.state.messages.map(message => (
             <Message
