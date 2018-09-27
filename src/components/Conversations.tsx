@@ -1,6 +1,6 @@
 import Axios from "axios";
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, Redirect } from "react-router";
 import * as io from "socket.io-client";
 import { ConversationPreview } from "./ConversationPreview";
 import { Messages } from "./Messages";
@@ -67,11 +67,7 @@ class Conversations extends React.Component<IProps, IState> {
       <p>{this.state.error}</p>
     ) : (
       <div className="conversations-container">
-        {" "}
-        {/* Conversations Page Container div */}
         <div className="conversations-list-container">
-          {" "}
-          {/* Conversations Container div */}
           <input
             type="text"
             value={this.state.filter}
@@ -95,8 +91,8 @@ class Conversations extends React.Component<IProps, IState> {
             ))}
           </div>
         </div>
-        {this.props.match.params.conversation_id && (
-          <div style={{ width: "75%" }}>
+        {this.props.match.params.conversation_id ? (
+          <div className="messages-container">
             <Messages
               socket={this.socket}
               conversation_id={this.props.match.params.conversation_id}
@@ -106,6 +102,14 @@ class Conversations extends React.Component<IProps, IState> {
               conversation_id={this.props.match.params.conversation_id}
             />
           </div>
+        ) : (
+          <Redirect
+            to={`/conversations/${
+              this.state.conversations.length
+                ? this.state.conversations[0].id
+                : ""
+            }`}
+          />
         )}
       </div>
     );
