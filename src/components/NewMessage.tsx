@@ -70,6 +70,7 @@ class NewMessage extends React.Component<IProps, IState> {
 
   public handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (this.state.sendOnEnter && e.which === 13) {
+      e.preventDefault();
       return this.sendMessage();
     }
     if (e.which === 96) {
@@ -95,7 +96,7 @@ class NewMessage extends React.Component<IProps, IState> {
         content: this.state.value,
         conversation_id: this.props.conversation_id
       });
-      this.setState(initialState);
+      this.setState({ ...initialState, sendOnEnter: this.state.sendOnEnter });
     } else {
       this.setState({ error: true });
     }
