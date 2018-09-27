@@ -1,6 +1,6 @@
 import Axios from "axios";
 import * as React from "react";
-import { RouteComponentProps, Redirect } from "react-router";
+import { Redirect, RouteComponentProps } from "react-router";
 import * as io from "socket.io-client";
 import { ConversationPreview } from "./ConversationPreview";
 import { Messages } from "./Messages";
