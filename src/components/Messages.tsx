@@ -1,4 +1,3 @@
-import Typography from "@material-ui/core/Typography";
 import * as React from "react";
 import { Message } from "./Message";
 
@@ -77,32 +76,28 @@ class Messages extends React.Component<IProps, IState> {
 
   public render() {
     return this.state.error ? (
-      <Typography color="error">{this.state.error}</Typography>
+      <p className="error">{this.state.error}</p>
     ) : (
-      <div
-        ref={this.createContainerRef}
-        style={{
-          height: "60vh",
-          overflow: "auto",
-          width: "100%"
-        }}
-      >
-        {this.state.messages.map(message => (
-          <Message
-            key={message.message_id}
-            {...message}
-            current_user={this.state.current_user}
-          />
-        ))}
+      <React.Fragment>
+        <div className="messages-header">Conversation Participants</div>
+        <div ref={this.createContainerRef} className="messages-list">
+          {this.state.messages.map(message => (
+            <Message
+              key={message.message_id}
+              {...message}
+              current_user={this.state.current_user}
+            />
+          ))}
 
-        {this.state.loading && "Loading messages"}
-        {!this.state.messages.length &&
-          !this.state.loading &&
-          "No messages yet"}
-        <div
-          ref={(element: HTMLDivElement) => (this.messagesBottom = element)}
-        />
-      </div>
+          {this.state.loading && "Loading messages"}
+          {!this.state.messages.length &&
+            !this.state.loading &&
+            "No messages yet"}
+          <div
+            ref={(element: HTMLDivElement) => (this.messagesBottom = element)}
+          />
+        </div>
+      </React.Fragment>
     );
   }
 }
