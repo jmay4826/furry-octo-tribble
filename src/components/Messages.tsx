@@ -65,10 +65,6 @@ class Messages extends React.Component<IProps, IState> {
     }
   }
 
-  public componentWillUnmount() {
-    this.props.socket.close();
-  }
-
   public createContainerRef = (element: HTMLDivElement) =>
     (this.container = element);
   public createBottomRef = (element: HTMLDivElement) =>
