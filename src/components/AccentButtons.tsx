@@ -1,7 +1,5 @@
-import Button from "@material-ui/core/Button";
+// import Button from "@material-ui/core/Button";
 import * as React from "react";
-
-const originalCaps: React.CSSProperties = { textTransform: "initial" };
 
 export const defaultAccents = {
   "!": "¡",
@@ -27,24 +25,16 @@ const AccentButtons = ({
   handleClick: React.MouseEventHandler;
   accents?: { [key: string]: string };
 }) => (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "center",
-      maxWidth: "80%"
-    }}
-  >
+  <div className="accent-container">
     {Object.keys(accents).map(char => (
-      <Button
+      <button
         key={char}
-        style={originalCaps}
+        className="accent-button"
         onClick={handleClick}
         name={accents[char]}
       >
         {accents[char]}
-      </Button>
+      </button>
     ))}
   </div>
 );
