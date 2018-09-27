@@ -28,10 +28,10 @@ class Conversations extends React.Component<IProps, IState> {
       error: undefined,
       filter: ""
     };
-    this.socket = io();
   }
 
   public async componentDidMount() {
+    this.socket = io();
     try {
       const {
         data: { conversations }
@@ -92,16 +92,18 @@ class Conversations extends React.Component<IProps, IState> {
           </div>
         </div>
         {this.props.match.params.conversation_id ? (
-          <div className="messages-container">
-            <Messages
-              socket={this.socket}
-              conversation_id={this.props.match.params.conversation_id}
-            />
-            <NewMessage
-              socket={this.socket}
-              conversation_id={this.props.match.params.conversation_id}
-            />
-          </div>
+          this.socket && (
+            <div className="messages-container">
+              <Messages
+                socket={this.socket}
+                conversation_id={this.props.match.params.conversation_id}
+              />
+              <NewMessage
+                socket={this.socket}
+                conversation_id={this.props.match.params.conversation_id}
+              />
+            </div>
+          )
         ) : (
           <Redirect
             to={`/conversations/${
