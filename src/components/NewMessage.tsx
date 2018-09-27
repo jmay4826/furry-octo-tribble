@@ -1,5 +1,5 @@
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { AccentButtons, defaultAccents as accents } from "./AccentButtons";
 
@@ -8,6 +8,7 @@ interface IState {
   error: boolean;
   selectionEnd: number;
   selectionStart: number;
+  sendOnEnter: boolean;
   value: string;
 }
 
@@ -16,15 +17,12 @@ interface IProps {
   socket: SocketIOClient.Socket;
 }
 
-interface ISelectionEvent extends React.SyntheticEvent<HTMLDivElement> {
-  target: EventTarget & HTMLDivElement & HTMLTextAreaElement;
-}
-
 const initialState: IState = {
   accent: false,
   error: false,
   selectionEnd: 0,
   selectionStart: 0,
+  sendOnEnter: true,
   value: ""
 };
 
@@ -66,19 +64,26 @@ class NewMessage extends React.Component<IProps, IState> {
   }: React.ChangeEvent<HTMLTextAreaElement>) =>
     this.setState({ value, error: false });
 
-  public handleKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  public handleCheck = ({
+    currentTarget: { checked: sendOnEnter }
+  }: React.SyntheticEvent<HTMLInputElement>) => this.setState({ sendOnEnter });
+
+  public handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (this.state.sendOnEnter && e.which === 13) {
+      return this.sendMessage();
+    }
     if (e.which === 96) {
       e.preventDefault();
-      this.setState({ accent: true });
+      return this.setState({ accent: true });
     } else if (this.state.accent) {
       e.preventDefault();
-      this.addCharacter(accents[e.key] || e.key);
+      return this.addCharacter(accents[e.key] || e.key);
     }
   };
 
   public handleSelect = ({
-    target: { selectionEnd, selectionStart }
-  }: ISelectionEvent) =>
+    currentTarget: { selectionEnd, selectionStart }
+  }: React.SyntheticEvent<HTMLTextAreaElement>) =>
     this.setState({
       selectionEnd,
       selectionStart
@@ -100,31 +105,39 @@ class NewMessage extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <div
-        style={{
-          alignItems: "center",
-          borderTop: "1px solid rgba(0, 0, 0, 0.1)",
-          display: "flex",
-          flexDirection: "column"
-        }}
-      >
+      <div className="new-message-container">
         <AccentButtons handleClick={this.handleAccentClick} />
-        <TextField
-          error={this.state.error}
-          onKeyPress={this.handleKey}
-          required={true}
-          placeholder="Enter message"
-          style={{ minWidth: "80%", margin: "0 auto" }}
-          variant="outlined"
-          multiline={true}
-          inputRef={this.setRef}
-          onSelect={this.handleSelect}
-          value={this.state.value}
-          onChange={this.handleChange}
-          rows={8}
-        />
-
-        <Button onClick={this.sendMessage}>Send</Button>
+        <div className="hint">
+          <p>
+            Hint: Press ` then a letter to add an accent mark. Ex. ` + a = á
+          </p>
+          <p>
+            <label>
+              <input
+                type="checkbox"
+                checked={this.state.sendOnEnter}
+                onChange={this.handleCheck}
+              />{" "}
+              Press Enter to send messages
+            </label>
+          </p>
+        </div>
+        <div className="new-message-controls">
+          <textarea
+            onKeyPress={this.handleKey}
+            required={true}
+            placeholder="Enter message"
+            ref={this.setRef}
+            onSelect={this.handleSelect}
+            value={this.state.value}
+            onChange={this.handleChange}
+            rows={4}
+            style={this.state.error ? { border: "1px solid red" } : {}}
+          />
+          <button onClick={this.sendMessage} className="send-button">
+            <FontAwesomeIcon icon={faArrowRight} size="3x" />
+          </button>
+        </div>
       </div>
     );
   }
