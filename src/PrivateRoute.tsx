@@ -25,7 +25,9 @@ const PrivateRoute = (props: any) => {
               className="sidebar-icon"
             />
           </NavLink>
-          <FontAwesomeIcon icon={faUser} size="2x" className="sidebar-icon" />
+          <NavLink to="/profile" activeClassName="active">
+            <FontAwesomeIcon icon={faUser} size="2x" className="sidebar-icon" />
+          </NavLink>
           <NavLink to="/logout">
             <FontAwesomeIcon
               icon={faSignOutAlt}

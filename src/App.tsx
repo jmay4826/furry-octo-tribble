@@ -3,16 +3,17 @@ import * as React from "react";
 import {
   BrowserRouter as Router,
   Route,
+  RouteComponentProps,
   Switch,
-  RouteComponentProps
+  Redirect
 } from "react-router-dom";
 import "./App.css";
 import { Conversations } from "./components/Conversations";
 import { InstructorDashboard } from "./components/InstructorDashboard";
 import { Login } from "./components/Login";
+import { Logout } from "./components/Logout";
 import { SignUp } from "./components/SignUp";
 import { PrivateRoute } from "./PrivateRoute";
-import { Logout } from "./components/Logout";
 
 class App extends React.Component<any, any> {
   constructor(props: any) {
@@ -90,8 +91,21 @@ class App extends React.Component<any, any> {
               component={InstructorDashboard}
               loading={this.state.loading}
             />
+            {/* <PrivateRoute
+              authenticated={!!this.state.role}
+              path="/profile"
+              component={() => <h1>Coming soon</h1>}
+              loading={this.state.loading}
+            /> */}
 
-            <Route path="/" render={this.loginComponent} />
+            <Route
+              path="/"
+              render={
+                this.state.role
+                  ? () => <Redirect to="/conversations" />
+                  : this.loginComponent
+              }
+            />
           </Switch>
         </Router>
       </React.Fragment>
