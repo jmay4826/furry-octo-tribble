@@ -43,8 +43,9 @@ class Messages extends React.Component<IProps, IState> {
         messages: IMessage[];
         current_user: string;
       }) => {
-        this.setState({ messages, loading: false, current_user });
-        this.container.scrollTo(0, this.messagesBottom.offsetTop);
+        this.setState({ messages, loading: false, current_user }, () => {
+          this.container.scrollTo(0, this.messagesBottom.offsetTop);
+        });
       }
     );
 
@@ -76,6 +77,10 @@ class Messages extends React.Component<IProps, IState> {
     ) : (
       <React.Fragment>
         <div className="messages-header">
+          {!this.state.messages.length &&
+            !this.state.loading &&
+            "No messages yet"}
+          {this.state.loading && "Loading messages..."}
           {!!this.state.messages.length &&
             this.state.messages[0].users.reduce(
               (acc, user, i, arr) =>
@@ -92,10 +97,6 @@ class Messages extends React.Component<IProps, IState> {
             />
           ))}
 
-          {this.state.loading && "Loading messages"}
-          {!this.state.messages.length &&
-            !this.state.loading &&
-            "No messages yet"}
           <div
             ref={(element: HTMLDivElement) => (this.messagesBottom = element)}
           />
