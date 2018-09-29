@@ -6,12 +6,6 @@ import { ConversationPreview } from "./ConversationPreview";
 import { Messages } from "./Messages";
 import { NewMessage } from "./NewMessage";
 
-export interface IConversation {
-  id: number;
-  sent_at: string;
-  users: string[];
-}
-
 interface IState {
   conversations: IConversation[];
   error?: string;
@@ -91,6 +85,7 @@ class Conversations extends React.Component<IProps, IState> {
             ))}
           </div>
         </div>
+        {/* Can this be accomplished with Route ...render? */}
         {this.props.match.params.conversation_id ? (
           this.socket && (
             <div className="messages-container">

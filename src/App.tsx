@@ -75,21 +75,37 @@ class App extends React.Component<any, any> {
             <Route path="/logout" render={this.logoutComponent} />
 
             <PrivateRoute
+              role={this.state.role}
               path="/conversations/:conversation_id"
               component={Conversations}
               authenticated={!!this.state.role}
               loading={this.state.loading}
             />
             <PrivateRoute
+              role={this.state.role}
               authenticated={!!this.state.role}
               path="/conversations"
               component={Conversations}
               loading={this.state.loading}
             />
             <PrivateRoute
+              role={this.state.role}
               authenticated={this.state.role === "instructor"}
-              exact={true}
-              path="/instructor"
+              path="/sections/:section_id/students/:student_id"
+              component={InstructorDashboard}
+              loading={this.state.loading}
+            />
+            <PrivateRoute
+              role={this.state.role}
+              authenticated={this.state.role === "instructor"}
+              path="/sections/:section_id"
+              component={InstructorDashboard}
+              loading={this.state.loading}
+            />
+            <PrivateRoute
+              role={this.state.role}
+              authenticated={this.state.role === "instructor"}
+              path="/sections"
               component={InstructorDashboard}
               loading={this.state.loading}
             />
@@ -104,7 +120,11 @@ class App extends React.Component<any, any> {
               path="/"
               render={
                 this.state.role
-                  ? () => <Redirect to="/conversations" />
+                  ? props => {
+                      console.log("redirecting to /conversations from /");
+                      console.log(props);
+                      return <Redirect to="/conversations" />;
+                    }
                   : this.loginComponent
               }
             />
