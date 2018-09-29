@@ -1,7 +1,8 @@
 import {
   faComments,
   faSignOutAlt,
-  faUser
+  faUser,
+  faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
@@ -28,6 +29,16 @@ const PrivateRoute = (props: any) => {
           <NavLink to="/profile" activeClassName="active">
             <FontAwesomeIcon icon={faUser} size="2x" className="sidebar-icon" />
           </NavLink>
+          {props.role === "instructor" && (
+            <NavLink to="/sections" activeClassName="active">
+              <FontAwesomeIcon
+                icon={faUsers}
+                size="2x"
+                className="sidebar-icon"
+              />
+            </NavLink>
+          )}
+
           <NavLink to="/logout">
             <FontAwesomeIcon
               icon={faSignOutAlt}
@@ -41,7 +52,7 @@ const PrivateRoute = (props: any) => {
         </div>
       </div>
     ) : props.loading ? null : (
-      <Redirect to="/" />
+      <Redirect to="/" push={true} />
     );
   };
   return <Route path={props.path} render={render} />;
