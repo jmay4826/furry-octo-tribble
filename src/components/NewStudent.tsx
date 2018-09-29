@@ -1,6 +1,6 @@
+import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import Axios from "axios";
 
 interface IParams {
   section_id: string;
@@ -14,9 +14,9 @@ class NewStudent extends React.Component<IProps, any> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      username: "",
+      email: "",
       password: "",
-      email: ""
+      username: ""
     };
   }
 
@@ -32,10 +32,10 @@ class NewStudent extends React.Component<IProps, any> {
         section: { section_id }
       } = this.props;
       Axios.post("/api/students", {
-        username,
-        password,
         email,
-        section_id
+        password,
+        section_id,
+        username
       }).then(response =>
         this.props.history.push(
           `/sections/${this.props.match.params.section_id}`

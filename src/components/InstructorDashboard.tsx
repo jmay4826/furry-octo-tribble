@@ -146,7 +146,6 @@ class InstructorDashboard extends React.Component<
             <Route
               path="/sections/new"
               render={props => {
-                console.log(props);
                 return <h1>new section</h1>;
               }}
             />

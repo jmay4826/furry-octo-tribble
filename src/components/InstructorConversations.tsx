@@ -48,7 +48,6 @@ class InstructorConversations extends React.Component<IProps, any> {
     }
   }
   public render() {
-    console.log(this.props);
     return (
       <React.Fragment>
         <div className="messages-header">
@@ -76,7 +75,6 @@ class InstructorConversations extends React.Component<IProps, any> {
             <Route
               path="/sections/:section_id/students/:student_id/conversations/new"
               render={props => {
-                console.log(props);
                 return (
                   <NewConversation
                     {...props}

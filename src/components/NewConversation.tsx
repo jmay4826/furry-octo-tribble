@@ -1,8 +1,8 @@
+import { faArrowRight, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import Axios from "axios";
 // import Axios from "axios";
 
 interface IParams {
@@ -45,7 +45,6 @@ class NewConversation extends React.Component<IProps, IState> {
     });
   };
   public handleChangeStudent = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.dir(e.currentTarget);
     this.setState({
       student: {
         user_id: +e.currentTarget.value,
@@ -79,11 +78,11 @@ class NewConversation extends React.Component<IProps, IState> {
 
   public addConversation = async () => {
     try {
-      const response = await Axios.post("/api/conversations", {
+      await Axios.post("/api/conversations", {
         users: [...this.state.students, this.props.student]
       });
-      console.log(response);
     } catch (e) {
+      // tslint:disable-next-line:no-console
       console.log(e);
     }
   };
