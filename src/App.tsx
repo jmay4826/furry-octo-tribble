@@ -120,11 +120,7 @@ class App extends React.Component<any, any> {
               path="/"
               render={
                 this.state.role
-                  ? props => {
-                      console.log("redirecting to /conversations from /");
-                      console.log(props);
-                      return <Redirect to="/conversations" />;
-                    }
+                  ? props => <Redirect to="/conversations" />
                   : this.loginComponent
               }
             />
