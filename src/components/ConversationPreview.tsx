@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 import TimeAgo from "react-timeago";
-import { IConversation } from "./Conversations";
 
 interface IProps extends IConversation {
   selected?: boolean;
@@ -29,7 +28,7 @@ const ConversationPreview = ({
           {content ? content.substring(0, 50) + "..." : "No messages yet"}
         </p>
         <p className="conversation-preview-content">
-          <TimeAgo date={sent_at} />
+          {sent_at && <TimeAgo date={sent_at} />}
         </p>
       </div>
     </Link>
