@@ -10,6 +10,7 @@ import {
   Switch
 } from "react-router-dom";
 import { InstructorConversations } from "./InstructorConversations";
+import { NewSection } from "./NewSection";
 import { NewStudent } from "./NewStudent";
 
 interface IState {
@@ -143,12 +144,7 @@ class InstructorDashboard extends React.Component<
         </div>
         <div className="messages-container">
           <Switch>
-            <Route
-              path="/sections/new"
-              render={props => {
-                return <h1>new section</h1>;
-              }}
-            />
+            <Route path="/sections/new" component={NewSection} />
 
             <Route
               path="/sections/:section_id/students/new"
