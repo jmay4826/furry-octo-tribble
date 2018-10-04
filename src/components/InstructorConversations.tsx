@@ -5,8 +5,12 @@ import { Link } from "react-router-dom";
 import { ConversationPreview } from "./ConversationPreview";
 import { NewConversation } from "./NewConversation";
 
-interface IProps
-  extends RouteComponentProps<{ student_id: string; section_id: string }> {
+interface IParams {
+  student_id: string;
+  section_id: string;
+}
+
+interface IProps extends RouteComponentProps<IParams> {
   sections: ISection[];
   student?: { username: string; user_id: number };
 }
@@ -47,6 +51,17 @@ class InstructorConversations extends React.Component<IProps, any> {
       this.getConversations();
     }
   }
+
+  public NewConversationComponent = (props: RouteComponentProps<IParams>) => {
+    return (
+      <NewConversation
+        {...props}
+        student={this.props.student}
+        sections={this.props.sections}
+      />
+    );
+  };
+
   public render() {
     return (
       <React.Fragment>
@@ -74,15 +89,7 @@ class InstructorConversations extends React.Component<IProps, any> {
 
             <Route
               path="/sections/:section_id/students/:student_id/conversations/new"
-              render={props => {
-                return (
-                  <NewConversation
-                    {...props}
-                    student={this.props.student}
-                    sections={this.props.sections}
-                  />
-                );
-              }}
+              render={this.NewConversationComponent}
             />
           </div>
 
