@@ -52,6 +52,7 @@ class NewStudent extends React.Component<IProps, any> {
         <div className="messages-list">
           <label htmlFor="username">
             <input
+              autoComplete="new-username"
               onChange={this.handleChange}
               value={this.state.username}
               type="text"
@@ -61,6 +62,7 @@ class NewStudent extends React.Component<IProps, any> {
           </label>
           <label htmlFor="password">
             <input
+              autoComplete="new-password"
               onChange={this.handleChange}
               value={this.state.password}
               type="text"
@@ -77,7 +79,6 @@ class NewStudent extends React.Component<IProps, any> {
           />
           <button>Clear</button>
           <button onClick={this.handleSubmit}>Submit</button>
-          )}
         </div>
       </React.Fragment>
     );
