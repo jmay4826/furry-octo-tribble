@@ -25,14 +25,13 @@ class NewSection extends React.Component<IProps, any> {
   }
 
   public handleFile = (e: React.SyntheticEvent<HTMLInputElement>) => {
-    // let data;
     if (e.currentTarget.files) {
       Papa.parse(e.currentTarget.files[0], {
         header: true,
         skipEmptyLines: true,
         complete: result => {
-          console.log(result.data);
-          this.setState({ data: result.data });
+          const data = _.groupBy(result.data, "section");
+          this.setState({ data });
         }
       });
     }
@@ -44,23 +43,11 @@ class NewSection extends React.Component<IProps, any> {
     this.setState({ [name]: value });
 
   public handleSubmit = () => {
-    // const { username, password, email } = this.state;
-    // if (this.props.section) {
-    //   const {
-    //     section: { section_id }
-    //   } = this.props;
-    //   Axios.post("/api/students", {
-    //     email,
-    //     password,
-    //     section_id,
-    //     username
-    //   }).then(response =>
-    //     this.props.history.push(
-    //       `/sections/${this.props.match.params.section_id}`
-    //     )
-    //   );
-    // }
-    Axios.post("/api/sections/", this.state.data);
+    Axios.post("/api/sections/", this.state.data, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
   };
   public render() {
     return (
@@ -69,9 +56,9 @@ class NewSection extends React.Component<IProps, any> {
         <div
           className="messages-list"
           style={{
+            alignItems: "center",
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center"
+            flexDirection: "column"
           }}
         >
           <label htmlFor="upload">
