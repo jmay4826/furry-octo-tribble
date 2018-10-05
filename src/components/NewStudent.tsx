@@ -31,12 +31,18 @@ class NewStudent extends React.Component<IProps, any> {
       const {
         section: { section_id }
       } = this.props;
-      Axios.post("/api/students", {
-        email,
-        password,
-        section_id,
-        username
-      }).then(response =>
+      Axios.post(
+        "/api/students",
+        {
+          email,
+          password,
+          section_id,
+          username
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        }
+      ).then(response =>
         this.props.history.push(
           `/sections/${this.props.match.params.section_id}`
         )
