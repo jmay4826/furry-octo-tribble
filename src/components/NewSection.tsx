@@ -18,9 +18,9 @@ class NewSection extends React.Component<IProps, any> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      email: "",
-      password: "",
-      username: ""
+      data: undefined,
+      sections: [],
+      students: 0
     };
   }
 
@@ -31,7 +31,11 @@ class NewSection extends React.Component<IProps, any> {
         skipEmptyLines: true,
         complete: result => {
           const data = _.groupBy(result.data, "section");
-          this.setState({ data });
+          const sections = Object.keys(data);
+          const students = sections
+            .map(section => data[section].length)
+            .reduce((acc, cur) => acc + cur);
+          this.setState({ data, sections, students });
         }
       });
     }
@@ -71,7 +75,14 @@ class NewSection extends React.Component<IProps, any> {
             />
           </label>
           <p>Upload section and student information</p>
-          <p>or</p>
+          <p>{this.state.sections.length} sections</p>
+          <p>{this.state.students} students total</p>
+          <p>
+            You can upload a CSV file with student information. Make sure the
+            columns are:
+          </p>
+          <p>firstname | lastname | email | password | section </p>
+          {/* <p>or</p>
           <p>Create an empty section</p>
           <label htmlFor="name">
             <input
@@ -93,7 +104,7 @@ class NewSection extends React.Component<IProps, any> {
               placeholder="description"
             />
           </label>
-          <button>Clear</button>
+          <button>Clear</button> */}
           <button onClick={this.handleSubmit}>Submit</button>
         </div>
       </React.Fragment>
