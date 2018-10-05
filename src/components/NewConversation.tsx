@@ -78,9 +78,15 @@ class NewConversation extends React.Component<IProps, IState> {
 
   public addConversation = async () => {
     try {
-      await Axios.post("/api/conversations", {
-        users: [...this.state.students, this.props.student]
-      });
+      await Axios.post(
+        "/api/conversations",
+        {
+          users: [...this.state.students, this.props.student]
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        }
+      );
     } catch (e) {
       // tslint:disable-next-line:no-console
       console.log(e);
