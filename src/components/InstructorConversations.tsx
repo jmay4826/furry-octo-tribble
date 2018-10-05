@@ -12,7 +12,7 @@ interface IParams {
 
 interface IProps extends RouteComponentProps<IParams> {
   sections: ISection[];
-  student?: { username: string; user_id: number };
+  student?: { first_name: string; last_name: string; user_id: number };
 }
 
 class InstructorConversations extends React.Component<IProps, any> {
@@ -69,7 +69,9 @@ class InstructorConversations extends React.Component<IProps, any> {
           {!this.state.conversations.length &&
             !this.state.loading &&
             `No conversations yet for ${
-              this.props.student ? this.props.student.username : "this student"
+              this.props.student
+                ? this.props.student.first_name
+                : "this student"
             }`}
           {this.state.loading && "Loading conversations..."}
           {!!this.state.conversations.length &&

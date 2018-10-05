@@ -10,7 +10,8 @@ interface IParams {
 }
 
 interface IStudent {
-  username: string;
+  first_name: string;
+  last_name: string;
   user_id: number;
 }
 
@@ -48,7 +49,8 @@ class NewConversation extends React.Component<IProps, IState> {
     this.setState({
       student: {
         user_id: +e.currentTarget.value,
-        username: e.currentTarget.selectedOptions[0].label
+        first_name: e.currentTarget.selectedOptions[0].label,
+        last_name: "none"
       }
     });
   };
@@ -98,7 +100,7 @@ class NewConversation extends React.Component<IProps, IState> {
       <div>
         <div>
           <h3>Participants ({this.state.students.length + 1})</h3>
-          {this.props.student && this.props.student.username}
+          {this.props.student && this.props.student.first_name}
           {this.state.students.length ? ", " : " "}
           {this.state.students.map((student, i, arr) => (
             <button
@@ -108,8 +110,8 @@ class NewConversation extends React.Component<IProps, IState> {
             >
               <span className="hidden">x</span>
               {i !== arr.length - 1
-                ? student.username + ", "
-                : student.username + " "}
+                ? student.first_name + ", "
+                : student.first_name + " "}
             </button>
           ))}
           and
@@ -136,7 +138,7 @@ class NewConversation extends React.Component<IProps, IState> {
                 <option value="0">Student</option>
                 {this.state.section.students.map(student => (
                   <option key={student.user_id} value={student.user_id}>
-                    {student.username}
+                    {student.first_name}
                   </option>
                 ))}
               </select>

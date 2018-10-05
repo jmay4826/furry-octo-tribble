@@ -15,7 +15,8 @@ interface IMessage {
 interface ISection {
   students: Array<{
     user_id: number;
-    username: string;
+    first_name: string;
+    last_name: string;
   }>;
   section_id: number;
   name: string;

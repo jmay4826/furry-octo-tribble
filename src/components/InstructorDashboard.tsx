@@ -131,7 +131,7 @@ class InstructorDashboard extends React.Component<
                     }`}
                   >
                     <p className="conversation-preview-users">
-                      {student.username}
+                      {student.first_name} {student.last_name}
                     </p>
                     {/* TODO: 
                       * Add number of conversations?
