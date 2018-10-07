@@ -27,9 +27,6 @@ class Conversations extends React.Component<IProps, IState> {
   public async componentDidMount() {
     this.socket = io();
     this.getConversations();
-
-    // TODO:
-    // Update conversations when a new messages comes in
   }
 
   public getConversations = async () => {
@@ -69,6 +66,7 @@ class Conversations extends React.Component<IProps, IState> {
           key={props.match.params.conversation_id + "messages"}
           {...props}
           socket={this.socket}
+          refreshConversations={this.getConversations}
         />
         <NewMessage
           key={props.match.params.conversation_id + "newMessage"}

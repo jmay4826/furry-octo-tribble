@@ -3,6 +3,7 @@ import { RouteComponentProps } from "react-router";
 import { Message } from "./Message";
 
 interface IProps extends RouteComponentProps<{ conversation_id: string }> {
+  refreshConversations: () => void;
   socket: SocketIOClient.Socket;
 }
 
@@ -46,6 +47,7 @@ class Messages extends React.Component<IProps, IState> {
         this.setState({ messages, loading: false, current_user }, () => {
           this.container.scrollTo(0, this.messagesBottom.offsetTop);
         });
+        this.props.refreshConversations();
       }
     );
 
@@ -85,11 +87,7 @@ class Messages extends React.Component<IProps, IState> {
         </div>
         <div ref={this.createContainerRef} className="messages-list">
           {this.state.messages.map(message => (
-            <Message
-              key={message.message_id}
-              {...message}
-              current_user={this.state.current_user}
-            />
+            <Message key={message.message_id} {...message} />
           ))}
 
           <div
