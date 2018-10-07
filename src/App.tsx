@@ -4,8 +4,8 @@ import {
   BrowserRouter as Router,
   Redirect,
   Route,
-  RouteComponentProps,
-  Switch
+  RouteComponentProps
+  // Switch
 } from "react-router-dom";
 import "./App.css";
 import { Conversations } from "./components/Conversations";
@@ -14,14 +14,23 @@ import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { SignUp } from "./components/SignUp";
 import { PrivateRoute } from "./PrivateRoute";
+import { Navbar } from "./components/Navbar";
 
-class App extends React.Component<any, any> {
+const { Provider } = React.createContext({} as IDecodedUser);
+
+interface IState {
+  user?: IDecodedUser;
+  error: string;
+  loading: boolean;
+}
+
+class App extends React.Component<{}, IState> {
   constructor(props: any) {
     super(props);
     this.state = {
       error: "",
       loading: true,
-      role: ""
+      user: undefined
     };
   }
 
@@ -36,22 +45,22 @@ class App extends React.Component<any, any> {
 
   public checkAuth = async (token: string) => {
     try {
-      const { data: role } = await Axios.get("/auth/me", {
+      const { data: user } = await Axios.get("/auth/me", {
         headers: { Authorization: `Bearer ${token}` }
       });
-      this.setState({ role, loading: false });
+      this.setState({ user, loading: false });
     } catch (e) {
       if (e.response.status !== 401) {
-        this.setState({ error: "An unknown error occurred" });
+        this.setState({ error: "An unknown error occurred", loading: false });
       } else {
         this.setState({ loading: false });
       }
     }
   };
 
-  public loginComponent = (props: RouteComponentProps) => (
-    <Login {...props} handleLogin={this.handleLogin} />
-  );
+  public loginComponent = (props: RouteComponentProps) => {
+    return <Login {...props} handleLogin={this.handleLogin} />;
+  };
   public logoutComponent = () => <Logout logout={this.handleLogout} />;
 
   public handleLogin = (token: string) => {
@@ -60,7 +69,7 @@ class App extends React.Component<any, any> {
   };
 
   public handleLogout = () => {
-    this.setState({ error: "", role: "" });
+    this.setState({ error: "", user: undefined });
   };
 
   public render() {
@@ -69,62 +78,62 @@ class App extends React.Component<any, any> {
         {!!this.state.error && <p>{this.state.error}</p>}
 
         <Router>
-          <Switch>
+          <div>
             <Route path="/signup" component={SignUp} />
             <Route path="/login" render={this.loginComponent} />
             <Route path="/logout" render={this.logoutComponent} />
-
-            <PrivateRoute
-              role={this.state.role}
-              path="/conversations/:conversation_id"
-              component={Conversations}
-              authenticated={!!this.state.role}
-              loading={this.state.loading}
-            />
-            <PrivateRoute
-              role={this.state.role}
-              authenticated={!!this.state.role}
-              path="/conversations"
-              component={Conversations}
-              loading={this.state.loading}
-            />
-            <PrivateRoute
-              role={this.state.role}
-              authenticated={this.state.role === "instructor"}
-              path="/sections/:section_id/students/:student_id"
-              component={InstructorDashboard}
-              loading={this.state.loading}
-            />
-            <PrivateRoute
-              role={this.state.role}
-              authenticated={this.state.role === "instructor"}
-              path="/sections/:section_id"
-              component={InstructorDashboard}
-              loading={this.state.loading}
-            />
-            <PrivateRoute
-              role={this.state.role}
-              authenticated={this.state.role === "instructor"}
-              path="/sections"
-              component={InstructorDashboard}
-              loading={this.state.loading}
-            />
-            {/* <PrivateRoute
-              authenticated={!!this.state.role}
+            {this.state.user && (
+              <Provider value={this.state.user}>
+                <div className="container">
+                  <Navbar role={this.state.user.role} />
+                  <div style={{ flexGrow: 1 }}>
+                    <PrivateRoute
+                      path="/conversations/:conversation_id"
+                      component={Conversations}
+                      authenticated={!!this.state.user.role}
+                    />
+                    <PrivateRoute
+                      authenticated={!!this.state.user.role}
+                      path="/conversations"
+                      component={Conversations}
+                    />
+                    <PrivateRoute
+                      authenticated={this.state.user.role === "instructor"}
+                      path="/sections/:section_id/students/:student_id"
+                      component={InstructorDashboard}
+                    />
+                    <PrivateRoute
+                      authenticated={this.state.user.role === "instructor"}
+                      path="/sections/:section_id"
+                      component={InstructorDashboard}
+                    />
+                    <PrivateRoute
+                      authenticated={this.state.user.role === "instructor"}
+                      path="/sections"
+                      component={InstructorDashboard}
+                    />
+                    {/* <PrivateRoute
+              authenticated={!!this.state.user.role}
               path="/profile"
               component={() => <h1>Coming soon</h1>}
-              loading={this.state.loading}
+              
             /> */}
-
+                  </div>
+                </div>
+              </Provider>
+            )}
+            }
             <Route
               path="/"
               render={
-                this.state.role
-                  ? props => <Redirect to="/conversations" />
-                  : this.loginComponent
+                this.state.loading
+                  ? props => "Loading"
+                  : props => (
+                      <Redirect to={this.state.user ? "/sections" : "/login"} />
+                    )
               }
             />
-          </Switch>
+          </div>
         </Router>
       </React.Fragment>
     );

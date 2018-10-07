@@ -4,13 +4,15 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Axios from "axios";
 import * as React from "react";
-import { Redirect, RouteComponentProps } from "react-router";
+import {
+  // Redirect,
+  RouteComponentProps
+} from "react-router";
 
 interface IState {
-  username: string;
+  email: string;
   password: string;
   error: string;
-  loggedIn: boolean;
 }
 
 interface IProps extends RouteComponentProps {
@@ -18,10 +20,9 @@ interface IProps extends RouteComponentProps {
 }
 
 const initialState = {
+  email: "",
   error: "",
-  loggedIn: false,
-  password: "",
-  username: ""
+  password: ""
 };
 
 class Login extends React.Component<IProps, IState> {
@@ -30,9 +31,9 @@ class Login extends React.Component<IProps, IState> {
     this.state = initialState;
   }
 
-  public handleUsername = ({
+  public handleEmail = ({
     target: { value }
-  }: React.ChangeEvent<HTMLInputElement>) => this.setState({ username: value });
+  }: React.ChangeEvent<HTMLInputElement>) => this.setState({ email: value });
 
   public handlePassword = ({
     target: { value }
@@ -43,17 +44,16 @@ class Login extends React.Component<IProps, IState> {
       const {
         data: { token }
       }: { data: { token: string } } = await Axios.post("/auth/login", {
-        password: this.state.password,
-        username: this.state.username
+        email: this.state.email,
+        password: this.state.password
       });
 
       localStorage.setItem("token", token);
       this.props.handleLogin(token);
-      this.setState({ loggedIn: true });
     } catch (err) {
       let error: string;
       if (err.response.status === 401) {
-        error = "Incorrect username or password. Please try again.";
+        error = "Incorrect email or password. Please try again.";
       } else {
         error = "An unknown error occurred. Please try again.";
       }
@@ -62,9 +62,7 @@ class Login extends React.Component<IProps, IState> {
   };
 
   public render() {
-    return this.state.loggedIn ? (
-      <Redirect to="/conversations" push={true} />
-    ) : (
+    return (
       <Paper
         style={{
           alignItems: "center",
@@ -75,23 +73,23 @@ class Login extends React.Component<IProps, IState> {
       >
         <h2>Login</h2>
         <TextField
-          placeholder="Username"
-          onChange={this.handleUsername}
-          name="username"
+          placeholder="Email Address"
+          onChange={this.handleEmail}
+          name="email"
           type="text"
-          value={this.state.username}
+          value={this.state.email}
         />
 
         <TextField
           placeholder="Passsword"
-          type="pasword"
+          type="password"
           onChange={this.handlePassword}
           name="password"
           value={this.state.password}
         />
 
         <Button onClick={this.handleSubmit}>Submit</Button>
-        <h3>Don't have a username? Ask your instructor</h3>
+        <h3>Don't have a email? Ask your instructor</h3>
         {this.state.error && (
           <Typography color="error">{this.state.error}</Typography>
         )}

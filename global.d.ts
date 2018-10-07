@@ -1,3 +1,11 @@
+interface IDecodedUser {
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: "student" | "instructor";
+  id: number;
+}
+
 interface IConversation {
   id: number;
   sent_at: string;
@@ -6,6 +14,7 @@ interface IConversation {
 
 interface IMessage {
   content: string;
+  from_id: number;
   from_username: string;
   message_id: number;
   sent_at: string;
