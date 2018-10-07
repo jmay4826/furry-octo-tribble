@@ -1,6 +1,7 @@
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
+import { RouteComponentProps } from "react-router";
 import { AccentButtons, defaultAccents as accents } from "./AccentButtons";
 
 interface IState {
@@ -12,8 +13,7 @@ interface IState {
   value: string;
 }
 
-interface IProps {
-  conversation_id: string;
+interface IProps extends RouteComponentProps<{ conversation_id: string }> {
   socket: SocketIOClient.Socket;
 }
 
@@ -94,7 +94,7 @@ class NewMessage extends React.Component<IProps, IState> {
     if (this.state.value) {
       this.props.socket.emit("message sent", {
         content: this.state.value,
-        conversation_id: this.props.conversation_id
+        conversation_id: this.props.match.params.conversation_id
       });
       this.setState({ ...initialState, sendOnEnter: this.state.sendOnEnter });
     } else {

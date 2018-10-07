@@ -1,8 +1,8 @@
 import * as React from "react";
+import { RouteComponentProps } from "react-router";
 import { Message } from "./Message";
 
-interface IProps {
-  conversation_id: string;
+interface IProps extends RouteComponentProps<{ conversation_id: string }> {
   socket: SocketIOClient.Socket;
 }
 
@@ -31,7 +31,7 @@ class Messages extends React.Component<IProps, IState> {
 
   public componentDidMount() {
     this.props.socket.emit("authenticate", {
-      conversation_id: this.props.conversation_id,
+      conversation_id: this.props.match.params.conversation_id,
       token: localStorage.getItem("token")
     });
     this.props.socket.on(
@@ -56,14 +56,9 @@ class Messages extends React.Component<IProps, IState> {
     });
   }
 
-  public componentDidUpdate(prevProps: IProps) {
-    if (prevProps.conversation_id !== this.props.conversation_id) {
-      this.setState({ messages: [], loading: true });
-      this.props.socket.emit("authenticate", {
-        conversation_id: this.props.conversation_id,
-        token: localStorage.getItem("token")
-      });
-    }
+  public componentWillUnmount() {
+    this.props.socket.off("new message");
+    this.props.socket.off("unauthorized");
   }
 
   public createContainerRef = (element: HTMLDivElement) =>

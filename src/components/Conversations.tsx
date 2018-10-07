@@ -1,6 +1,6 @@
 import Axios from "axios";
 import * as React from "react";
-import { Redirect, RouteComponentProps } from "react-router";
+import { Redirect, Route, RouteComponentProps } from "react-router";
 import * as io from "socket.io-client";
 import { ConversationPreview } from "./ConversationPreview";
 import { Messages } from "./Messages";
@@ -26,6 +26,13 @@ class Conversations extends React.Component<IProps, IState> {
 
   public async componentDidMount() {
     this.socket = io();
+    this.getConversations();
+
+    // TODO:
+    // Update conversations when a new messages comes in
+  }
+
+  public getConversations = async () => {
     try {
       const {
         data: { conversations }
@@ -39,10 +46,7 @@ class Conversations extends React.Component<IProps, IState> {
     } catch (e) {
       this.setState({ error: "Error" });
     }
-
-    // TODO:
-    // Update conversations when a new messages comes in
-  }
+  };
 
   public componentWillUnmount() {
     if (this.socket) {
@@ -56,9 +60,35 @@ class Conversations extends React.Component<IProps, IState> {
     target: { value: filter }
   }: React.ChangeEvent<HTMLInputElement>) => this.setState({ filter });
 
+  public renderConversation = (
+    props: RouteComponentProps<{ conversation_id: string }>
+  ) =>
+    this.socket ? (
+      <div className="messages-container">
+        <Messages
+          key={props.match.params.conversation_id + "messages"}
+          {...props}
+          socket={this.socket}
+        />
+        <NewMessage
+          key={props.match.params.conversation_id + "newMessage"}
+          {...props}
+          socket={this.socket}
+        />
+      </div>
+    ) : (
+      "Loading"
+    );
+
   public render() {
     return this.state.error ? (
       <p>{this.state.error}</p>
+    ) : this.state.conversations.length &&
+    !this.props.match.params.conversation_id ? (
+      <Redirect
+        push={true}
+        to={`/conversations/${this.state.conversations[0].id}`}
+      />
     ) : (
       <div className="conversations-container">
         <div className="conversations-list-container">
@@ -85,29 +115,11 @@ class Conversations extends React.Component<IProps, IState> {
             ))}
           </div>
         </div>
-        {/* Can this be accomplished with Route ...render? */}
-        {this.props.match.params.conversation_id ? (
-          this.socket && (
-            <div className="messages-container">
-              <Messages
-                socket={this.socket}
-                conversation_id={this.props.match.params.conversation_id}
-              />
-              <NewMessage
-                socket={this.socket}
-                conversation_id={this.props.match.params.conversation_id}
-              />
-            </div>
-          )
-        ) : (
-          <Redirect
-            to={`/conversations/${
-              this.state.conversations.length
-                ? this.state.conversations[0].id
-                : ""
-            }`}
-          />
-        )}
+
+        <Route
+          path="/conversations/:conversation_id"
+          render={this.renderConversation}
+        />
       </div>
     );
   }
