@@ -8,11 +8,11 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import { Conversations } from "./components/Conversations";
-import { InstructorDashboard } from "./components/InstructorDashboard";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { Navbar } from "./components/Navbar";
 import { PrivateRoute } from "./components/PrivateRoute";
+import { Sections } from "./components/Sections";
 import { SignUp } from "./components/SignUp";
 
 export const UserContext = React.createContext({} as IDecodedUser);
@@ -95,17 +95,18 @@ class App extends React.Component<{}, IState> {
                 <div className="container">
                   <Navbar role={this.state.user.role} />
                   <div style={{ flexGrow: 1 }}>
-                    <PrivateRoute
-                      path="/conversations/:conversation_id?"
-                      component={Conversations}
-                      authenticated={!!this.state.user.role}
-                    />
-                    <PrivateRoute
-                      authenticated={this.state.user.role === "instructor"}
-                      path="/sections/:section_id/students/:student_id"
-                      component={InstructorDashboard}
-                    />
-                    <PrivateRoute
+                    <div className="conversations-container">
+                      <PrivateRoute
+                        path="/conversations/:conversation_id?"
+                        component={Conversations}
+                        authenticated={!!this.state.user.role}
+                      />
+                      <PrivateRoute
+                        authenticated={this.state.user.role === "instructor"}
+                        path="/sections/:section_id?/(students)?/:student_id?"
+                        component={Sections}
+                      />
+                      {/* <PrivateRoute
                       authenticated={this.state.user.role === "instructor"}
                       path="/sections/:section_id"
                       component={InstructorDashboard}
@@ -114,13 +115,14 @@ class App extends React.Component<{}, IState> {
                       authenticated={this.state.user.role === "instructor"}
                       path="/sections"
                       component={InstructorDashboard}
-                    />
-                    {/* <PrivateRoute
+                    /> */}
+                      {/* <PrivateRoute
               authenticated={!!this.state.user.role}
               path="/profile"
               component={() => <h1>Coming soon</h1>}
               
             /> */}
+                    </div>
                   </div>
                 </div>
               </UserContext.Provider>

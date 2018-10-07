@@ -95,7 +95,7 @@ class Conversations extends React.Component<IProps, IState> {
         to={`/conversations/${this.state.conversations[0].id}`}
       />
     ) : (
-      <div className="conversations-container">
+      <React.Fragment>
         <div className="conversations-list-container">
           <input
             type="text"
@@ -125,7 +125,7 @@ class Conversations extends React.Component<IProps, IState> {
           path="/conversations/:conversation_id"
           render={this.renderConversation}
         />
-      </div>
+      </React.Fragment>
     );
   }
 }

@@ -16,6 +16,7 @@ h5 {
   font-family: "Varela Round";
   padding: 0;
   margin: 10px;
+  flex-grow: 1;
 }
 
 p {
@@ -313,4 +314,11 @@ textarea {
   align-self: center;
   color: rgba(0, 0, 0, 0.5);
   font-size: 0.9em;
+}
+
+.header-link {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
 }

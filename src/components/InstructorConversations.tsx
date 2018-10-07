@@ -75,7 +75,11 @@ class InstructorConversations extends React.Component<IProps, any> {
             }`}
           {this.state.loading && "Loading conversations..."}
           {!!this.state.conversations.length &&
-            `Conversations for ${this.state.conversations[0].current_user}`}
+            `Conversations for ${
+              this.props.student
+                ? this.props.student.first_name
+                : "this student"
+            }`}
         </div>
         <div className="messages-list">
           <div className="conversation-preview">
