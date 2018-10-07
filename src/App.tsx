@@ -12,8 +12,8 @@ import { InstructorDashboard } from "./components/InstructorDashboard";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { Navbar } from "./components/Navbar";
+import { PrivateRoute } from "./components/PrivateRoute";
 import { SignUp } from "./components/SignUp";
-import { PrivateRoute } from "./PrivateRoute";
 
 export const UserContext = React.createContext({} as IDecodedUser);
 
