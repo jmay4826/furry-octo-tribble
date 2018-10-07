@@ -11,23 +11,23 @@ interface IState {
   error: string;
   loading: boolean;
   messages: IMessage[];
-  current_user: string;
 }
 
 const initialState = {
-  current_user: "",
   error: "",
   loading: true,
   messages: []
 };
 
 class Messages extends React.Component<IProps, IState> {
-  public container: HTMLDivElement;
-  public messagesBottom: HTMLDivElement;
+  public container: React.RefObject<HTMLDivElement>;
+  public messagesBottom: React.RefObject<HTMLDivElement>;
 
   constructor(props: IProps) {
     super(props);
     this.state = initialState;
+    this.container = React.createRef();
+    this.messagesBottom = React.createRef();
   }
 
   public componentDidMount() {
@@ -35,38 +35,33 @@ class Messages extends React.Component<IProps, IState> {
       conversation_id: this.props.match.params.conversation_id,
       token: localStorage.getItem("token")
     });
-    this.props.socket.on(
-      "new message",
-      ({
-        messages,
-        current_user
-      }: {
-        messages: IMessage[];
-        current_user: string;
-      }) => {
-        this.setState({ messages, loading: false, current_user }, () => {
-          this.container.scrollTo(0, this.messagesBottom.offsetTop);
-        });
-        this.props.refreshConversations();
-      }
-    );
+    this.props.socket.on("new message", this.handleMessage);
 
-    this.props.socket.on("unauthorized", () => {
-      this.setState({
-        error: "Could not load messages. Please try logging in again."
-      });
-    });
+    this.props.socket.on("unauthorized", this.handleUnauthorized);
   }
+
+  public handleUnauthorized = () => {
+    this.setState({
+      error: "Could not load messages. Please try logging in again."
+    });
+  };
+
+  public handleMessage = (messages: IMessage[]) => {
+    this.setState({ messages, loading: false }, () => {
+      if (this.container.current && this.messagesBottom.current) {
+        this.container.current.scrollTo(
+          0,
+          this.messagesBottom.current.offsetTop
+        );
+      }
+    });
+    this.props.refreshConversations();
+  };
 
   public componentWillUnmount() {
     this.props.socket.off("new message");
     this.props.socket.off("unauthorized");
   }
-
-  public createContainerRef = (element: HTMLDivElement) =>
-    (this.container = element);
-  public createBottomRef = (element: HTMLDivElement) =>
-    (this.messagesBottom = element);
 
   public render() {
     return this.state.error ? (
@@ -85,14 +80,12 @@ class Messages extends React.Component<IProps, IState> {
               ""
             )}
         </div>
-        <div ref={this.createContainerRef} className="messages-list">
+        <div ref={this.container} className="messages-list">
           {this.state.messages.map(message => (
             <Message key={message.message_id} {...message} />
           ))}
 
-          <div
-            ref={(element: HTMLDivElement) => (this.messagesBottom = element)}
-          />
+          <div ref={this.messagesBottom} />
         </div>
       </React.Fragment>
     );
