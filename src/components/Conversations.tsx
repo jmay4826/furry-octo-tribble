@@ -63,6 +63,10 @@ class Conversations extends React.Component<IProps, IState> {
     this.socket ? (
       <div className="messages-container">
         <Messages
+          /** Adding a key causes React to unmount the component
+           * instead of using componentDidUpdate to change content
+           * per https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#recommendation-fully-uncontrolled-component-with-a-key
+           */
           key={props.match.params.conversation_id + "messages"}
           {...props}
           socket={this.socket}

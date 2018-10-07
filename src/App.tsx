@@ -57,9 +57,16 @@ class App extends React.Component<{}, IState> {
     }
   };
 
-  public loginComponent = (props: RouteComponentProps) => (
-    <Login {...props} handleLogin={this.handleLogin} />
-  );
+  public loginComponent = (props: RouteComponentProps) =>
+    this.state.user ? (
+      <Redirect
+        to={
+          this.state.user.role === "instructor" ? "/sections" : "/conversations"
+        }
+      />
+    ) : (
+      <Login {...props} handleLogin={this.handleLogin} />
+    );
 
   public logoutComponent = () => <Logout logout={this.handleLogout} />;
 
