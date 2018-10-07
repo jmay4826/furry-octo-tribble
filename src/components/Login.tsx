@@ -1,13 +1,6 @@
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 import Axios from "axios";
 import * as React from "react";
-import {
-  // Redirect,
-  RouteComponentProps
-} from "react-router";
+import { RouteComponentProps } from "react-router";
 
 interface IState {
   email: string;
@@ -63,7 +56,8 @@ class Login extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <Paper
+      <div
+        className="conversation-preview selected"
         style={{
           alignItems: "center",
           display: "flex",
@@ -72,7 +66,7 @@ class Login extends React.Component<IProps, IState> {
         }}
       >
         <h2>Login</h2>
-        <TextField
+        <input
           placeholder="Email Address"
           onChange={this.handleEmail}
           name="email"
@@ -80,7 +74,7 @@ class Login extends React.Component<IProps, IState> {
           value={this.state.email}
         />
 
-        <TextField
+        <input
           placeholder="Passsword"
           type="password"
           onChange={this.handlePassword}
@@ -88,12 +82,10 @@ class Login extends React.Component<IProps, IState> {
           value={this.state.password}
         />
 
-        <Button onClick={this.handleSubmit}>Submit</Button>
-        <h3>Don't have a email? Ask your instructor</h3>
-        {this.state.error && (
-          <Typography color="error">{this.state.error}</Typography>
-        )}
-      </Paper>
+        <button onClick={this.handleSubmit}>Submit</button>
+        <h3>Don't have a login? Ask your instructor</h3>
+        {this.state.error && <p color="error">{this.state.error}</p>}
+      </div>
     );
   }
 }
