@@ -60,6 +60,7 @@ class App extends React.Component<{}, IState> {
   public loginComponent = (props: RouteComponentProps) =>
     this.state.user ? (
       <Redirect
+        push={true}
         to={
           this.state.user.role === "instructor" ? "/sections" : "/conversations"
         }
@@ -132,7 +133,14 @@ class App extends React.Component<{}, IState> {
                 this.state.loading
                   ? props => "Loading"
                   : props => (
-                      <Redirect to={this.state.user ? "/sections" : "/login"} />
+                      <Redirect
+                        to={
+                          this.state.user &&
+                          this.state.user.role === "instructor"
+                            ? "/sections"
+                            : "/login"
+                        }
+                      />
                     )
               }
             />
