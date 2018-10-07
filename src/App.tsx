@@ -88,14 +88,9 @@ class App extends React.Component<{}, IState> {
                   <Navbar role={this.state.user.role} />
                   <div style={{ flexGrow: 1 }}>
                     <PrivateRoute
-                      path="/conversations/:conversation_id"
+                      path="/conversations/:conversation_id?"
                       component={Conversations}
                       authenticated={!!this.state.user.role}
-                    />
-                    <PrivateRoute
-                      authenticated={!!this.state.user.role}
-                      path="/conversations"
-                      component={Conversations}
                     />
                     <PrivateRoute
                       authenticated={this.state.user.role === "instructor"}
@@ -124,6 +119,7 @@ class App extends React.Component<{}, IState> {
             )}
             }
             <Route
+              exact={true}
               path="/"
               render={
                 this.state.loading
