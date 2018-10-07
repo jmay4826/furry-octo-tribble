@@ -106,22 +106,6 @@ class App extends React.Component<{}, IState> {
                         path="/sections/:section_id?/(students)?/:student_id?"
                         component={Sections}
                       />
-                      {/* <PrivateRoute
-                      authenticated={this.state.user.role === "instructor"}
-                      path="/sections/:section_id"
-                      component={InstructorDashboard}
-                    />
-                    <PrivateRoute
-                      authenticated={this.state.user.role === "instructor"}
-                      path="/sections"
-                      component={InstructorDashboard}
-                    /> */}
-                      {/* <PrivateRoute
-              authenticated={!!this.state.user.role}
-              path="/profile"
-              component={() => <h1>Coming soon</h1>}
-              
-            /> */}
                     </div>
                   </div>
                 </div>
