@@ -51,7 +51,10 @@ class Conversations extends React.Component<IProps, IState> {
     }
   }
   public filter = (conversation: IConversation) =>
-    conversation.users.toString().indexOf(this.state.filter) !== -1;
+    conversation.users
+      .toString()
+      .toLowerCase()
+      .indexOf(this.state.filter.toLowerCase()) !== -1;
 
   public handleChange = ({
     target: { value: filter }
