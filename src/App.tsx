@@ -5,16 +5,15 @@ import {
   Redirect,
   Route,
   RouteComponentProps
-  // Switch
 } from "react-router-dom";
 import "./App.css";
 import { Conversations } from "./components/Conversations";
 import { InstructorDashboard } from "./components/InstructorDashboard";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
+import { Navbar } from "./components/Navbar";
 import { SignUp } from "./components/SignUp";
 import { PrivateRoute } from "./PrivateRoute";
-import { Navbar } from "./components/Navbar";
 
 const { Provider } = React.createContext({} as IDecodedUser);
 
@@ -58,9 +57,10 @@ class App extends React.Component<{}, IState> {
     }
   };
 
-  public loginComponent = (props: RouteComponentProps) => {
-    return <Login {...props} handleLogin={this.handleLogin} />;
-  };
+  public loginComponent = (props: RouteComponentProps) => (
+    <Login {...props} handleLogin={this.handleLogin} />
+  );
+
   public logoutComponent = () => <Logout logout={this.handleLogout} />;
 
   public handleLogin = (token: string) => {
