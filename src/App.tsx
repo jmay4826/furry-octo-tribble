@@ -15,7 +15,7 @@ import { Navbar } from "./components/Navbar";
 import { SignUp } from "./components/SignUp";
 import { PrivateRoute } from "./PrivateRoute";
 
-const { Provider } = React.createContext({} as IDecodedUser);
+export const UserContext = React.createContext({} as IDecodedUser);
 
 interface IState {
   user?: IDecodedUser;
@@ -83,7 +83,7 @@ class App extends React.Component<{}, IState> {
             <Route path="/login" render={this.loginComponent} />
             <Route path="/logout" render={this.logoutComponent} />
             {this.state.user && (
-              <Provider value={this.state.user}>
+              <UserContext.Provider value={this.state.user}>
                 <div className="container">
                   <Navbar role={this.state.user.role} />
                   <div style={{ flexGrow: 1 }}>
@@ -115,9 +115,9 @@ class App extends React.Component<{}, IState> {
             /> */}
                   </div>
                 </div>
-              </Provider>
+              </UserContext.Provider>
             )}
-            }
+
             <Route
               exact={true}
               path="/"
