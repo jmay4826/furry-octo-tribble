@@ -13,6 +13,7 @@ import { InstructorConversations } from "./InstructorConversations";
 import { NewSection } from "./NewSection";
 import { NewStudent } from "./NewStudent";
 import { SectionSelect } from "./SectionSelect";
+import { SectionOverview } from "./SectionOverview";
 
 interface IState {
   sections: ISection[];
@@ -142,25 +143,46 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
             sections={this.state.sections}
             handleSelect={this.handleSelect}
           />
-          <div className="header-link">
-            <h2>Students</h2>
-            <Link
-              to={`/sections/${
-                this.props.match.params.section_id
-              }/students/new`}
-            >
-              <FontAwesomeIcon
-                icon={faPlusSquare}
-                size="lg"
-                style={{ marginLeft: "10px" }}
-              />
-            </Link>
-          </div>
+          <Switch>
+            <Route path="/sections/new" render={undefined} />
+            <Route
+              path="/sections/:section_id/(students)?/:student_id?"
+              /* tslint:disable:jsx-no-lambda */
+              render={() => (
+                <div className="header-link">
+                  <h2>
+                    Students (
+                    {this.state.selectedSection &&
+                      this.state.selectedSection.students.length}
+                    )
+                  </h2>
+                  <Link
+                    to={`/sections/${
+                      this.props.match.params.section_id
+                    }/students/new`}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPlusSquare}
+                      size="lg"
+                      style={{ marginLeft: "10px" }}
+                    />
+                  </Link>
+                </div>
+              )}
+              /* tslint:enable:jsx-no-lambda */
+            />
+          </Switch>
+
           <div className="conversations-list">{this.renderStudents()}</div>
         </div>
         <div className="messages-container">
           <Switch>
             <Route path="/sections/new" component={NewSection} />
+            <Route
+              exact={true}
+              path="/sections/:section_id"
+              component={SectionOverview}
+            />
             <Route
               path="/sections/:section_id/students/new"
               render={this.renderNewStudent}
