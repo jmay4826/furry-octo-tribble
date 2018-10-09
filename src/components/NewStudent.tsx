@@ -1,3 +1,5 @@
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -10,38 +12,51 @@ interface IProps extends RouteComponentProps<IParams> {
   section?: ISection;
 }
 
-class NewStudent extends React.Component<IProps, any> {
+interface IState {
+  first_name: string;
+  last_name: string;
+  display_name: string;
+  password: string;
+  email: string;
+}
+
+const initialState = {
+  display_name: "",
+  email: "",
+  first_name: "",
+  last_name: "",
+  password: ""
+};
+
+class NewStudent extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = {
-      email: "",
-      password: "",
-      username: ""
-    };
+    this.state = initialState;
   }
 
-  public handleChange = ({
+  public handleChange = <T extends keyof IState>({
     currentTarget: { name, value }
   }: React.SyntheticEvent<HTMLInputElement>) =>
-    this.setState({ [name]: value });
+    this.setState({ [name]: value } as { [P in T]: IState[P] });
 
-  public handleSubmit = () => {
-    const { username, password, email } = this.state;
+  public handleSubmit = async () => {
+    const { first_name, last_name, display_name, password, email } = this.state;
     const { section_id } = this.props.match.params;
-    Axios.post(
+    await Axios.post(
       "/api/students",
       {
+        display_name,
         email,
+        first_name,
+        last_name,
         password,
-        section_id,
-        username
+        section_id
       },
       {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       }
-    ).then(response =>
-      this.props.history.push(`/sections/${this.props.match.params.section_id}`)
     );
+    this.props.history.push(`/sections/${this.props.match.params.section_id}`);
   };
   public render() {
     return (
@@ -50,14 +65,34 @@ class NewStudent extends React.Component<IProps, any> {
           Add a new student to {this.props.section && this.props.section.name}
         </div>
         <div className="messages-list">
-          <label htmlFor="username">
+          <label htmlFor="first_name">
             <input
               autoComplete="new-username"
               onChange={this.handleChange}
-              value={this.state.username}
+              value={this.state.first_name}
               type="text"
-              name="username"
-              placeholder="Username"
+              name="first_name"
+              placeholder="First Name"
+            />
+          </label>
+          <label htmlFor="last_name">
+            <input
+              autoComplete="new-username"
+              onChange={this.handleChange}
+              value={this.state.last_name}
+              type="text"
+              name="last_name"
+              placeholder="Last Name"
+            />
+          </label>
+          <label htmlFor="display_name">
+            <input
+              autoComplete="new-username"
+              onChange={this.handleChange}
+              value={this.state.display_name || this.state.first_name}
+              type="text"
+              name="display_name"
+              placeholder={"Display Name"}
             />
           </label>
           <label htmlFor="password">
@@ -77,8 +112,10 @@ class NewStudent extends React.Component<IProps, any> {
             name="email"
             placeholder="Email"
           />
-          <button>Clear</button>
-          <button onClick={this.handleSubmit}>Submit</button>
+          <button onClick={this.props.history.goBack}>Cancel</button>
+          <button onClick={this.handleSubmit}>
+            <FontAwesomeIcon icon={faArrowRight} />
+          </button>
         </div>
       </React.Fragment>
     );
