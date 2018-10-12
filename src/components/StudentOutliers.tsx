@@ -40,6 +40,7 @@ class StudentOutliers extends React.Component<IProps, IState> {
             maxHeight: this.state.expanded ? "100vh" : "0px"
           }}
         >
+          {this.props.children}
           {this.props.students.map(student => (
             <Link
               to={`/sections/${this.props.section_id}/students/${student.id}`}
