@@ -11,6 +11,7 @@ import { Conversations } from "./components/Conversations";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { Navbar } from "./components/Navbar";
+import { Privacy } from "./components/Privacy";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Sections } from "./components/Sections";
 import { SignUp } from "./components/SignUp";
@@ -90,6 +91,7 @@ class App extends React.Component<{}, IState> {
             <Route path="/signup" component={SignUp} />
             <Route path="/login" render={this.loginComponent} />
             <Route path="/logout" render={this.logoutComponent} />
+            <Route path="/privacy" component={Privacy} />
             {this.state.user && (
               <UserContext.Provider value={this.state.user}>
                 <div className="container">
