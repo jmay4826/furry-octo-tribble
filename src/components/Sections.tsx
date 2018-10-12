@@ -181,7 +181,9 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
             <Route
               exact={true}
               path="/sections/:section_id"
-              component={SectionOverview}
+              render={props => (
+                <SectionOverview {...props} sections={this.state.sections} />
+              )}
             />
             <Route
               path="/sections/:section_id/students/new"

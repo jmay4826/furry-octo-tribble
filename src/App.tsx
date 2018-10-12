@@ -11,10 +11,10 @@ import { Conversations } from "./components/Conversations";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { Navbar } from "./components/Navbar";
+import { Privacy } from "./components/Privacy";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Sections } from "./components/Sections";
 import { SignUp } from "./components/SignUp";
-import { Privacy } from "./components/Privacy";
 
 export const UserContext = React.createContext({} as IDecodedUser);
 
