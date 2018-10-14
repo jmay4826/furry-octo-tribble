@@ -10,6 +10,7 @@ interface IState {
   conversations: IConversation[];
   error?: string;
   filter: string;
+  loading: boolean;
 }
 interface IProps extends RouteComponentProps<{ conversation_id?: string }> {}
 
@@ -20,7 +21,8 @@ class Conversations extends React.Component<IProps, IState> {
     this.state = {
       conversations: [],
       error: undefined,
-      filter: ""
+      filter: "",
+      loading: true
     };
   }
 
@@ -39,9 +41,9 @@ class Conversations extends React.Component<IProps, IState> {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         }
       );
-      this.setState({ conversations });
+      this.setState({ conversations, loading: false });
     } catch (e) {
-      this.setState({ error: "Error" });
+      this.setState({ error: "Error", loading: false });
     }
   };
 
@@ -100,11 +102,11 @@ class Conversations extends React.Component<IProps, IState> {
           <input
             type="text"
             value={this.state.filter}
-            placeholder="Search by username"
+            placeholder="Filter by username"
             onChange={this.handleChange}
             className="filter"
           />
-          <h2>Messages</h2>
+          <h2>Messages ({this.state.conversations.length})</h2>
           <div className="conversations-list">
             {this.state.conversations.filter(this.filter).map(conversation => (
               <ConversationPreview
@@ -118,6 +120,18 @@ class Conversations extends React.Component<IProps, IState> {
                 }
               />
             ))}
+            {!this.state.loading &&
+              !this.state.conversations.length && (
+                <div className="conversation-preview" style={{}}>
+                  <p className="conversation-preview-users">
+                    No conversations yet!
+                  </p>
+                  <p className="conversation-preview-content">
+                    When your instructor assigns a partner to you, your messages
+                    will appear here. Check back soon!
+                  </p>
+                </div>
+              )}
           </div>
         </div>
 
