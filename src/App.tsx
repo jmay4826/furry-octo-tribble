@@ -97,8 +97,8 @@ class App extends React.Component<{}, IState> {
               {this.state.user && <Navbar role={this.state.user.role} />}
               <UserContext.Provider
                 value={{
-                  user: this.state.user as IDecodedUser,
-                  setUser: user => this.setState({ user })
+                  setUser: user => this.setState({ user }),
+                  user: this.state.user as IDecodedUser
                 }}
               >
                 <div style={{ flexGrow: 1 }}>
