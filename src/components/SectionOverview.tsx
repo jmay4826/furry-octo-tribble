@@ -3,7 +3,6 @@ import { shuffle } from "lodash";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { ConversationOutliers } from "./ConversationOutliers";
-import { SectionSelect } from "./SectionSelect";
 import { StudentOutliers } from "./StudentOutliers";
 
 interface IParams {
@@ -19,6 +18,8 @@ interface IState {
   noConversations: any[];
   noMessages: any[];
   selected?: ISection;
+  partners: any[];
+  unmatched: any[];
 }
 
 class SectionOverview extends React.Component<IProps, IState> {
@@ -27,7 +28,9 @@ class SectionOverview extends React.Component<IProps, IState> {
     this.state = {
       noActivity: [],
       noConversations: [],
-      noMessages: []
+      noMessages: [],
+      partners: [],
+      unmatched: []
     };
   }
 
@@ -63,50 +66,110 @@ class SectionOverview extends React.Component<IProps, IState> {
 
       const partners = this.state.noConversations.reduce(
         (acc, student, i) =>
-          selected[i]
-            ? [...acc, { a: student.id, b: selected[i].user_id }]
-            : acc,
+          selected[i] ? [...acc, { a: student, b: selected[i] }] : acc,
         []
       );
 
-      if (this.state.noConversations.length > selected.length) {
-        console.log(
-          this.state.noConversations.slice(
-            this.state.noConversations.length - 1
-          )
-        );
-      }
+      const unmatched = this.state.noConversations.slice(selected.length);
 
-      console.log(partners);
+      this.setState({ partners, unmatched });
     }
   };
 
+  public submit = async () => {
+    const result = await Axios.post(
+      "/api/conversations",
+      {
+        partners: this.state.partners,
+        section_id: this.props.match.params.section_id
+      },
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      }
+    );
+    console.log(result);
+  };
+
   public render() {
-    console.log(this.props.sections);
+    // console.log(this.props.sections);
     return (
       <div style={{ overflow: "auto", flexGrow: 1 }}>
         <StudentOutliers
           section_id={this.props.match.params.section_id}
-          students={this.state.noConversations}
+          students={
+            this.state.partners.length ? [] : this.state.noConversations
+          }
           header={`Students without conversations (${
             this.state.noConversations.length
           })`}
         >
-          <div>
-            <button style={{ display: "flex" }} onClick={this.handleClick}>
-              Randomly pair students with
-              <SectionSelect
-                handleSelect={this.handleSelect}
-                sections={this.props.sections}
-                value={
-                  this.state.selected
-                    ? this.state.selected.section_id.toString()
-                    : "section"
-                }
-              />
-            </button>
-          </div>
+          {!!this.state.partners.length &&
+            this.state.partners.map(partner => (
+              <div
+                key={partner.a.user_id}
+                className="conversation-preview"
+                style={{ width: "10vw" }}
+              >
+                <p className="conversation-preview-users">
+                  {partner.a.first_name} {partner.a.last_name}
+                </p>
+                <p className="conversation-preview-content">
+                  {partner.b.first_name} {partner.b.last_name}
+                </p>
+              </div>
+            ))}
+          {!!this.state.unmatched.length &&
+            this.state.unmatched.map(student => (
+              <div
+                key={student.user_id}
+                className="conversation-preview"
+                style={{ background: "yellow", width: "10vw" }}
+              >
+                <p className="conversation-preview-users">
+                  {student.first_name} {student.last_name}
+                </p>
+              </div>
+            ))}
         </StudentOutliers>
+        {!this.state.noConversations.length ? (
+          <div>All students have at least 1 conversation</div>
+        ) : (
+          <div
+            style={{
+              alignItems: "center",
+              display: "flex",
+
+              margin: "0 10%"
+            }}
+          >
+            Randomly pair students with
+            <select
+              style={{ marginBottom: "10px" }}
+              value={
+                this.state.selected
+                  ? this.state.selected.section_id.toString()
+                  : "Section"
+              }
+              onChange={this.handleSelect}
+            >
+              <option value="Section">Select a Section</option>
+              {this.props.sections
+                .filter(
+                  section =>
+                    section.section_id !== this.props.match.params.section_id
+                )
+                .map(section => (
+                  <option key={section.section_id} value={section.section_id}>
+                    {section.section_id}
+                  </option>
+                ))}
+            </select>
+            <button onClick={this.handleClick}>Preview</button>
+            {!!this.state.partners.length && (
+              <button onClick={this.submit}>Submit</button>
+            )}
+          </div>
+        )}
 
         <ConversationOutliers
           conversations={this.state.noMessages}

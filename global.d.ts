@@ -27,6 +27,7 @@ interface ISection {
     first_name: string;
     last_name: string;
     conversation_count: string;
+    message_count: string;
   }>;
   section_id: string;
   user_id: number;

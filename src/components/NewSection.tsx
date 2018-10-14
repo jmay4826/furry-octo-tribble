@@ -20,7 +20,8 @@ class NewSection extends React.Component<IProps, any> {
     this.state = {
       data: undefined,
       sections: [],
-      students: 0
+      students: 0,
+      bulk: false
     };
   }
 
@@ -65,47 +66,53 @@ class NewSection extends React.Component<IProps, any> {
             flexDirection: "column"
           }}
         >
-          <label htmlFor="upload">
-            <FontAwesomeIcon icon={faFileUpload} size="3x" />
-            <input
-              type="file"
-              name="upload"
-              accept=".csv"
-              onChange={this.handleFile}
-            />
-          </label>
-          <p>Upload section and student information</p>
-          <p>{this.state.sections.length} sections</p>
-          <p>{this.state.students} students total</p>
-          <p>
-            You can upload a CSV file with student information. Make sure the
-            columns are:
-          </p>
-          <p>firstname | lastname | email | password | section </p>
-          {/* <p>or</p>
-          <p>Create an empty section</p>
-          <label htmlFor="name">
-            <input
-              autoComplete="new-name"
-              onChange={this.handleChange}
-              value={this.state.name}
-              type="text"
-              name="name"
-              placeholder="name"
-            />
-          </label>
-          <label htmlFor="description">
-            <input
-              autoComplete="new-description"
-              onChange={this.handleChange}
-              value={this.state.description}
-              type="text"
-              name="description"
-              placeholder="description"
-            />
-          </label>
-          <button>Clear</button> */}
-          <button onClick={this.handleSubmit}>Submit</button>
+          {!this.state.bulk ? (
+            <React.Fragment>
+              <p>Create an empty section</p>
+              <label htmlFor="name">
+                <input
+                  autoComplete="new-name"
+                  onChange={this.handleChange}
+                  value={this.state.name}
+                  type="text"
+                  name="name"
+                  placeholder="Name (must be unique)"
+                />
+              </label>
+              <label htmlFor="description">
+                <input
+                  autoComplete="new-description"
+                  onChange={this.handleChange}
+                  value={this.state.description}
+                  type="text"
+                  name="description"
+                  placeholder="Section Description"
+                />
+              </label>
+              <button>Clear</button>
+              <button onClick={this.handleSubmit}>Submit</button>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <label htmlFor="upload">
+                <FontAwesomeIcon icon={faFileUpload} size="3x" />
+                <input
+                  type="file"
+                  name="upload"
+                  accept=".csv"
+                  onChange={this.handleFile}
+                />
+              </label>
+              <p>Upload section and student information</p>
+              <p>{this.state.sections.length} sections</p>
+              <p>{this.state.students} students total</p>
+              <p>
+                You can upload a CSV file with student information. Make sure
+                the columns are:
+              </p>
+              <p>firstname | lastname | email | password | section </p>
+            </React.Fragment>
+          )}
         </div>
       </React.Fragment>
     );

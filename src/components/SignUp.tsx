@@ -33,7 +33,7 @@ class SignUp extends React.Component<RouteComponentProps, any> {
     instructor: Yup.string().test(
       "instructor",
       "Instructor does not exist",
-      async value => (!value ? false : await this.debouncedInstructor(value))
+      async value => (!value ? true : await this.debouncedInstructor(value))
     ),
     last_name: Yup.string().required(),
     password: Yup.string()
@@ -46,7 +46,7 @@ class SignUp extends React.Component<RouteComponentProps, any> {
     section_id: Yup.string().test(
       "section_id",
       "Could not find section.",
-      async value => (!value ? false : await this.debouncedSection(value))
+      async value => (!value ? true : await this.debouncedSection(value))
     )
   });
 
@@ -121,6 +121,7 @@ class SignUp extends React.Component<RouteComponentProps, any> {
           {({ values, errors, resetForm }: any) => {
             return (
               <Form>
+                {JSON.stringify(errors)}
                 <div style={{ display: "flex" }}>
                   <Field
                     className="authentication"
