@@ -1,6 +1,7 @@
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Axios from "axios";
+import { sortBy } from "lodash";
 import * as React from "react";
 import {
   Link,
@@ -12,8 +13,8 @@ import {
 import { InstructorConversations } from "./InstructorConversations";
 import { NewSection } from "./NewSection";
 import { NewStudent } from "./NewStudent";
-import { SectionSelect } from "./SectionSelect";
 import { SectionOverview } from "./SectionOverview";
+import { SectionSelect } from "./SectionSelect";
 
 interface IState {
   sections: ISection[];
@@ -100,7 +101,7 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
 
   public renderStudents = () =>
     this.state.selectedSection &&
-    this.state.selectedSection.students.map(student => (
+    sortBy(this.state.selectedSection.students, "last_name").map(student => (
       <Link
         key={student.user_id}
         to={`/sections/${this.props.match.params.section_id}/students/${
@@ -117,6 +118,13 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
         >
           <p className="conversation-preview-users">
             {student.first_name} {student.last_name}
+          </p>
+          <p className="conversation-preview-content">
+            {student.conversation_count} conversation
+            {+student.conversation_count !== 1 && "s"}
+            <br />
+            {student.message_count} message
+            {+student.message_count !== 1 && "s"} sent
           </p>
           {/* TODO:
               * Add number of conversations?
@@ -182,7 +190,11 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
               exact={true}
               path="/sections/:section_id"
               render={props => (
-                <SectionOverview {...props} sections={this.state.sections} />
+                <SectionOverview
+                  key={this.props.match.params.section_id}
+                  {...props}
+                  sections={this.state.sections}
+                />
               )}
             />
             <Route

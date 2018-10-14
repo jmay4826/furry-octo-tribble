@@ -17,7 +17,7 @@ class StudentOutliers extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      expanded: false
+      expanded: true
     };
   }
 
@@ -37,15 +37,22 @@ class StudentOutliers extends React.Component<IProps, IState> {
         <div
           style={{
             overflow: "hidden",
-            maxHeight: this.state.expanded ? "100vh" : "0px"
+            maxHeight: this.state.expanded ? "100vh" : "0px",
+            display: "flex",
+            flexWrap: "wrap"
           }}
         >
-          {this.props.children}
           {this.props.students.map(student => (
             <Link
-              to={`/sections/${this.props.section_id}/students/${student.id}`}
+              key={student.user_id}
+              to={`/sections/${this.props.section_id}/students/${
+                student.user_id
+              }`}
             >
-              <div className="conversation-preview">
+              <div
+                className="conversation-preview"
+                style={{ flexGrow: 0, width: "10vw" }}
+              >
                 <p className="conversations-preview-users">
                   {student.first_name} {student.last_name}{" "}
                   {student.participants}
@@ -53,6 +60,7 @@ class StudentOutliers extends React.Component<IProps, IState> {
               </div>
             </Link>
           ))}
+          {this.props.children}
         </div>
       </div>
     );

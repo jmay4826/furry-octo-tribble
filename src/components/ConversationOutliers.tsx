@@ -19,7 +19,7 @@ class ConversationOutliers extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      expanded: true
+      expanded: false
     };
   }
 
@@ -43,7 +43,10 @@ class ConversationOutliers extends React.Component<IProps, IState> {
           }}
         >
           {this.props.conversations.map(conversation => (
-            <Link to={`/conversations/${conversation.conversation_id}`}>
+            <Link
+              key={conversation.conversation_id}
+              to={`/conversations/${conversation.conversation_id}`}
+            >
               <div className="conversation-preview">
                 <p className="conversations-preview-users">
                   {conversation.participants.reduce((acc, student, i, arr) => {
