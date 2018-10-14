@@ -65,7 +65,12 @@ class Messages extends React.Component<IProps, IState> {
 
   public render() {
     return this.state.error ? (
-      <p className="error">{this.state.error}</p>
+      <React.Fragment>
+        <div className="messages-header">Error</div>
+        <div className="messages-list">
+          <p className="error">{this.state.error}</p>
+        </div>
+      </React.Fragment>
     ) : (
       <React.Fragment>
         <div className="messages-header">
