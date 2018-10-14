@@ -62,7 +62,8 @@ class NewStudent extends React.Component<IProps, IState> {
     return (
       <React.Fragment>
         <div className="messages-header">
-          Add a new student to {this.props.section && this.props.section.name}
+          Add a new student to{" "}
+          {this.props.section && this.props.section.section_id}
         </div>
         <div className="messages-list">
           <label htmlFor="first_name">

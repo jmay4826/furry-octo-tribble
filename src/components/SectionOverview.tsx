@@ -47,7 +47,7 @@ class SectionOverview extends React.Component<IProps, IState> {
   }: React.SyntheticEvent<HTMLSelectElement>) =>
     this.setState({
       selected: this.props.sections.find(
-        section => section.section_id === +value
+        section => section.section_id === value
       )
     });
 

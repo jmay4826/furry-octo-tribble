@@ -55,7 +55,7 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
       const selectedSection = this.state.sections.find(
         section =>
           this.props.match.params.section_id
-            ? section.section_id === +this.props.match.params.section_id
+            ? section.section_id === this.props.match.params.section_id
             : false
       );
       return this.setState({ selectedSection });

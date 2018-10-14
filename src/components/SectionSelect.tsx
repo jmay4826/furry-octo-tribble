@@ -24,7 +24,7 @@ const SectionSelect = ({ handleSelect, sections, value }: IProps) => (
       </option>
       {sections.map(section => (
         <option key={section.section_id} value={section.section_id}>
-          {section.name}
+          {section.section_id}
         </option>
       ))}
     </select>
