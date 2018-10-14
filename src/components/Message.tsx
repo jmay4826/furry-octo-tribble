@@ -4,7 +4,7 @@ import { UserContext } from "../App";
 const Message = ({ from_id, from_username, content, sent_at }: IMessage) => {
   return (
     <UserContext.Consumer>
-      {user => {
+      {({ user }) => {
         return (
           <div
             className={`message-container ${

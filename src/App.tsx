@@ -16,7 +16,12 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { Sections } from "./components/Sections";
 import { SignUp } from "./components/SignUp";
 
-export const UserContext = React.createContext({} as IDecodedUser);
+export const UserContext = React.createContext({
+  setUser: (user: IDecodedUser) => {
+    /**/
+  },
+  user: {} as IDecodedUser
+});
 
 interface IState {
   user?: IDecodedUser;
@@ -88,15 +93,20 @@ class App extends React.Component<{}, IState> {
 
         <Router>
           <div>
-            <Route path="/signup" component={SignUp} />
-            <Route path="/login" render={this.loginComponent} />
-            <Route path="/logout" render={this.logoutComponent} />
-            <Route path="/privacy" component={Privacy} />
-            {this.state.user && (
-              <UserContext.Provider value={this.state.user}>
-                <div className="container">
-                  <Navbar role={this.state.user.role} />
-                  <div style={{ flexGrow: 1 }}>
+            <div className="container">
+              {this.state.user && <Navbar role={this.state.user.role} />}
+              <UserContext.Provider
+                value={{
+                  user: this.state.user as IDecodedUser,
+                  setUser: user => this.setState({ user })
+                }}
+              >
+                <div style={{ flexGrow: 1 }}>
+                  <Route path="/signup" component={SignUp} />
+                  <Route path="/login" render={this.loginComponent} />
+                  <Route path="/logout" render={this.logoutComponent} />
+                  <Route path="/privacy" component={Privacy} />
+                  {this.state.user && (
                     <div className="conversations-container">
                       <PrivateRoute
                         path="/conversations/:conversation_id?"
@@ -109,29 +119,29 @@ class App extends React.Component<{}, IState> {
                         component={Sections}
                       />
                     </div>
-                  </div>
+                  )}
+
+                  <Route
+                    exact={true}
+                    path="/"
+                    render={
+                      this.state.loading
+                        ? props => "Loading"
+                        : props => (
+                            <Redirect
+                              to={
+                                this.state.user &&
+                                this.state.user.role === "instructor"
+                                  ? "/sections"
+                                  : "/login"
+                              }
+                            />
+                          )
+                    }
+                  />
                 </div>
               </UserContext.Provider>
-            )}
-
-            <Route
-              exact={true}
-              path="/"
-              render={
-                this.state.loading
-                  ? props => "Loading"
-                  : props => (
-                      <Redirect
-                        to={
-                          this.state.user &&
-                          this.state.user.role === "instructor"
-                            ? "/sections"
-                            : "/login"
-                        }
-                      />
-                    )
-              }
-            />
+            </div>
           </div>
         </Router>
       </React.Fragment>
