@@ -41,7 +41,7 @@ class NewConversation extends React.Component<IProps, IState> {
   public handleChangeSection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({
       section: this.props.sections.find(
-        section => section.section_id === +e.currentTarget.value
+        section => section.section_id === e.currentTarget.value
       )
     });
   };
@@ -124,7 +124,7 @@ class NewConversation extends React.Component<IProps, IState> {
             <option value="">Section</option>
             {this.props.sections.map(section => (
               <option value={section.section_id} key={section.section_id}>
-                {section.name}
+                {section.section_id}
               </option>
             ))}
           </select>
