@@ -20,17 +20,21 @@ interface IState {
   selected?: ISection;
   partners: any[];
   unmatched: any[];
+  copied: boolean;
 }
 
 class SectionOverview extends React.Component<IProps, IState> {
+  public linkInput: React.RefObject<HTMLInputElement>;
   constructor(props: IProps) {
     super(props);
+    this.linkInput = React.createRef();
     this.state = {
       noActivity: [],
       noConversations: [],
       noMessages: [],
       partners: [],
-      unmatched: []
+      unmatched: [],
+      copied: false
     };
   }
 
@@ -90,101 +94,123 @@ class SectionOverview extends React.Component<IProps, IState> {
     console.log(result);
   };
 
+  public copyLink = () => {
+    if (this.linkInput.current) {
+      this.linkInput.current.select();
+      document.execCommand("copy");
+      this.setState({ copied: true });
+    }
+  };
+
   public render() {
     // console.log(this.props.sections);
     return (
-      <div style={{ overflow: "auto", flexGrow: 1 }}>
-        <StudentOutliers
-          section_id={this.props.match.params.section_id}
-          students={
-            this.state.partners.length ? [] : this.state.noConversations
-          }
-          header={`Students without conversations (${
-            this.state.noConversations.length
-          })`}
-        >
-          {!!this.state.partners.length &&
-            this.state.partners.map(partner => (
-              <div
-                key={partner.a.user_id}
-                className="conversation-preview"
-                style={{ width: "10vw" }}
-              >
-                <p className="conversation-preview-users">
-                  {partner.a.first_name} {partner.a.last_name}
-                </p>
-                <p className="conversation-preview-content">
-                  {partner.b.first_name} {partner.b.last_name}
-                </p>
-              </div>
-            ))}
-          {!!this.state.unmatched.length &&
-            this.state.unmatched.map(student => (
-              <div
-                key={student.user_id}
-                className="conversation-preview"
-                style={{ background: "yellow", width: "10vw" }}
-              >
-                <p className="conversation-preview-users">
-                  {student.first_name} {student.last_name}
-                </p>
-              </div>
-            ))}
-        </StudentOutliers>
-        {!this.state.noConversations.length ? (
-          <div>All students have at least 1 conversation</div>
-        ) : (
-          <div
-            style={{
-              alignItems: "center",
-              display: "flex",
-
-              margin: "0 10%"
-            }}
+      <React.Fragment>
+        <div className="messages-header">
+          {this.props.match.params.section_id}
+        </div>
+        <div className="messages-list">
+          <p>Student invitation link:</p>
+          <input
+            onClick={this.copyLink}
+            ref={this.linkInput}
+            value={`https://penpals.now.sh/join?section_id=${
+              this.props.match.params.section_id
+            }`}
+          />
+          {this.state.copied && "Copied!"}
+          <StudentOutliers
+            section_id={this.props.match.params.section_id}
+            students={
+              this.state.partners.length ? [] : this.state.noConversations
+            }
+            header={`Students without conversations (${
+              this.state.noConversations.length
+            })`}
           >
-            Randomly pair students with
-            <select
-              style={{ marginBottom: "10px" }}
-              value={
-                this.state.selected
-                  ? this.state.selected.section_id.toString()
-                  : "Section"
-              }
-              onChange={this.handleSelect}
-            >
-              <option value="Section">Select a Section</option>
-              {this.props.sections
-                .filter(
-                  section =>
-                    section.section_id !== this.props.match.params.section_id
-                )
-                .map(section => (
-                  <option key={section.section_id} value={section.section_id}>
-                    {section.section_id}
-                  </option>
-                ))}
-            </select>
-            <button onClick={this.handleClick}>Preview</button>
-            {!!this.state.partners.length && (
-              <button onClick={this.submit}>Submit</button>
-            )}
-          </div>
-        )}
+            {!!this.state.partners.length &&
+              this.state.partners.map(partner => (
+                <div
+                  key={partner.a.user_id}
+                  className="conversation-preview"
+                  style={{ width: "10vw" }}
+                >
+                  <p className="conversation-preview-users">
+                    {partner.a.first_name} {partner.a.last_name}
+                  </p>
+                  <p className="conversation-preview-content">
+                    {partner.b.first_name} {partner.b.last_name}
+                  </p>
+                </div>
+              ))}
+            {!!this.state.unmatched.length &&
+              this.state.unmatched.map(student => (
+                <div
+                  key={student.user_id}
+                  className="conversation-preview"
+                  style={{ background: "yellow", width: "10vw" }}
+                >
+                  <p className="conversation-preview-users">
+                    {student.first_name} {student.last_name}
+                  </p>
+                </div>
+              ))}
+          </StudentOutliers>
+          {!this.state.noConversations.length ? (
+            <div>All students have at least 1 conversation</div>
+          ) : (
+            <div
+              style={{
+                alignItems: "center",
+                display: "flex",
 
-        <ConversationOutliers
-          conversations={this.state.noMessages}
-          header={`Conversations without messages (${
-            this.state.noMessages.length
-          })`}
-        />
-        <ConversationOutliers
-          conversations={this.state.noActivity}
-          header={`Conversations with no activity 7+ days (${
-            this.state.noActivity.length
-          })`}
-        />
-        <p>Sections paired with</p>
-      </div>
+                margin: "0 10%"
+              }}
+            >
+              Randomly pair students with
+              <select
+                style={{ marginBottom: "10px" }}
+                value={
+                  this.state.selected
+                    ? this.state.selected.section_id.toString()
+                    : "Section"
+                }
+                onChange={this.handleSelect}
+              >
+                <option value="Section">Select a Section</option>
+                {this.props.sections
+                  .filter(
+                    section =>
+                      section.section_id !== this.props.match.params.section_id
+                  )
+                  .map(section => (
+                    <option key={section.section_id} value={section.section_id}>
+                      {section.section_id}
+                    </option>
+                  ))}
+              </select>
+              <button onClick={this.handleClick}>Preview</button>
+              {!!this.state.partners.length && (
+                <button onClick={this.submit}>Submit</button>
+              )}
+            </div>
+          )}
+
+          <ConversationOutliers
+            conversations={this.state.noMessages}
+            header={`Conversations without messages (${
+              this.state.noMessages.length
+            })`}
+          />
+          <ConversationOutliers
+            conversations={this.state.noActivity}
+            header={`Conversations with no activity 7+ days (${
+              this.state.noActivity.length
+            })`}
+          />
+          <p>Sections paired with</p>
+        </div>
+      </React.Fragment>
     );
   }
 }
