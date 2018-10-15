@@ -378,3 +378,11 @@ input[type="radio"] {
   opacity: 0;
   max-height: 0;
 }
+
+.error {
+  border: 1px solid rgb(180, 0, 0);
+  background-color: rgba(180, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 10px;
+  margin: 10px;
+}
