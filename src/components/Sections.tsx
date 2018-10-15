@@ -19,6 +19,7 @@ import { SectionSelect } from "./SectionSelect";
 interface IState {
   sections: ISection[];
   selectedSection?: ISection;
+  loading: boolean;
 }
 
 interface IParams {
@@ -30,7 +31,8 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
   constructor(props: RouteComponentProps<IParams>) {
     super(props);
     this.state = {
-      sections: []
+      sections: [],
+      loading: true
     };
   }
 
@@ -71,7 +73,7 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
 
-      this.setState({ sections });
+      this.setState({ sections, loading: false });
     } catch (e) {
       // tslint:disable-next-line:no-console
       console.log(e);
@@ -181,7 +183,22 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
             />
           </Switch>
 
-          <div className="conversations-list">{this.renderStudents()}</div>
+          <div className="conversations-list">
+            {this.renderStudents()}
+            {!this.state.loading &&
+              !this.state.sections.length && (
+                <div className="conversation-preview">
+                  <p className="conversation-preview-users">
+                    You don't have any sections yet!
+                  </p>
+                  <p className="conversation-preview-content">
+                    Click the plus icon above to create a new section. If you're
+                    collaborating with another instructor, ask to be added as a
+                    collaborator.
+                  </p>
+                </div>
+              )}
+          </div>
         </div>
         <div className="messages-container">
           <Switch>
