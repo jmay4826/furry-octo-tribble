@@ -65,7 +65,7 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
     }
   }
 
-  public async componentDidMount() {
+  public getSections = async () => {
     try {
       const {
         data: { sections }
@@ -78,6 +78,10 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
       // tslint:disable-next-line:no-console
       console.log(e);
     }
+  };
+
+  public async componentDidMount() {
+    this.getSections();
   }
 
   public handleSelect = (e: React.SyntheticEvent<HTMLSelectElement>) => {
@@ -128,10 +132,6 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
             {student.message_count} message
             {+student.message_count !== 1 && "s"} sent
           </p>
-          {/* TODO:
-              * Add number of conversations?
-              * Add last message timestamp?
-              */}
         </div>
       </Link>
     ));
@@ -202,7 +202,12 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
         </div>
         <div className="messages-container">
           <Switch>
-            <Route path="/sections/new" component={NewSection} />
+            <Route
+              path="/sections/new"
+              render={props => (
+                <NewSection {...props} refreshSections={this.getSections} />
+              )}
+            />
             <Route
               exact={true}
               path="/sections/:section_id"
