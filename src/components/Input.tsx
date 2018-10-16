@@ -51,17 +51,20 @@ export class Input extends React.Component<IProps, IState> {
     } = this.props;
 
     return (
-      <div className={`input-component-container ${className}`} style={style}>
+      <div
+        className={`input-component-container ${className || ""}`}
+        style={style}
+      >
         <input
           ref={this.input}
-          className={`input-component-input ${className}`}
+          className={`input-component-input ${className || ""}`}
           style={inputStyle}
           {...field}
           {...props}
         />
         <label
           onClick={this.handleClick}
-          className={`input-component-label ${this.input.current &&
+          className={`input-component-label ${!!this.input.current &&
             !this.input.current.value &&
             "placeholder"}`}
         >
