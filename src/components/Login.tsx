@@ -1,6 +1,8 @@
 import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Input } from "./Input";
+import { Link } from "react-router-dom";
 
 interface IState {
   email: string;
@@ -66,24 +68,28 @@ class Login extends React.Component<IProps, IState> {
         }}
       >
         <h2>Login</h2>
-        <input
-          placeholder="Email Address"
+        <Input
+          label="Email Address"
           onChange={this.handleEmail}
           name="email"
           type="text"
           value={this.state.email}
+          className="full-width"
         />
 
-        <input
-          placeholder="Passsword"
+        <Input
+          label="Password"
           type="password"
           onChange={this.handlePassword}
           name="password"
           value={this.state.password}
+          className="full-width"
         />
 
         <button onClick={this.handleSubmit}>Submit</button>
-        <h3>Don't have a login? Ask your instructor</h3>
+        <h3>
+          Don't have a login? <Link to="/signup">Create an account.</Link>
+        </h3>
         {this.state.error && <p color="error">{this.state.error}</p>}
       </div>
     );

@@ -6,6 +6,7 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import * as Yup from "yup";
 import { BulkSectionUpload } from "./BulkSectionUpload";
+import { Input } from "./Input";
 
 interface IParams {
   section_id: string;
@@ -127,18 +128,20 @@ class NewSection extends React.Component<IProps, any> {
                     {values.type === "blank" && (
                       <React.Fragment>
                         <Field
+                          component={Input}
                           autoComplete="new-id"
                           type="text"
                           name="id"
-                          placeholder="ID (must be unique)"
+                          label="ID (must be unique)"
                         />
                         <ErrorMessage name="id" />
 
                         <Field
+                          component={Input}
                           autoComplete="new-description"
                           type="text"
                           name="description"
-                          placeholder="Section Description"
+                          label="Section Description"
                         />
                         <FieldArray name="collaborators">
                           {({ push, remove }) => (
@@ -154,9 +157,10 @@ class NewSection extends React.Component<IProps, any> {
                                       }}
                                     >
                                       <Field
-                                        style={{ marginBottom: "10px" }}
+                                        component={Input}
                                         name={`collaborators.${index}`}
-                                        placeholder="Collaborator Email (optional)"
+                                        label="Collaborator Email (optional)"
+                                        style={{ flexGrow: 1 }}
                                       />
                                       <button onClick={() => remove(index)}>
                                         <FontAwesomeIcon icon={faTimes} />
