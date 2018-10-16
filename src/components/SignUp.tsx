@@ -10,6 +10,7 @@ import { Redirect, RouteComponentProps } from "react-router";
 import { CSSTransition } from "react-transition-group";
 import { UserContext } from "src/App";
 import * as Yup from "yup";
+import { Input } from "./Input";
 
 class SignUp extends React.Component<RouteComponentProps, any> {
   public query = queryString.parse(this.props.location.search);
@@ -17,7 +18,6 @@ class SignUp extends React.Component<RouteComponentProps, any> {
     confirm_password: "",
     email: "",
     first_name: "",
-    instructor: this.query.instructor || "",
     last_name: "",
     password: "",
     role: "student",
@@ -30,11 +30,6 @@ class SignUp extends React.Component<RouteComponentProps, any> {
       .required(),
     email: Yup.string().email(),
     first_name: Yup.string().required(),
-    instructor: Yup.string().test(
-      "instructor",
-      "Instructor does not exist",
-      async value => (!value ? true : await this.debouncedInstructor(value))
-    ),
     last_name: Yup.string().required(),
     password: Yup.string()
       .min(8)
@@ -67,12 +62,6 @@ class SignUp extends React.Component<RouteComponentProps, any> {
       return false;
     }
   };
-  // tslint:disable-next-line:member-ordering
-  public debouncedInstructor = debounce(
-    this.validateInput("instructor"),
-    250,
-    {}
-  );
   // tslint:disable-next-line:member-ordering
   public debouncedSection = debounce(this.validateInput("section_id"), 250, {});
 
@@ -118,20 +107,20 @@ class SignUp extends React.Component<RouteComponentProps, any> {
           onSubmit={this.onSubmit}
           validationSchema={this.validationSchema}
         >
-          {({ values, errors, resetForm }: any) => {
+          {({ values, errors, resetForm, handleChange }: any) => {
             return (
               <Form>
                 {JSON.stringify(errors)}
                 <div style={{ display: "flex" }}>
                   <Field
-                    className="authentication"
-                    placeholder="First Name"
+                    component={Input}
+                    label="First Name"
                     name="first_name"
                     type="text"
                   />
                   <Field
-                    className="authentication"
-                    placeholder="Last Name"
+                    component={Input}
+                    label="Last Name"
                     name="last_name"
                     type="text"
                   />
@@ -139,22 +128,22 @@ class SignUp extends React.Component<RouteComponentProps, any> {
                 </div>
                 <div style={{ display: "flex" }}>
                   <Field
-                    className="authentication"
-                    placeholder="Email Address"
+                    component={Input}
+                    label="Email Address"
                     name="email"
                     type="email"
                   />
                 </div>
                 <div style={{ display: "flex" }}>
                   <Field
-                    className="authentication"
-                    placeholder="Password"
+                    component={Input}
+                    label="Password"
                     name="password"
                     type="password"
                   />
                   <Field
-                    className="authentication"
-                    placeholder="Confirm Password"
+                    component={Input}
+                    label="Confirm Password"
                     name="confirm_password"
                     type="password"
                   />
@@ -212,31 +201,10 @@ class SignUp extends React.Component<RouteComponentProps, any> {
                   <div style={{ display: "flex" }}>
                     <div style={{ flexGrow: 1, display: "flex" }}>
                       <Field
-                        className="authentication"
-                        type="text"
-                        name="instructor"
-                        placeholder="Instructor ID"
-                      />
-
-                      <FontAwesomeIcon
-                        icon={errors.instructor ? faExclamation : faCheck}
-                        style={{
-                          alignSelf: "center",
-                          color: values.instructor
-                            ? errors.instructor
-                              ? "red"
-                              : "green"
-                            : "gray",
-                          margin: "0 10px"
-                        }}
-                      />
-                    </div>
-                    <div style={{ flexGrow: 1, display: "flex" }}>
-                      <Field
-                        className="authentication"
+                        component={Input}
                         type="text"
                         name="section_id"
-                        placeholder="Section ID"
+                        label="Section ID (optional)"
                       />
                       <FontAwesomeIcon
                         icon={errors.section_id ? faExclamation : faCheck}
