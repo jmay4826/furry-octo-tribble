@@ -104,6 +104,7 @@ class SectionOverview extends React.Component<IProps, IState> {
 
   public render() {
     // console.log(this.props.sections);
+    console.log(this.props);
     return (
       <React.Fragment>
         <div className="messages-header">
@@ -114,9 +115,10 @@ class SectionOverview extends React.Component<IProps, IState> {
           <input
             onClick={this.copyLink}
             ref={this.linkInput}
-            value={`https://penpals.now.sh/join?section_id=${
+            value={`${window.location.host}/join?section_id=${
               this.props.match.params.section_id
             }`}
+            readOnly={true}
           />
           {this.state.copied && "Copied!"}
           <StudentOutliers
