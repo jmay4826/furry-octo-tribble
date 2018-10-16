@@ -15,6 +15,7 @@ import { Privacy } from "./components/Privacy";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Sections } from "./components/Sections";
 import { SignUp } from "./components/SignUp";
+import { JoinSection } from "./components/JoinSection";
 
 export const UserContext = React.createContext({
   setUser: (user: IDecodedUser) => {
@@ -102,6 +103,10 @@ class App extends React.Component<{}, IState> {
                 }}
               >
                 <div style={{ flexGrow: 1 }}>
+                  <Route
+                    path="/join"
+                    component={this.state.user ? JoinSection : SignUp}
+                  />
                   <Route path="/signup" component={SignUp} />
                   <Route path="/login" render={this.loginComponent} />
                   <Route path="/logout" render={this.logoutComponent} />
@@ -120,7 +125,6 @@ class App extends React.Component<{}, IState> {
                       />
                     </div>
                   )}
-
                   <Route
                     exact={true}
                     path="/"
