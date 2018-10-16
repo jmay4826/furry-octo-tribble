@@ -103,8 +103,6 @@ class SectionOverview extends React.Component<IProps, IState> {
   };
 
   public render() {
-    // console.log(this.props.sections);
-    console.log(this.props);
     return (
       <React.Fragment>
         <div className="messages-header">
