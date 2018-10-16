@@ -16,6 +16,7 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { Sections } from "./components/Sections";
 import { SignUp } from "./components/SignUp";
 import { JoinSection } from "./components/JoinSection";
+import { Settings } from "./components/Settings";
 
 export const UserContext = React.createContext({
   setUser: (user: IDecodedUser) => {
@@ -122,6 +123,11 @@ class App extends React.Component<{}, IState> {
                         authenticated={this.state.user.role === "instructor"}
                         path="/sections/:section_id?/(students)?/:student_id?"
                         component={Sections}
+                      />
+                      <PrivateRoute
+                        authenticated={!!this.state.user}
+                        path="/settings"
+                        component={Settings}
                       />
                     </div>
                   )}

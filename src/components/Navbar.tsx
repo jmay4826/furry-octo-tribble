@@ -1,7 +1,8 @@
 import {
   faComments,
   faSignOutAlt,
-  faUsers
+  faUsers,
+  faCog
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
@@ -17,6 +18,9 @@ const Navbar = ({ role }: { role: "instructor" | "student" }) => (
         <FontAwesomeIcon icon={faUsers} size="2x" className="sidebar-icon" />
       </NavLink>
     )}
+    <NavLink to="/settings">
+      <FontAwesomeIcon icon={faCog} size="2x" className="sidebar-icon" />
+    </NavLink>
 
     <NavLink to="/logout">
       <FontAwesomeIcon icon={faSignOutAlt} size="2x" className="sidebar-icon" />
