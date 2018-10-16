@@ -1,0 +1,45 @@
+.input-component-container {
+  display: flex;
+  position: relative;
+  padding: 0;
+  margin: 10px;
+  flex-grow: 1;
+}
+
+.input-component-label {
+  font-family: "Varela Round";
+  transition: all 250ms;
+  padding: 5px;
+  position: absolute;
+  color: gray;
+  font-size: 0.95em;
+}
+
+.input-component-input:focus + .input-component-label {
+  padding: 5px;
+  padding-top: 5px;
+  font-size: 0.95em;
+}
+
+.input-component-label.placeholder {
+  font-size: 1.2em;
+  padding: 11px;
+  padding-top: 1em;
+}
+
+.input-component-input {
+  font-family: "Varela Round";
+  font-size: 1.2em;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #e5e9f2;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 1);
+  padding-top: 1.5em;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.full-width {
+  width: 100%;
+}
