@@ -5,6 +5,7 @@ import * as pDebounce from "p-debounce";
 import Axios from "axios";
 import { faCheck, faExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Input } from "./Input";
 
 const validateSection = pDebounce(async (section_id: string) => {
   const { data } = await Axios.get<boolean>(
@@ -39,7 +40,7 @@ export class JoinSection extends React.Component<RouteComponentProps, IState> {
   }
   public handleChange = async ({
     currentTarget: { value }
-  }: React.SyntheticEvent<HTMLInputElement>) => {
+  }: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ section_id: value });
     const valid = await validateSection(value);
     this.setState({ valid });
@@ -49,8 +50,9 @@ export class JoinSection extends React.Component<RouteComponentProps, IState> {
       <div>
         <h2>Request to join a new section</h2>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <input
+          <Input
             name="section_id"
+            label="Section ID"
             value={this.state.section_id}
             onChange={this.handleChange}
             style={{ marginBottom: "10px", flexGrow: 0 }}
