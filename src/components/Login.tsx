@@ -1,8 +1,20 @@
 import Axios from "axios";
+import { Formik, Field, Form } from "formik";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Input } from "./Input";
 import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import { Input } from "./Input";
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email()
+    .required()
+    .label("Email Address"),
+  password: Yup.string()
+    .required()
+    .label("Password")
+});
 
 interface IState {
   email: string;
@@ -26,22 +38,11 @@ class Login extends React.Component<IProps, IState> {
     this.state = initialState;
   }
 
-  public handleEmail = ({
-    target: { value }
-  }: React.ChangeEvent<HTMLInputElement>) => this.setState({ email: value });
-
-  public handlePassword = ({
-    target: { value }
-  }: React.ChangeEvent<HTMLInputElement>) => this.setState({ password: value });
-
-  public handleSubmit = async () => {
+  public handleSubmit = async (values: any) => {
     try {
       const {
         data: { token }
-      }: { data: { token: string } } = await Axios.post("/auth/login", {
-        email: this.state.email,
-        password: this.state.password
-      });
+      }: { data: { token: string } } = await Axios.post("/auth/login", values);
 
       localStorage.setItem("token", token);
       this.props.handleLogin(token);
@@ -58,40 +59,63 @@ class Login extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <div
-        className="conversation-preview selected"
-        style={{
-          alignItems: "center",
-          display: "flex",
-          flexDirection: "column",
-          margin: "20%"
-        }}
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        onSubmit={this.handleSubmit}
+        validationSchema={validationSchema}
       >
-        <h2>Login</h2>
-        <Input
-          label="Email Address"
-          onChange={this.handleEmail}
-          name="email"
-          type="text"
-          value={this.state.email}
-          className="full-width"
-        />
+        {({ errors, touched }: any) => {
+          return (
+            <div
+              className="conversation-preview selected"
+              style={{
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "column",
+                margin: "20%"
+              }}
+            >
+              <Form>
+                <h2>Login</h2>
+                <Field
+                  component={Input}
+                  label="Email Address"
+                  name="email"
+                  type="text"
+                  className="full-width"
+                />
 
-        <Input
-          label="Password"
-          type="password"
-          onChange={this.handlePassword}
-          name="password"
-          value={this.state.password}
-          className="full-width"
-        />
+                <Field
+                  component={Input}
+                  label="Password"
+                  type="password"
+                  name="password"
+                  className="full-width"
+                />
 
-        <button onClick={this.handleSubmit}>Submit</button>
-        <h3>
-          Don't have a login? <Link to="/signup">Create an account.</Link>
-        </h3>
-        {this.state.error && <p color="error">{this.state.error}</p>}
-      </div>
+                <button type="submit">Submit</button>
+                <h3>
+                  Don't have a login?{" "}
+                  <Link to="/signup">Create an account.</Link>
+                </h3>
+                {(this.state.error ||
+                  (!!Object.keys(errors).length &&
+                    !!Object.keys(touched).length)) && (
+                  <div className="error">
+                    <ul>
+                      {this.state.error && <li>{this.state.error}</li>}
+                      {Object.keys(errors).map(
+                        key =>
+                          touched[key] ? <li key={key}>{errors[key]}</li> : null
+                      )}
+                    </ul>
+                  </div>
+                )}
+              </Form>
+            </div>
+          );
+        }}
+      </Formik>
     );
   }
 }
