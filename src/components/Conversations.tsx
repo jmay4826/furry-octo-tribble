@@ -106,7 +106,7 @@ class Conversations extends React.Component<IProps, IState> {
             onChange={this.handleChange}
             className="filter"
           />
-          <h2>Messages ({this.state.conversations.length})</h2>
+          <h2>Messages</h2>
           <div className="conversations-list">
             {this.state.conversations.filter(this.filter).map(conversation => (
               <ConversationPreview
