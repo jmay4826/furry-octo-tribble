@@ -47,6 +47,8 @@ export class Input extends React.Component<IProps, IState> {
       className,
       placeholder,
       field,
+      form,
+      children,
       ...props
     } = this.props;
 
