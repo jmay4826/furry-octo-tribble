@@ -97,7 +97,7 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
       if (e.response.status === 409) {
         this.setState({ error: e.response.data });
       } else {
-        console.dir(e);
+        this.setState({ error: "An unknown error occurred." });
       }
     }
   };
@@ -191,6 +191,8 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
                   classNames="fade"
                   timeout={300}
                   in={values.role === "student"}
+                  unmountOnExit={true}
+                  mountOnEnter={true}
                 >
                   <div style={{ display: "flex" }}>
                     <div style={{ flexGrow: 1, display: "flex" }}>
