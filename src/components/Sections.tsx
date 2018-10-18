@@ -136,6 +136,43 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
       </Link>
     ));
 
+  public renderInstructors = () =>
+    this.state.selectedSection && (
+      <React.Fragment>
+        <h2>Instructors</h2>
+        {sortBy(this.state.selectedSection.instructors, "last_name").map(
+          student => (
+            <Link
+              key={student.user_id}
+              to={`/sections/${this.props.match.params.section_id}/students/${
+                student.user_id
+              }`}
+            >
+              <div
+                className={`conversation-preview ${
+                  this.props.match.params.student_id &&
+                  +this.props.match.params.student_id === student.user_id
+                    ? "selected"
+                    : ""
+                }`}
+              >
+                <p className="conversation-preview-users">
+                  {student.first_name} {student.last_name}
+                </p>
+                <p className="conversation-preview-content">
+                  {student.conversation_count} conversation
+                  {+student.conversation_count !== 1 && "s"}
+                  <br />
+                  {student.message_count} message
+                  {+student.message_count !== 1 && "s"} sent
+                </p>
+              </div>
+            </Link>
+          )
+        )}
+      </React.Fragment>
+    );
+
   public renderNewStudent = (
     props: RouteComponentProps<{ section_id: string }>
   ) => <NewStudent {...props} section={this.state.selectedSection} />;
@@ -185,6 +222,7 @@ class Sections extends React.Component<RouteComponentProps<IParams>, IState> {
 
           <div className="conversations-list">
             {this.renderStudents()}
+            {this.renderInstructors()}
             {!this.state.loading &&
               !this.state.sections.length && (
                 <div className="conversation-preview">

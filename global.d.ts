@@ -29,6 +29,13 @@ interface ISection {
     conversation_count: string;
     message_count: string;
   }>;
+  instructors: Array<{
+    user_id: number;
+    first_name: string;
+    last_name: string;
+    conversation_count: string;
+    message_count: string;
+  }>;
   section_id: string;
   user_id: number;
   username: string;
@@ -36,3 +43,4 @@ interface ISection {
 }
 
 declare module "react-timeago";
+declare module "react-lazy-hero";
