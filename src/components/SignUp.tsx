@@ -129,7 +129,8 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
         className="conversation-preview"
         style={{
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          alignSelf: "center"
         }}
       >
         <h2>Create Account</h2>
