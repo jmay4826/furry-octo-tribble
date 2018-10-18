@@ -9,6 +9,8 @@ interface IProps
   inputStyle?: React.CSSProperties;
   inputClassName?: string;
   field?: any;
+  error?: string;
+  additionalChange?: (e?: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface IState {
@@ -38,6 +40,18 @@ export class Input extends React.Component<IProps, IState> {
     }
   };
 
+  public handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (this.props.field.onChange) {
+      this.props.field.onChange(e);
+    } else if (this.props.onChange) {
+      this.props.onChange(e);
+    }
+    if (this.props.additionalChange) {
+      console.log("additional change");
+      this.props.additionalChange(e);
+    }
+  };
+
   public render() {
     const {
       label,
@@ -49,6 +63,9 @@ export class Input extends React.Component<IProps, IState> {
       field,
       form,
       children,
+      error,
+      additionalChange,
+      onChange,
       ...props
     } = this.props;
 
@@ -59,10 +76,11 @@ export class Input extends React.Component<IProps, IState> {
       >
         <input
           ref={this.input}
-          className={`input-component-input ${className || ""}`}
-          style={inputStyle}
+          className={`input-component-input ${inputClassName || ""}`}
+          style={{ ...inputStyle, border: error ? "1px  solid red" : "" }}
           {...field}
           {...props}
+          onChange={this.handleChange}
         />
         <label
           onClick={this.handleClick}
@@ -72,6 +90,9 @@ export class Input extends React.Component<IProps, IState> {
         >
           {label}
         </label>
+        <div className={`input-component-error ${!error ? "hidden" : ""}`}>
+          * {error}
+        </div>
       </div>
     );
   }
