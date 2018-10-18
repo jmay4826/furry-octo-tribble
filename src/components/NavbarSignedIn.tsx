@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { NavLink } from "react-router-dom";
 
-const Navbar = ({ role }: { role: "instructor" | "student" }) => (
+const NavbarSignedIn = ({ role }: { role: "instructor" | "student" }) => (
   <div className="sidebar">
     <NavLink to="/conversations" activeClassName="active">
       <FontAwesomeIcon icon={faComments} size="2x" className="sidebar-icon" />
@@ -28,4 +28,4 @@ const Navbar = ({ role }: { role: "instructor" | "student" }) => (
   </div>
 );
 
-export { Navbar };
+export { NavbarSignedIn };

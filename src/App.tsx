@@ -10,13 +10,15 @@ import "./App.css";
 import { Conversations } from "./components/Conversations";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
-import { Navbar } from "./components/Navbar";
+import { NavbarSignedIn } from "./components/NavbarSignedIn";
 import { Privacy } from "./components/Privacy";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Sections } from "./components/Sections";
 import { SignUp } from "./components/SignUp";
 import { JoinSection } from "./components/JoinSection";
 import { Settings } from "./components/Settings";
+import { Home } from "./components/Home";
+import { NavBarSignedOut } from "./components/NavBarSignedOut";
 
 export const UserContext = React.createContext({
   setUser: (user: IDecodedUser) => {
@@ -96,14 +98,23 @@ class App extends React.Component<{}, IState> {
         <Router>
           <div>
             <div className="container">
-              {this.state.user && <Navbar role={this.state.user.role} />}
+              {this.state.user && (
+                <NavbarSignedIn role={this.state.user.role} />
+              )}
               <UserContext.Provider
                 value={{
                   setUser: user => this.setState({ user }),
                   user: this.state.user as IDecodedUser
                 }}
               >
-                <div style={{ flexGrow: 1 }}>
+                <div
+                  style={{
+                    flexGrow: 1,
+                    flexDirection: "column",
+                    display: "flex"
+                  }}
+                >
+                  {!this.state.user && <NavBarSignedOut />}
                   <Route
                     path="/join"
                     component={this.state.user ? JoinSection : SignUp}
@@ -137,16 +148,19 @@ class App extends React.Component<{}, IState> {
                     render={
                       this.state.loading
                         ? props => "Loading"
-                        : props => (
-                            <Redirect
-                              to={
-                                this.state.user &&
-                                this.state.user.role === "instructor"
-                                  ? "/sections"
-                                  : "/login"
-                              }
-                            />
-                          )
+                        : props =>
+                            this.state.user ? (
+                              <Redirect
+                                to={
+                                  this.state.user &&
+                                  this.state.user.role === "instructor"
+                                    ? "/sections"
+                                    : "/login"
+                                }
+                              />
+                            ) : (
+                              <Home />
+                            )
                     }
                   />
                 </div>
