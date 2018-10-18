@@ -1,5 +1,7 @@
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Axios from "axios";
-import { Formik, Field, Form } from "formik";
+import { Field, Form, Formik } from "formik";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
@@ -57,6 +59,8 @@ class Login extends React.Component<IProps, IState> {
     }
   };
 
+  public clearError = () => this.setState({ error: "" });
+
   public render() {
     return (
       <Formik
@@ -64,18 +68,18 @@ class Login extends React.Component<IProps, IState> {
         onSubmit={this.handleSubmit}
         validationSchema={validationSchema}
       >
-        {({ errors, touched }: any) => {
+        {({ errors, touched, isSubmitting }: any) => {
           return (
-            <div
-              className="conversation-preview selected"
-              style={{
-                alignItems: "center",
-                display: "flex",
-                flexDirection: "column",
-                margin: "20%"
-              }}
-            >
-              <Form>
+            <Form>
+              <div
+                className="conversation-preview selected"
+                style={{
+                  alignItems: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  margin: "20%"
+                }}
+              >
                 <h2>Login</h2>
                 <Field
                   component={Input}
@@ -83,6 +87,8 @@ class Login extends React.Component<IProps, IState> {
                   name="email"
                   type="text"
                   className="full-width"
+                  additionalChange={this.clearError}
+                  error={touched.email ? errors.email || this.state.error : ""}
                 />
 
                 <Field
@@ -91,28 +97,20 @@ class Login extends React.Component<IProps, IState> {
                   type="password"
                   name="password"
                   className="full-width"
+                  error={touched.password ? errors.password : ""}
                 />
 
                 <button type="submit">Submit</button>
+                {isSubmitting && <FontAwesomeIcon icon={faSpinner} />}
+
+                <h3>Don't have a login?</h3>
                 <h3>
-                  Don't have a login?{" "}
-                  <Link to="/signup">Create an account.</Link>
+                  <Link to="/signup" style={{}}>
+                    Sign up for an account.
+                  </Link>
                 </h3>
-                {(this.state.error ||
-                  (!!Object.keys(errors).length &&
-                    !!Object.keys(touched).length)) && (
-                  <div className="error">
-                    <ul>
-                      {this.state.error && <li>{this.state.error}</li>}
-                      {Object.keys(errors).map(
-                        key =>
-                          touched[key] ? <li key={key}>{errors[key]}</li> : null
-                      )}
-                    </ul>
-                  </div>
-                )}
-              </Form>
-            </div>
+              </div>
+            </Form>
           );
         }}
       </Formik>
