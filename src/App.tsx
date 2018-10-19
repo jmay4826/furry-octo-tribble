@@ -8,17 +8,16 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import { Conversations } from "./components/Conversations";
+import { Home } from "./components/Home";
 import { Login } from "./components/Login";
 import { Logout } from "./components/Logout";
 import { NavbarSignedIn } from "./components/NavbarSignedIn";
+import { NavBarSignedOut } from "./components/NavBarSignedOut";
 import { Privacy } from "./components/Privacy";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Sections } from "./components/Sections";
-import { SignUp } from "./components/SignUp";
-import { JoinSection } from "./components/JoinSection";
 import { Settings } from "./components/Settings";
-import { Home } from "./components/Home";
-import { NavBarSignedOut } from "./components/NavBarSignedOut";
+import { SignUp } from "./components/SignUp";
 
 export const UserContext = React.createContext({
   setUser: (user: IDecodedUser) => {
@@ -109,22 +108,23 @@ class App extends React.Component<{}, IState> {
               >
                 <div
                   style={{
-                    flexGrow: 1,
+                    display: "flex",
                     flexDirection: "column",
-                    display: "flex"
+                    flexGrow: 1
                   }}
                 >
                   {!this.state.user && <NavBarSignedOut />}
-                  <Route
-                    path="/join"
-                    component={this.state.user ? JoinSection : SignUp}
-                  />
+                  {!this.state.user && (
+                    <Route path="/join" component={SignUp} />
+                  )}
                   <Route path="/signup" component={SignUp} />
                   <Route path="/login" render={this.loginComponent} />
                   <Route path="/logout" render={this.logoutComponent} />
                   <Route path="/privacy" component={Privacy} />
+
                   {this.state.user && (
                     <div className="conversations-container">
+                      <Route path="/join" component={Settings} />
                       <PrivateRoute
                         path="/conversations/:conversation_id?"
                         component={Conversations}

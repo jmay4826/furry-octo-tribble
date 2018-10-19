@@ -41,13 +41,12 @@ export class Input extends React.Component<IProps, IState> {
   };
 
   public handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (this.props.field.onChange) {
+    if (this.props.field && this.props.field.onChange) {
       this.props.field.onChange(e);
     } else if (this.props.onChange) {
       this.props.onChange(e);
     }
     if (this.props.additionalChange) {
-      console.log("additional change");
       this.props.additionalChange(e);
     }
   };

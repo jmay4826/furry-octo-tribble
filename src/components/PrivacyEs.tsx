@@ -7,7 +7,7 @@ export const PrivacyEs = () => (
 <p>Fecha efectiva: October 11, 2018</p>
 
 
-<p>SAMPLE SITE ("nosotros", "a nosotros", "nuestro") opera el sitio web SAMPLE.COM (en adelante, el "Servicio").</p>
+<p>Penpals.now.sh ("nosotros", "a nosotros", "nuestro") opera el sitio web penpals.now.sh (en adelante, el "Servicio").</p>
 
 <p>Esta página le informa de nuestras políticas en materia de recopilación, uso y divulgación de datos personales
     cuando utiliza nuestro Servicio y de las opciones de las que dispone en relación con esos datos. <a href="https://www.freeprivacypolicy.com/free-privacy-policy-generator.php">Política
@@ -16,13 +16,13 @@ export const PrivacyEs = () => (
 <p>Utilizamos sus datos para prestarle el Servicio y mejorarlo. Al utilizar el Servicio, usted acepta la recopilación y
     el uso de información de conformidad con esta política. A menos que esta Política de privacidad defina lo
     contrario, los términos utilizados en ella tienen los mismos significados que nuestros Términos y Condiciones,
-    disponibles en el SAMPLE.COM</p>
+    disponibles en el penpals.now.sh</p>
 
 <h2>Definiciones</h2>
 <ul>
     <li>
         <p><strong>Servicio</strong></p>
-        <p>Servicio es el sitio web SAMPLE.COM operado por SAMPLE SITE</p>
+        <p>Servicio es el sitio web penpals.now.sh operado por penpals.now.sh</p>
     </li>
     <li>
         <p><strong>Datos personales</strong></p>
@@ -83,7 +83,7 @@ export const PrivacyEs = () => (
 </ul>
 
 <h2>Uso de datos</h2>
-<p>SAMPLE SITE utiliza los datos recopilados con diversas finalidades:</p>
+<p>Penpals.now.sh utiliza los datos recopilados con diversas finalidades:</p>
 <ul>
     <li>Suministrar y mantener nuestro Servicio</li>
     <li>Notificarle cambios en nuestro Servicio</li>
@@ -102,7 +102,7 @@ export const PrivacyEs = () => (
     transferimos los datos, incluyendo Datos personales, a United States y que los tratamos allí.</p>
 <p>Su aceptación de esta Política de privacidad seguida de su envío de esta información representa que está de acuerdo
     con dicha transferencia.</p>
-<p>SAMPLE SITE emprenderá todas las medidas razonables necesarias para garantizar que sus datos sean tratados de forma
+<p>Penpals.now.sh emprenderá todas las medidas razonables necesarias para garantizar que sus datos sean tratados de forma
     segura y de conformidad con esta Política de privacidad y no se realizará ninguna transferencia de sus Datos
     personales a una organización o país, salvo que existan unos controles adecuados establecidos incluyendo la
     seguridad de sus datos y otra información personal.</p>
@@ -110,11 +110,11 @@ export const PrivacyEs = () => (
 <h2>Divulgación de datos</h2>
 
 <h3>Requisitos legales</h3>
-<p>SAMPLE SITE puede divulgar sus Datos personales de buena fe cuando considere que esta acción es necesaria para lo
+<p>Penpals.now.sh puede divulgar sus Datos personales de buena fe cuando considere que esta acción es necesaria para lo
     siguiente:</p>
 <ul>
     <li>Cumplir una obligación legal</li>
-    <li>Proteger y defender los derechos o bienes de SAMPLE SITE</li>
+    <li>Proteger y defender los derechos o bienes de Penpals.now.sh</li>
     <li>Prevenir o investigar posibles infracciones en relación con el Servicio</li>
     <li>Proteger la seguridad personal de usuarios del Servicio o del público</li>
     <li>Protegerse frente a consecuencias legales</li>

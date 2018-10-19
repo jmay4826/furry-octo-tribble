@@ -27,7 +27,8 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
     last_name: "",
     password: "",
     role: "student",
-    section_id: this.query.section_id || ""
+    section_id: this.query.section_id || "",
+    understand: false
   };
 
   public validationSchema = Yup.object().shape({
@@ -59,7 +60,11 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
         "Section ID is not valid. Try a different ID or remove it completely.",
         async value => (!value ? true : await this.debouncedSection(value))
       )
-      .label("Section ID")
+      .label("Section ID"),
+    understand: Yup.bool()
+      .oneOf([true])
+      .required()
+      .label("This")
   });
 
   constructor(props: RouteComponentProps) {
@@ -128,9 +133,10 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
       <div
         className="conversation-preview"
         style={{
+          alignSelf: "center",
           display: "flex",
           flexDirection: "column",
-          alignSelf: "center"
+          minWidth: "75%"
         }}
       >
         <h2>Create Account</h2>
@@ -139,10 +145,28 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
           onSubmit={this.onSubmit}
           validationSchema={this.validationSchema}
         >
-          {({ values, errors, resetForm, handleChange, touched }: any) => {
+          {({ values, errors, resetForm, touched }: any) => {
             return (
               <Form>
                 <UserInformation errors={errors} touched={touched} />
+                <div style={{ display: "flex" }}>
+                  <Field
+                    component={Input}
+                    label="Password"
+                    name="password"
+                    type="password"
+                    error={touched.password && errors.password}
+                    className="full-width"
+                  />
+                  <Field
+                    component={Input}
+                    label="Confirm Password"
+                    name="confirm_password"
+                    type="password"
+                    error={errors.confirm_password}
+                    className="full-width"
+                  />
+                </div>
                 <div
                   style={{ display: "flex", justifyContent: "space-around" }}
                 >
@@ -202,11 +226,8 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
                         type="text"
                         name="section_id"
                         label="Section ID (optional)"
-                        inputStyle={
-                          errors.section_id && touched.section_id
-                            ? { border: "1px solid red" }
-                            : {}
-                        }
+                        error={errors.section_id}
+                        className="full-width"
                       />
                       <FontAwesomeIcon
                         icon={errors.section_id ? faExclamation : faCheck}
@@ -223,6 +244,34 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
                     </div>
                   </div>
                 </CSSTransition>
+                <div>
+                  <div
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      border: `1px solid ${
+                        touched.understand && errors.understand
+                          ? "red"
+                          : "white"
+                      }`,
+
+                      borderRadius: "6px",
+                      margin: "10px"
+                    }}
+                  >
+                    <Field
+                      type="checkbox"
+                      name="understand"
+                      id="understand"
+                      style={{ margin: "10px" }}
+                    />
+                    <label htmlFor="understand">
+                      I understand that private information should not be shared
+                      on this service. Messages can be read by my instructors,
+                      my conversation partners, and their instructors.
+                    </label>
+                  </div>
+                </div>
                 <div
                   style={{
                     alignItems: "center",
@@ -241,29 +290,6 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
                   <button className="accent-button" type="submit">
                     Submit
                   </button>
-                </div>
-
-                <div
-                  className="error"
-                  style={{
-                    visibility:
-                      this.state.error ||
-                      (Object.keys(errors).length > 0 &&
-                        Object.keys(touched).length >= 6)
-                        ? "visible"
-                        : "hidden"
-                  }}
-                >
-                  Please correct these errors to submit:
-                  <ul>
-                    {Object.keys(errors).map(
-                      key =>
-                        touched[key] || key === "section_id" ? (
-                          <li key={key}>{errors[key]}</li>
-                        ) : null
-                    )}
-                    {this.state.error && <li>{this.state.error}</li>}
-                  </ul>
                 </div>
               </Form>
             );

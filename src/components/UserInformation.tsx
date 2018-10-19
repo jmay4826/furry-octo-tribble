@@ -16,11 +16,8 @@ export const UserInformation = ({
         label="First Name"
         name="first_name"
         type="text"
-        inputStyle={
-          errors.first_name && touched.first_name
-            ? { border: "1px solid red" }
-            : {}
-        }
+        error={touched.first_name && errors.first_name}
+        className="full-width"
       />
 
       <Field
@@ -28,11 +25,8 @@ export const UserInformation = ({
         label="Last Name"
         name="last_name"
         type="text"
-        inputStyle={
-          errors.last_name && touched.last_name
-            ? { border: "1px solid red" }
-            : {}
-        }
+        error={touched.last_name && errors.last_name}
+        className="full-width"
       />
     </div>
     <div style={{ display: "flex" }}>
@@ -41,31 +35,8 @@ export const UserInformation = ({
         label="Email Address"
         name="email"
         type="email"
-        inputStyle={
-          errors.email && touched.email ? { border: "1px solid red" } : {}
-        }
-      />
-    </div>
-    <div style={{ display: "flex" }}>
-      <Field
-        component={Input}
-        label="Password"
-        name="password"
-        type="password"
-        inputStyle={
-          errors.password && touched.password ? { border: "1px solid red" } : {}
-        }
-      />
-      <Field
-        component={Input}
-        label="Confirm Password"
-        name="confirm_password"
-        type="password"
-        inputStyle={
-          errors.confirm_password && touched.confirm_password
-            ? { border: "1px solid red" }
-            : {}
-        }
+        error={touched.email && errors.email}
+        className="full-width"
       />
     </div>
   </React.Fragment>

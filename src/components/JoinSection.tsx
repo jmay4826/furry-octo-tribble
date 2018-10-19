@@ -1,21 +1,19 @@
-import * as React from "react";
-import { parse } from "query-string";
-import { RouteComponentProps } from "react-router";
-import * as pDebounce from "p-debounce";
 import Axios from "axios";
-import { faCheck, faExclamation } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import * as pDebounce from "p-debounce";
+import { parse } from "query-string";
+import * as React from "react";
+import { RouteComponentProps } from "react-router";
 import { Input } from "./Input";
 
-const validateSection = pDebounce(async (section_id: string) => {
-  const { data } = await Axios.get<boolean>(
-    `/validation/section_id/${section_id}`
-  );
+const validateSection = pDebounce(async (id: string) => {
+  const { data } = await Axios.get<boolean>(`/validation/section_id/${id}`);
   return data;
 }, 250);
 
 interface IState {
   section_id: string;
+  success: boolean;
+  touched: boolean;
   valid: boolean;
 }
 
@@ -23,11 +21,14 @@ export class JoinSection extends React.Component<RouteComponentProps, IState> {
   constructor(props: RouteComponentProps) {
     super(props);
     const query = parse(this.props.location.search);
+    // tslint:disable-next-line:variable-name
     const section_id = Array.isArray(query.section_id)
       ? ""
       : query.section_id || "";
     this.state = {
       section_id,
+      success: false,
+      touched: false,
       valid: false
     };
   }
@@ -45,23 +46,38 @@ export class JoinSection extends React.Component<RouteComponentProps, IState> {
     const valid = await validateSection(value);
     this.setState({ valid });
   };
+
+  public handleSubmit = async () => {
+    await Axios.post(
+      "/api/users/sections",
+      { section_id: this.state.section_id },
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+    );
+    this.setState({ success: true });
+  };
+
+  public setTouched = () => this.setState({ touched: true });
+
   public render() {
     return (
-      <div>
-        <h2>Request to join a new section</h2>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Input
-            name="section_id"
-            label="Section ID"
-            value={this.state.section_id}
-            onChange={this.handleChange}
-            style={{ marginBottom: "10px", flexGrow: 0 }}
-          />
-          <FontAwesomeIcon icon={this.state.valid ? faCheck : faExclamation} />
-        </div>
-        <button disabled={!this.state.valid} type="submit">
+      <div style={{ textAlign: "center" }}>
+        <h3>Request to join a new section</h3>
+        {/* <div style={{ display: "flex", alignItems: "center" }}> */}
+        <Input
+          name="section_id"
+          label="Section ID"
+          value={this.state.section_id}
+          onChange={this.handleChange}
+          error={
+            this.state.touched && !this.state.valid ? "Section not found" : ""
+          }
+          onFocus={this.setTouched}
+        />
+        {/* </div> */}
+        <button disabled={!this.state.valid} onClick={this.handleSubmit}>
           Submit
         </button>
+        {this.state.success && "Added to section"}
       </div>
     );
   }
