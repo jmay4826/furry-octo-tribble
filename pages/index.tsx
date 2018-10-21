@@ -1,3 +1,4 @@
 import * as React from "react";
+import { Home } from "../components/Home";
 
-export default () => <h1>Hello</h1>;
+export default () => <Home />;

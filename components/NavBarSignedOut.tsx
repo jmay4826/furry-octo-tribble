@@ -1,7 +1,7 @@
 import { faGlobeAfrica } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 export const NavBarSignedOut = () => (
   <div
@@ -11,17 +11,17 @@ export const NavBarSignedOut = () => (
       justifyContent: "space-between"
     }}
   >
-    <Link to="/">
+    <Link href="/">
       <h2>
         <FontAwesomeIcon icon={faGlobeAfrica} /> penpals
       </h2>
     </Link>
     <div>
-      <Link to="/login" style={{ margin: "10px" }}>
-        Login
+      <Link href="/login">
+        <a style={{ margin: "10px" }}>Login</a>
       </Link>
-      <Link to="/signup" style={{ margin: "10px" }}>
-        Sign Up
+      <Link href="/signup">
+        <a style={{ margin: "10px" }}> Sign Up</a>
       </Link>
     </div>
   </div>

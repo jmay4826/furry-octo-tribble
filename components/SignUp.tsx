@@ -8,7 +8,6 @@ import * as queryString from "query-string";
 import * as React from "react";
 import { Redirect, RouteComponentProps } from "react-router";
 import { CSSTransition } from "react-transition-group";
-import { UserContext } from "src/App";
 import * as Yup from "yup";
 import { Input } from "./Input";
 import { UserInformation } from "./UserInformation";
@@ -108,28 +107,7 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
   };
 
   public render() {
-    return this.state.user ? (
-      <UserContext.Consumer>
-        {({ setUser }) => {
-          if (this.state.user) {
-            setUser(this.state.user);
-
-            return (
-              <Redirect
-                push={true}
-                to={
-                  this.state.user.role === "student"
-                    ? "/conversations"
-                    : "/sections"
-                }
-              />
-            );
-          } else {
-            return null;
-          }
-        }}
-      </UserContext.Consumer>
-    ) : (
+    return (
       <div
         className="conversation-preview"
         style={{

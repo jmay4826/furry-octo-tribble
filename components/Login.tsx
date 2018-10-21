@@ -1,12 +1,23 @@
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Axios from "axios";
-import { Field, Form, Formik } from "formik";
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import * as Yup from "yup";
 import { Input } from "./Input";
+import { CardStyles } from "../styles/CardStyles";
+import { Mutation } from "react-apollo";
+import gql from "graphql-tag";
+import Router from "next/router";
+
+const LOGIN_MUTATION = gql`
+  mutation LOGIN_MUTATION($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      id
+      role
+      email
+      first_name
+      last_name
+    }
+  }
+`;
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -21,99 +32,113 @@ const validationSchema = Yup.object().shape({
 interface IState {
   email: string;
   password: string;
-  error: string;
-}
-
-interface IProps extends RouteComponentProps {
-  handleLogin: (token: string) => void;
+  errors: {
+    email: string;
+    password: string;
+  };
 }
 
 const initialState = {
   email: "",
-  error: "",
+  errors: {
+    email: "",
+    password: ""
+  },
   password: ""
 };
 
-class Login extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = initialState;
-  }
+class Login extends React.Component<{}, IState> {
+  state = initialState;
 
-  public handleSubmit = async (values: any) => {
+  handleChange = async ({
+    currentTarget: { name, value }
+  }: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      const {
-        data: { token }
-      }: { data: { token: string } } = await Axios.post("/auth/login", values);
-
-      localStorage.setItem("token", token);
-      this.props.handleLogin(token);
+      await validationSchema.validate(this.state, { abortEarly: false });
+      this.setState(prevState => ({
+        [name as "email"]: value,
+        errors: { email: "", password: "" }
+      }));
     } catch (err) {
-      let error: string;
-      if (err.response.status === 401) {
-        error = "Incorrect email or password. Please try again.";
-      } else {
-        error = "An unknown error occurred. Please try again.";
-      }
-      this.setState({ error });
+      const errors = err.inner.reduce(
+        (acc: any, error: Yup.ValidationError) => ({
+          ...acc,
+          [error.path]: error.message
+        }),
+        {}
+      );
+      this.setState({ [name as "email"]: value, errors });
     }
   };
 
-  public clearError = () => this.setState({ error: "" });
-
   public render() {
     return (
-      <Formik
-        initialValues={{ email: "", password: "" }}
-        onSubmit={this.handleSubmit}
-        validationSchema={validationSchema}
+      <Mutation
+        mutation={LOGIN_MUTATION}
+        variables={{ email: this.state.email, password: this.state.password }}
       >
-        {({ errors, touched, isSubmitting }: any) => {
+        {(login, { loading, error }) => {
           return (
-            <Form>
-              <div
-                className="conversation-preview selected"
-                style={{
-                  alignItems: "center",
-                  display: "flex",
-                  flexDirection: "column",
-                  margin: "20%"
-                }}
-              >
-                <h2>Login</h2>
-                <Field
-                  component={Input}
-                  label="Email Address"
-                  name="email"
-                  type="text"
-                  className="full-width"
-                  additionalChange={this.clearError}
-                  error={touched.email ? errors.email || this.state.error : ""}
-                />
+            <form
+              action="post"
+              onSubmit={async e => {
+                e.preventDefault();
+                const user = (await login()) as IDecodedUser;
+                console.log(user);
+                Router.push(
+                  user.role === "instructor" ? "/sections" : "/messages"
+                );
+              }}
+            >
+              <fieldset disabled={loading}>
+                <div
+                  className="card selected"
+                  style={{
+                    alignItems: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    margin: "20%"
+                  }}
+                >
+                  <h2>Login</h2>
+                  <Input
+                    label="Email Address"
+                    name="email"
+                    type="text"
+                    className="full-width"
+                    error={this.state.errors.email || (error && error.message)}
+                    onChange={this.handleChange}
+                  />
+                  <Input
+                    label="Password"
+                    type="password"
+                    name="password"
+                    className="full-width"
+                    error={this.state.errors.password}
+                    onChange={this.handleChange}
+                  />
+                  <button
+                    type="submit"
+                    disabled={
+                      !!this.state.errors.email || !!this.state.errors.password
+                    }
+                  >
+                    Submit
+                  </button>
 
-                <Field
-                  component={Input}
-                  label="Password"
-                  type="password"
-                  name="password"
-                  className="full-width"
-                  error={touched.password ? errors.password : ""}
-                />
-
-                <button type="submit">Submit</button>
-                {isSubmitting && <FontAwesomeIcon icon={faSpinner} />}
-
-                <h3>Don't have a login?</h3>
-                <h3>
-                  <Link to="/signup" style={{}}>
-                    Sign up for an account.
-                  </Link>
-                </h3>
-              </div>
-            </Form>
+                  <h3>Don't have a login?</h3>
+                  <h3>
+                    <Link href="/signup">
+                      <a>Sign up for an account.</a>
+                    </Link>
+                  </h3>
+                </div>
+                <CardStyles />
+              </fieldset>
+            </form>
           );
         }}
-      </Formik>
+      </Mutation>
     );
   }
 }

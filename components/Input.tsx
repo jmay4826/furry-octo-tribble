@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../inputComponent.css";
 
 interface IProps
   extends React.InputHTMLAttributes<
@@ -14,7 +13,7 @@ interface IProps
 }
 
 interface IState {
-  focused: boolean;
+  touched: boolean;
 }
 
 export class Input extends React.Component<IProps, IState> {
@@ -22,13 +21,10 @@ export class Input extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.input = React.createRef();
-    this.state = { focused: false };
+    this.state = { touched: false };
   }
-  public handleFocus = () => {
-    this.setState({ focused: true });
-  };
   public handleBlur = () => {
-    this.setState({ focused: false });
+    this.setState({ touched: true });
   };
 
   public handleClick = (e: React.MouseEvent<HTMLLabelElement>) => {
@@ -76,8 +72,12 @@ export class Input extends React.Component<IProps, IState> {
         <input
           ref={this.input}
           className={`input-component-input ${inputClassName || ""}`}
-          style={{ ...inputStyle, border: error ? "1px  solid red" : "" }}
-          {...field}
+          style={{
+            ...inputStyle,
+            border: this.state.touched && error ? "1px  solid red" : ""
+          }}
+          onBlur={this.handleBlur}
+          // {...field}
           {...props}
           onChange={this.handleChange}
         />
@@ -89,9 +89,69 @@ export class Input extends React.Component<IProps, IState> {
         >
           {label}
         </label>
-        <div className={`input-component-error ${!error ? "hidden" : ""}`}>
+        <div
+          className={`input-component-error ${
+            this.state.touched && error ? "" : "hidden"
+          }`}
+        >
           * {error}
         </div>
+        <style jsx={true}>{`
+          .input-component-container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 0;
+            margin: 10px;
+          }
+
+          .input-component-label {
+            font-family: "Varela Round";
+            transition: all 250ms;
+            padding: 5px;
+            position: absolute;
+            color: gray;
+            font-size: 0.95em;
+          }
+
+          .input-component-input:focus + .input-component-label {
+            padding: 5px;
+            padding-top: 5px;
+            font-size: 0.95em;
+          }
+
+          .input-component-label.placeholder {
+            font-size: 1.2em;
+            padding: 11px;
+            padding-top: 1em;
+          }
+
+          .input-component-input {
+            font-family: "Varela Round";
+            font-size: 1.2em;
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #e5e9f2;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 1);
+            padding-top: 1.5em;
+            margin: 0;
+            flex-grow: 1;
+          }
+
+          .full-width {
+            width: 100%;
+          }
+
+          .input-component-error {
+            margin: 5px 5px;
+            transition: opacity 250ms;
+          }
+
+          .input-component-error.hidden {
+            opacity: 0;
+          }
+        `}</style>
       </div>
     );
   }
