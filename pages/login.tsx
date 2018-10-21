@@ -1,3 +1,8 @@
 import { Login } from "../components/Login";
+import { SignedOutContainer } from "../styles/SignedOutContainer";
 
-export default () => <Login />;
+export default () => (
+  <SignedOutContainer>
+    <Login />
+  </SignedOutContainer>
+);

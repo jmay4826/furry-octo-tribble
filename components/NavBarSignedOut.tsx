@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import Link from "next/link";
 
-export const NavBarSignedOut = () => (
+export const NavbarSignedOut = () => (
   <div
     style={{
       alignItems: "center",
