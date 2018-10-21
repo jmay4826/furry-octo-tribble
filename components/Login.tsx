@@ -86,7 +86,7 @@ class Login extends React.Component<{}, IState> {
                 const user = (await login()) as IDecodedUser;
                 console.log(user);
                 Router.push(
-                  user.role === "instructor" ? "/sections" : "/messages"
+                  user.role === "instructor" ? "/sections" : "/conversations"
                 );
               }}
             >
