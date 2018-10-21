@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import TimeAgo from "react-timeago";
 
 interface IProps extends IConversation {
@@ -15,14 +15,15 @@ const ConversationPreview = ({
   selected = false
 }: IProps) => {
   return (
-    <Link to={`/conversations/${id}`}>
+    <Link href={`/conversations/${id}`}>
       <div className={`conversation-preview ${selected && "selected"}`}>
         <p className="conversation-preview-users">
-          {users.reduce(
+          {/* {users.reduce(
             (acc, user, i, arr) =>
               i !== arr.length - 1 ? `${acc} ${user},` : `${acc} ${user}`,
             ""
-          )}
+          )} */}
+          FIX USERS HERE
         </p>
         <p className="conversation-preview-content">
           {content

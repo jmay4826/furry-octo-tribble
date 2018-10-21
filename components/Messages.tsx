@@ -1,10 +1,13 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { Message } from "./Message";
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
+// import { Message } from "./Message";
 
-interface IProps extends RouteComponentProps<{ conversation_id: string }> {
-  refreshConversations: () => void;
-  socket: SocketIOClient.Socket;
+interface IProps {
+  // socket: SocketIOClient.Socket;
+  query: {
+    conversation_id: string;
+  };
 }
 
 interface IState {
@@ -12,6 +15,17 @@ interface IState {
   loading: boolean;
   messages: IMessage[];
 }
+
+const GET_MESSAGES_QUERY = gql`
+  query GET_MESSAGES_QUERY($where: $ConversationsWhereInput) {
+    conversations(where: $ConversationsWhereInput) {
+      id
+      messages {
+        content
+      }
+    }
+  }
+`;
 
 const initialState = {
   error: "",
@@ -30,22 +44,6 @@ class Messages extends React.Component<IProps, IState> {
     this.messagesBottom = React.createRef();
   }
 
-  public componentDidMount() {
-    this.props.socket.emit("authenticate", {
-      conversation_id: this.props.match.params.conversation_id,
-      token: localStorage.getItem("token")
-    });
-    this.props.socket.on("new message", this.handleMessage);
-
-    this.props.socket.on("unauthorized", this.handleUnauthorized);
-  }
-
-  public handleUnauthorized = () => {
-    this.setState({
-      error: "Could not load messages. Please try logging in again."
-    });
-  };
-
   public handleMessage = (messages: IMessage[]) => {
     this.setState({ messages, loading: false }, () => {
       if (this.container.current && this.messagesBottom.current) {
@@ -55,24 +53,27 @@ class Messages extends React.Component<IProps, IState> {
         );
       }
     });
-    this.props.refreshConversations();
+    // this.props.refreshConversations();
   };
 
   public componentWillUnmount() {
-    this.props.socket.off("new message");
-    this.props.socket.off("unauthorized");
+    // this.props.socket.off("new message");
+    // this.props.socket.off("unauthorized");
   }
 
   public render() {
-    return this.state.error ? (
-      <React.Fragment>
-        <div className="messages-header">Error</div>
-        <div className="messages-list">
-          <p className="error">{this.state.error}</p>
-        </div>
-      </React.Fragment>
-    ) : (
-      <React.Fragment>
+    return (
+      // <Query
+      //   query={GET_MESSAGES_QUERY}
+      //   variables={{ where: { user_conversations_some: {
+      //     conversation_id: this.props.query.conversation_id }}
+      // >
+      //   {({ data, loading, error }) => {
+      //     if (loading) return <p>Loading</p>;
+      //     if (error) return <p>Error</p>;
+      //     console.log(data);
+      // return (
+      <>
         <div className="messages-header">
           {!this.state.messages.length &&
             !this.state.loading &&
@@ -87,14 +88,19 @@ class Messages extends React.Component<IProps, IState> {
         </div>
         <div ref={this.container} className="messages-list">
           {this.state.messages.map(message => (
-            <Message key={message.message_id} {...message} />
+            <p>{JSON.stringify(message)}</p>
+            // <Message key={message.message_id} {...message} />
           ))}
 
           <div ref={this.messagesBottom} />
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }
+// </Query>
+//     );
+//   }
+// }
 
 export { Messages };
