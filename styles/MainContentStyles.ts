@@ -10,7 +10,7 @@ export const MainContentStyles = css`
 
   .main-content {
     flex-grow: 1;
-    overflow: auto;
+    overflow-y: scroll;
   }
 
   .main-content-header {
