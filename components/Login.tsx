@@ -6,6 +6,7 @@ import { CardStyles } from "../styles/CardStyles";
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 import Router from "next/router";
+import { CURRENT_USER_QUERY } from "./User";
 
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION($email: String!, $password: String!) {
@@ -76,6 +77,7 @@ class Login extends React.Component<{}, IState> {
       <Mutation
         mutation={LOGIN_MUTATION}
         variables={{ email: this.state.email, password: this.state.password }}
+        refetchQueries={[{ query: CURRENT_USER_QUERY }]}
       >
         {(login, { loading, error }) => {
           return (
@@ -89,51 +91,53 @@ class Login extends React.Component<{}, IState> {
                   user.role === "instructor" ? "/sections" : "/conversations"
                 );
               }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
             >
-              <fieldset disabled={loading}>
-                <div
-                  className="card selected"
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    margin: "20%"
-                  }}
+              <div
+                className="card selected"
+                style={{
+                  flexBasis: "50%",
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center"
+                }}
+              >
+                <h2>Login</h2>
+                <Input
+                  label="Email Address"
+                  name="email"
+                  type="text"
+                  error={this.state.errors.email || (error && error.message)}
+                  onChange={this.handleChange}
+                />
+                <Input
+                  label="Password"
+                  type="password"
+                  name="password"
+                  error={this.state.errors.password}
+                  onChange={this.handleChange}
+                />
+                <button
+                  type="submit"
+                  disabled={
+                    !!this.state.errors.email || !!this.state.errors.password
+                  }
+                  style={{ alignSelf: "center" }}
                 >
-                  <h2>Login</h2>
-                  <Input
-                    label="Email Address"
-                    name="email"
-                    type="text"
-                    className="full-width"
-                    error={this.state.errors.email || (error && error.message)}
-                    onChange={this.handleChange}
-                  />
-                  <Input
-                    label="Password"
-                    type="password"
-                    name="password"
-                    className="full-width"
-                    error={this.state.errors.password}
-                    onChange={this.handleChange}
-                  />
-                  <button
-                    type="submit"
-                    disabled={
-                      !!this.state.errors.email || !!this.state.errors.password
-                    }
-                  >
-                    Submit
-                  </button>
+                  Submit
+                </button>
 
-                  <h3>Don't have a login?</h3>
-                  <h3>
-                    <Link href="/signup">
-                      <a>Sign up for an account.</a>
-                    </Link>
-                  </h3>
-                </div>
-              </fieldset>
+                <h3>Don't have a login?</h3>
+                <h3>
+                  <Link href="/signup">
+                    <a>Sign up for an account.</a>
+                  </Link>
+                </h3>
+              </div>
               <style jsx>{CardStyles}</style>
             </form>
           );

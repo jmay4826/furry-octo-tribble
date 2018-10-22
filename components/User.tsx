@@ -2,7 +2,7 @@ import * as React from "react";
 import { Query, QueryResult } from "react-apollo";
 import gql from "graphql-tag";
 
-const CURRENT_USER_QUERY = gql`
+export const CURRENT_USER_QUERY = gql`
   query CURRENT_USER_QUERY {
     me {
       id
