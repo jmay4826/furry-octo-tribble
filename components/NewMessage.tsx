@@ -1,8 +1,39 @@
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
 import { AccentButtons, defaultAccents as accents } from "./AccentButtons";
+import { NewMessageStyles } from "../styles/NewMessageStyles";
+import { Mutation, MutationFn } from "react-apollo";
+import gql from "graphql-tag";
+import { GET_MESSAGES_QUERY } from "./Messages";
+import * as NProgress from "nprogress";
+import { GET_CONVERSATIONS_QUERY } from "./Conversations";
+
+const SEND_MESSAGE_MUTATION = gql`
+  mutation SEND_MESSAGE_MUTATION($content: String!, $conversation_id: Int!) {
+    createMessage(content: $content, conversation_id: $conversation_id) {
+      id
+      content
+      sent_at
+      from {
+        id
+        first_name
+      }
+      conversation {
+        id
+        user_conversations {
+          user {
+            first_name
+          }
+        }
+      }
+    }
+  }
+`;
+
+interface IProps {
+  conversation_id: number;
+}
 
 interface IState {
   accent: boolean;
@@ -11,10 +42,6 @@ interface IState {
   selectionStart: number;
   sendOnEnter: boolean;
   value: string;
-}
-
-interface IProps extends RouteComponentProps<{ conversation_id: string }> {
-  socket: SocketIOClient.Socket;
 }
 
 const initialState: IState = {
@@ -27,11 +54,19 @@ const initialState: IState = {
 };
 
 class NewMessage extends React.Component<IProps, IState> {
-  public textarea: HTMLTextAreaElement;
+  public textarea: React.RefObject<HTMLTextAreaElement>;
+  public sendMessage: MutationFn<
+    any,
+    {
+      content: string;
+      conversation_id: number;
+    }
+  >;
 
   constructor(props: IProps) {
     super(props);
     this.state = initialState;
+    this.textarea = React.createRef();
   }
 
   public addCharacter = (character: string) =>
@@ -48,11 +83,13 @@ class NewMessage extends React.Component<IProps, IState> {
         return { value, selectionStart, selectionEnd, accent: false };
       },
       () => {
-        this.textarea.focus();
-        this.textarea.setSelectionRange(
-          this.state.selectionStart,
-          this.state.selectionEnd
-        );
+        if (this.textarea.current) {
+          this.textarea.current.focus();
+          this.textarea.current.setSelectionRange(
+            this.state.selectionStart,
+            this.state.selectionEnd
+          );
+        }
       }
     );
 
@@ -71,7 +108,8 @@ class NewMessage extends React.Component<IProps, IState> {
   public handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (this.state.sendOnEnter && e.which === 13) {
       e.preventDefault();
-      return this.sendMessage();
+
+      return this.handleSubmit();
     }
     if (e.which === 96) {
       e.preventDefault();
@@ -90,56 +128,105 @@ class NewMessage extends React.Component<IProps, IState> {
       selectionStart
     });
 
-  public sendMessage = () => {
+  public handleSubmit = async () => {
     if (this.state.value) {
-      this.props.socket.emit("message sent", {
-        content: this.state.value,
-        conversation_id: this.props.match.params.conversation_id
-      });
+      NProgress.start();
       this.setState({ ...initialState, sendOnEnter: this.state.sendOnEnter });
+      await this.sendMessage();
+      NProgress.done();
     } else {
       this.setState({ error: true });
     }
   };
 
-  public setRef = (element: HTMLTextAreaElement) => (this.textarea = element);
-
   public render() {
     return (
-      <div className="new-message-container">
-        <AccentButtons handleClick={this.handleAccentClick} />
-        <div className="hint">
-          <p>
-            Hint: Press ` then a letter to add an accent mark. Ex. ` + a = á
-          </p>
-          <p>
-            <label>
-              <input
-                type="checkbox"
-                checked={this.state.sendOnEnter}
-                onChange={this.handleCheck}
-              />{" "}
-              Press Enter to send messages
-            </label>
-          </p>
-        </div>
-        <div className="new-message-controls">
-          <textarea
-            onKeyPress={this.handleKey}
-            required={true}
-            placeholder="Enter message"
-            ref={this.setRef}
-            onSelect={this.handleSelect}
-            value={this.state.value}
-            onChange={this.handleChange}
-            rows={4}
-            style={this.state.error ? { border: "1px solid red" } : {}}
-          />
-          <button onClick={this.sendMessage} className="send-button">
-            <FontAwesomeIcon icon={faArrowRight} size="3x" />
-          </button>
-        </div>
-      </div>
+      <Mutation
+        optimisticResponse={{
+          __typename: "Mutation",
+          createMessage: {
+            __typename: "Message",
+            id: -1,
+            content: this.state.value,
+            sent_at: Date.now(),
+            from: {
+              __typename: "Appuser",
+              id: -1,
+              first_name: "Sending..."
+            }
+          }
+        }}
+        update={(proxy, data) => {
+          const current = proxy.readQuery({
+            query: GET_MESSAGES_QUERY,
+            variables: {
+              where: {
+                conversation: { id: +this.props.conversation_id }
+              }
+            }
+          }) as { messages: any };
+          if (data.data && current) {
+            current.messages.push(data.data.createMessage);
+            proxy.writeQuery({
+              query: GET_MESSAGES_QUERY,
+              data: current,
+              variables: {
+                where: {
+                  conversation: { id: this.props.conversation_id }
+                }
+              }
+            });
+          }
+        }}
+        mutation={SEND_MESSAGE_MUTATION}
+        variables={{
+          content: this.state.value,
+          conversation_id: this.props.conversation_id
+        }}
+        refetchQueries={["GET_CONVERSATIONS_QUERY"]}
+      >
+        {(sendMessage, { loading, error, data }) => {
+          this.sendMessage = sendMessage;
+          return (
+            <div className="new-message-container">
+              <AccentButtons handleClick={this.handleAccentClick} />
+              <div className="hint">
+                <p>
+                  Hint: Press ` then a letter to add an accent mark. Ex. ` + a =
+                  á
+                </p>
+                <p>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={this.state.sendOnEnter}
+                      onChange={this.handleCheck}
+                    />{" "}
+                    Press Enter to send messages
+                  </label>
+                </p>
+              </div>
+              <div className="new-message-controls">
+                <textarea
+                  onKeyPress={this.handleKey}
+                  required={true}
+                  placeholder="Enter message"
+                  ref={this.textarea}
+                  onSelect={this.handleSelect}
+                  value={this.state.value}
+                  onChange={this.handleChange}
+                  rows={4}
+                  style={this.state.error ? { border: "1px solid red" } : {}}
+                />
+                <button onClick={this.handleSubmit} className="send-button">
+                  <FontAwesomeIcon icon={faArrowRight} size="3x" />
+                </button>
+              </div>
+              <style jsx>{NewMessageStyles}</style>
+            </div>
+          );
+        }}
+      </Mutation>
     );
   }
 }

@@ -7,27 +7,49 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { NavLink } from "../components/NavLink";
-import { SidebarStyles } from "../styles/SidebarStyles";
+import { NavbarStyles } from "../styles/NavbarStyles";
+import { User } from "./User";
 
-const NavbarSignedIn = ({ role }: { role: "instructor" | "student" }) => (
-  <div className="sidebar">
-    <NavLink href="/conversations" activeClassName="active">
-      <FontAwesomeIcon icon={faComments} size="2x" className="sidebar-icon" />
-    </NavLink>
-    {role === "instructor" && (
-      <NavLink href="/sections" activeClassName="active">
-        <FontAwesomeIcon icon={faUsers} size="2x" className="sidebar-icon" />
-      </NavLink>
-    )}
-    <NavLink href="/settings" activeClassName="active">
-      <FontAwesomeIcon icon={faCog} size="2x" className="sidebar-icon" />
-    </NavLink>
+const NavbarSignedIn = () => (
+  <User>
+    {({ loading, error, data }) => {
+      if (error) return <p>Error</p>;
+      if (!data && !loading) return <p>Error</p>;
+      return (
+        <div className="navbar">
+          <NavLink
+            href="/conversations"
+            className="navbar-icon"
+            activeClassName="active"
+          >
+            <FontAwesomeIcon icon={faComments} size="2x" />
+          </NavLink>
+          {data &&
+            data.me.role === "instructor" && (
+              <NavLink
+                href="/sections"
+                className="navbar-icon"
+                activeClassName="active"
+              >
+                <FontAwesomeIcon icon={faUsers} size="2x" />
+              </NavLink>
+            )}
+          <NavLink
+            className="navbar-icon"
+            href="/settings"
+            activeClassName="active"
+          >
+            <FontAwesomeIcon icon={faCog} size="2x" />
+          </NavLink>
 
-    <NavLink href="/logout">
-      <FontAwesomeIcon icon={faSignOutAlt} size="2x" className="sidebar-icon" />
-    </NavLink>
-    <SidebarStyles />
-  </div>
+          <NavLink className="navbar-icon" href="/logout">
+            <FontAwesomeIcon icon={faSignOutAlt} size="2x" />
+          </NavLink>
+          <style jsx>{NavbarStyles}</style>
+        </div>
+      );
+    }}
+  </User>
 );
 
 export { NavbarSignedIn };

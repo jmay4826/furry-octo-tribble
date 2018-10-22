@@ -1,6 +1,7 @@
+import * as React from "react";
 import Head from "next/head";
 export const GlobalStyles = () => (
-  <>
+  <React.Fragment>
     <Head>
       <link
         href="https://use.fontawesome.com/releases/v5.4.1/css/svg-with-js.css"
@@ -55,6 +56,11 @@ export const GlobalStyles = () => (
         padding: 0;
         border: none;
       }
+
+      p {
+        margin: 0;
+        padding: 0;
+      }
     `}</style>
-  </>
+  </React.Fragment>
 );

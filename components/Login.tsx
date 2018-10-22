@@ -80,7 +80,7 @@ class Login extends React.Component<{}, IState> {
         {(login, { loading, error }) => {
           return (
             <form
-              action="post"
+              method="post"
               onSubmit={async e => {
                 e.preventDefault();
                 const user = (await login()) as IDecodedUser;
@@ -133,8 +133,8 @@ class Login extends React.Component<{}, IState> {
                     </Link>
                   </h3>
                 </div>
-                <CardStyles />
               </fieldset>
+              <style jsx>{CardStyles}</style>
             </form>
           );
         }}

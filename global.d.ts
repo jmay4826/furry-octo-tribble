@@ -6,19 +6,37 @@ interface IDecodedUser {
   id: number;
 }
 
+interface IPrivateUser {
+  id: number;
+  first_name: string;
+  // TODO: allow a display_name, default to first_name
+  // display_name: string;
+}
+
+interface IStandardUser extends IPrivateUser {
+  last_name: string;
+  email: string;
+  role: "student" | "instructor";
+}
+
+interface IConversationUser {
+  user: IPrivateUser;
+}
+
 interface IConversation {
   id: number;
-  sent_at: string;
-  users: string[];
+  messages: [IMessage?];
+  user_conversations: [IConversationUser];
 }
 
 interface IMessage {
+  id: number;
   content: string;
-  from_id: number;
-  from_username: string;
-  message_id: number;
   sent_at: string;
-  users: string[];
+  from: IPrivateUser;
+  conversation: {
+    user_conversations: [IConversationUser];
+  };
 }
 
 interface ISection {
