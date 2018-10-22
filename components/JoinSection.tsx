@@ -20,13 +20,13 @@ interface IState {
 export class JoinSection extends React.Component<RouteComponentProps, IState> {
   constructor(props: RouteComponentProps) {
     super(props);
-    const query = parse(this.props.location.search);
+    // const query = parse(this.props.location.search);
     // tslint:disable-next-line:variable-name
-    const section_id = Array.isArray(query.section_id)
-      ? ""
-      : query.section_id || "";
+    // const section_id = Array.isArray(query.section_id)
+    //   ? ""
+    //   : query.section_id || "";
     this.state = {
-      section_id,
+      section_id: "",
       success: false,
       touched: false,
       valid: false
@@ -34,10 +34,10 @@ export class JoinSection extends React.Component<RouteComponentProps, IState> {
   }
 
   public async componentDidMount() {
-    if (this.state.section_id) {
-      const valid = await validateSection(this.state.section_id);
-      this.setState({ valid });
-    }
+    //   if (this.state.section_id) {
+    //     const valid = await validateSection(this.state.section_id);
+    //     this.setState({ valid });
+    //   }
   }
   public handleChange = async ({
     currentTarget: { value }

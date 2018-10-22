@@ -1,12 +1,13 @@
 import Axios from "axios";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { UserContext } from "src/App";
+// import { UserContext } from "../src/App";
 
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { Input } from "./Input";
 import { JoinSection } from "./JoinSection";
+import { User } from "./User";
 
 interface IProps extends RouteComponentProps {
   prop?: void;
@@ -75,12 +76,12 @@ export class Settings extends React.Component<IProps, any> {
 
   public render() {
     return (
-      <UserContext.Consumer>
-        {({ user }) => {
-          return !user ? null : (
+      <User>
+        {({ loading, error, data }) => {
+          return !data ? null : (
             <div className="messages-container">
               <div className="messages-header">
-                {user.first_name}
+                {data.me.first_name}
                 's Settings
               </div>
               <div className="messages-list">
@@ -90,10 +91,10 @@ export class Settings extends React.Component<IProps, any> {
                 >
                   <Formik
                     initialValues={{
-                      email: user.email,
-                      first_name: user.first_name,
-                      id: user.id,
-                      last_name: user.last_name
+                      email: data.me.email,
+                      first_name: data.me.first_name,
+                      id: data.me.id,
+                      last_name: data.me.last_name
                     }}
                     validationSchema={validationSchema}
                     onSubmit={this.handleSubmit}
@@ -102,7 +103,7 @@ export class Settings extends React.Component<IProps, any> {
                       return (
                         <Form style={{ flexBasis: "50%", textAlign: "center" }}>
                           <h3>User Information</h3>
-                          <input type="hidden" value={user.id} name="id" />
+                          <input type="hidden" value={data.me.id} name="id" />
 
                           <Field
                             component={Input}
@@ -150,7 +151,7 @@ export class Settings extends React.Component<IProps, any> {
                     initialValues={{
                       confirmPassword: "",
                       currentPassword: "",
-                      id: user.id,
+                      id: data.me.id,
                       newPassword: ""
                     }}
                     validationSchema={Yup.object().shape({
@@ -180,7 +181,7 @@ export class Settings extends React.Component<IProps, any> {
                           }}
                         >
                           <h3>Change Password</h3>
-                          <input type="hidden" value={user.id} name="id" />
+                          <input type="hidden" value={data.me.id} name="id" />
                           <Field
                             name="currentPassword"
                             component={Input}
@@ -240,7 +241,7 @@ export class Settings extends React.Component<IProps, any> {
             </div>
           );
         }}
-      </UserContext.Consumer>
+      </User>
     );
   }
 }

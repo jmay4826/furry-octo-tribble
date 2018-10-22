@@ -1,11 +1,12 @@
 import { withRouter } from "next/router";
 
 import { SignedInContainer } from "../styles/SignedInContainer";
+import { Settings } from "../components/Settings";
 
-const Settings = (props: any) => (
+const SettingsPage = (props: any) => (
   <SignedInContainer>
-    <p>Settings</p>
+    <Settings />
   </SignedInContainer>
 );
 
-export default withRouter(Settings);
+export default withRouter(SettingsPage);
