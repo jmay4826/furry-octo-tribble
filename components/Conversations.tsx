@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Query, QueryResult } from "react-apollo";
 import gql from "graphql-tag";
+import { Flipper, Flipped } from "react-flip-toolkit";
 import { ConversationPreview } from "./ConversationPreview";
 import { SidebarStyles } from "../styles/SidebarStyles";
 import { User } from "./User";
@@ -70,7 +71,6 @@ export class Conversations extends React.Component<IProps, IState> {
                 if (loading) return <p>Loading</p>;
                 if (error) return <p>Error</p>;
                 if (!data) return <p>Error</p>;
-
                 return (
                   <div className="sidebar-container">
                     <input
@@ -83,38 +83,47 @@ export class Conversations extends React.Component<IProps, IState> {
                     />
                     <h2>Conversations</h2>
                     <div className="sidebar-list">
-                      {data.conversations
-                        .filter(this.filter)
-                        .sort((a, b) => {
-                          if (!a.messages[0]) {
-                            return 1;
-                          }
-
-                          if (!b.messages[0]) {
-                            return -1;
-                          }
-
-                          if (a.messages[0].sent_at > b.messages[0].sent_at) {
-                            return -1;
-                          }
-                          if (a.messages[0].sent_at === b.messages[0].sent_at) {
-                            return 0;
-                          } else {
-                            return 1;
-                          }
-                        })
-                        .map(conversation => (
-                          <ConversationPreview
-                            key={conversation.id}
-                            {...conversation}
-                            selected={
-                              this.props.conversation_id
-                                ? +this.props.conversation_id ===
-                                  conversation.id
-                                : false
+                      <Flipper flipKey={JSON.stringify(data.conversations)}>
+                        {data.conversations
+                          .filter(this.filter)
+                          .sort((a, b) => {
+                            if (!a.messages[0]) {
+                              return 1;
                             }
-                          />
-                        ))}
+
+                            if (!b.messages[0]) {
+                              return -1;
+                            }
+
+                            if (a.messages[0].sent_at > b.messages[0].sent_at) {
+                              return -1;
+                            }
+                            if (
+                              a.messages[0].sent_at === b.messages[0].sent_at
+                            ) {
+                              return 0;
+                            } else {
+                              return 1;
+                            }
+                          })
+                          .map(conversation => (
+                            <Flipped
+                              flipId={conversation.id.toString()}
+                              key={conversation.id}
+                            >
+                              <ConversationPreview
+                                key={conversation.id}
+                                {...conversation}
+                                selected={
+                                  this.props.conversation_id
+                                    ? +this.props.conversation_id ===
+                                      conversation.id
+                                    : false
+                                }
+                              />
+                            </Flipped>
+                          ))}
+                      </Flipper>
                       {!loading &&
                         !data.conversations.length && (
                           <div className="conversation-preview">

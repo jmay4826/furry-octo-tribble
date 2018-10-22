@@ -6,7 +6,7 @@ export const CardStyles = css`
     border-radius: 10px;
     padding: 10px;
     margin: 10px;
-    transition: all 400ms;
+    transition: background 400ms;
   }
 
   .card.selected {

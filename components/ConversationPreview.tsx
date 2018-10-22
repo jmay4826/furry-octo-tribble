@@ -19,12 +19,11 @@ const formatUsers = (
     : `${acc} ${user.user.first_name}`;
 
 const ConversationPreview = (props: IProps) => {
-  const { user_conversations, messages, id, selected = false } = props;
+  const { user_conversations, messages, id, selected = false, ...rest } = props;
   const previewMessage = messages[0] || defaultMessage;
-
   return (
     <Link href={{ path: "/conversations", query: { conversation_id: id } }}>
-      <div className={`card ${selected && "selected"}`}>
+      <div className={`card ${selected && "selected"}`} {...rest}>
         <p className="card-header">
           {user_conversations.reduce(formatUsers, "")}
         </p>
