@@ -1,8 +1,4 @@
 import * as React from "react";
-
-import { Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import { Input } from "./Input";
 import { SectionInput } from "./SectionInput";
 import { User } from "./User";
 import { MainContentStyles } from "../styles/MainContentStyles";
@@ -48,7 +44,6 @@ export class Settings extends React.Component<{}, any> {
                   style={{ display: "flex", alignItems: "space-between" }}
                 >
                   <UpdateUserInfo user={data.me} />
-
                   <UpdatePassword user={data.me} />
                 </div>
                 <div className="card" style={{ display: "flex" }}>
