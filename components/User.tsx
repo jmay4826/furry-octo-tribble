@@ -10,6 +10,9 @@ export const CURRENT_USER_QUERY = gql`
       last_name
       email
       role
+      user_sections {
+        id
+      }
     }
   }
 `;
