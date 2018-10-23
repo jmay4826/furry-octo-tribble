@@ -9,7 +9,6 @@ interface IProps
   inputClassName?: string;
   field?: any;
   error?: string;
-  additionalChange?: (e?: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface IState {
@@ -23,7 +22,10 @@ export class Input extends React.Component<IProps, IState> {
     this.input = React.createRef();
     this.state = { touched: false };
   }
-  public handleBlur = () => {
+  public handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (this.props.onFocus) {
+      this.props.onFocus(e);
+    }
     this.setState({ touched: true });
   };
 
@@ -39,11 +41,9 @@ export class Input extends React.Component<IProps, IState> {
   public handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this.props.field && this.props.field.onChange) {
       this.props.field.onChange(e);
-    } else if (this.props.onChange) {
-      this.props.onChange(e);
     }
-    if (this.props.additionalChange) {
-      this.props.additionalChange(e);
+    if (this.props.onChange) {
+      this.props.onChange(e);
     }
   };
 
@@ -59,7 +59,6 @@ export class Input extends React.Component<IProps, IState> {
       form,
       children,
       error,
-      additionalChange,
       onChange,
       ...props
     } = this.props;
@@ -69,18 +68,32 @@ export class Input extends React.Component<IProps, IState> {
         className={`input-component-container ${className || ""}`}
         style={style}
       >
-        <input
-          ref={this.input}
-          className={`input-component-input ${inputClassName || ""}`}
-          style={{
-            ...inputStyle,
-            border: this.state.touched && error ? "1px  solid red" : ""
-          }}
-          onBlur={this.handleBlur}
-          // {...field}
-          {...props}
-          onChange={this.handleChange}
-        />
+        {field ? (
+          <input
+            ref={this.input}
+            className={`input-component-input ${inputClassName || ""}`}
+            style={{
+              ...inputStyle,
+              border: this.state.touched && error ? "1px  solid red" : ""
+            }}
+            {...field}
+            {...props}
+            onFocus={this.handleFocus}
+            onChange={this.handleChange}
+          />
+        ) : (
+          <input
+            ref={this.input}
+            className={`input-component-input ${inputClassName || ""}`}
+            style={{
+              ...inputStyle,
+              border: this.state.touched && error ? "1px  solid red" : ""
+            }}
+            {...props}
+            onFocus={this.handleFocus}
+            onChange={this.handleChange}
+          />
+        )}
         <label
           onClick={this.handleClick}
           className={`input-component-label ${!!this.input.current &&
@@ -94,7 +107,7 @@ export class Input extends React.Component<IProps, IState> {
             this.state.touched && error ? "" : "hidden"
           }`}
         >
-          * {error}
+          {error}
         </div>
         <style jsx={true}>{`
           .input-component-container {
