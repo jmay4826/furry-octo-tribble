@@ -46,7 +46,6 @@ class Messages extends React.Component<IProps> {
           }
           if (error) return <p>Error</p>;
           if (!data) return <p>Error</p>;
-          console.log(data);
 
           return (
             <React.Fragment>
