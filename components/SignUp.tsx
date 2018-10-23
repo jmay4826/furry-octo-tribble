@@ -1,24 +1,19 @@
-import { faCheck, faExclamation } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import Axios from "axios";
 import { Field, Form, Formik } from "formik";
-import * as debounce from "p-debounce";
-import * as queryString from "query-string";
 import * as React from "react";
-import { Redirect, RouteComponentProps } from "react-router";
+
 import { CSSTransition } from "react-transition-group";
 import * as Yup from "yup";
 import { Input } from "./Input";
 import { UserInformation } from "./UserInformation";
+import { SectionInput } from "./SectionInput";
 
 interface IState {
   user?: IDecodedUser;
   error: string;
 }
 
-class SignUp extends React.Component<RouteComponentProps, IState> {
-  public query = queryString.parse(this.props.location.search);
+class SignUp extends React.Component<{}, IState> {
   public initialValues = {
     confirm_password: "",
     email: "",
@@ -26,7 +21,7 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
     last_name: "",
     password: "",
     role: "student",
-    section_id: this.query.section_id || "",
+    section_id: "",
     understand: false
   };
 
@@ -53,39 +48,20 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
       ["student", "instructor"],
       "Please choose a student or instructor account"
     ),
-    section_id: Yup.string()
-      .test(
-        "section_id",
-        "Section ID is not valid. Try a different ID or remove it completely.",
-        async value => (!value ? true : await this.debouncedSection(value))
-      )
-      .label("Section ID"),
+    section_id: Yup.string().label("Section ID"),
     understand: Yup.bool()
       .oneOf([true])
       .required()
       .label("This")
   });
 
-  constructor(props: RouteComponentProps) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       error: "",
       user: undefined
     };
   }
-
-  public validateInput = (path: string) => async (value: string) => {
-    try {
-      const data = (await Axios.get<boolean>(`/validation/${path}/${value}`))
-        .data;
-
-      return data;
-    } catch (err) {
-      return false;
-    }
-  };
-  // tslint:disable-next-line:member-ordering
-  public debouncedSection = debounce(this.validateInput("section_id"), 250, {});
 
   public onSubmit = async (values: any, functions: any) => {
     try {
@@ -197,35 +173,15 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
                   unmountOnExit={true}
                   mountOnEnter={true}
                 >
-                  <div style={{ display: "flex" }}>
-                    <div style={{ flexGrow: 1, display: "flex" }}>
-                      <Field
-                        component={Input}
-                        type="text"
-                        name="section_id"
-                        label="Section ID (optional)"
-                        error={errors.section_id}
-                        className="full-width"
-                      />
-                      <FontAwesomeIcon
-                        icon={errors.section_id ? faExclamation : faCheck}
-                        style={{
-                          alignSelf: "center",
-                          color: values.section_id
-                            ? errors.section_id
-                              ? "red"
-                              : "green"
-                            : "gray",
-                          margin: "0 10px"
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <Field
+                    name="section_id"
+                    component={SectionInput}
+                    error={errors.section_id}
+                  />
                 </CSSTransition>
                 <div>
                   <div
                     style={{
-                      width: "100%",
                       padding: "10px",
                       border: `1px solid ${
                         touched.understand && errors.understand
@@ -258,7 +214,6 @@ class SignUp extends React.Component<RouteComponentProps, IState> {
                   }}
                 >
                   <button
-                    className="accent-button"
                     type="button"
                     // tslint:disable-next-line:jsx-no-lambda
                     onClick={() => resetForm(this.initialValues)}
