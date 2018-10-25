@@ -7,6 +7,9 @@ import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 import Router from "next/router";
 import { CURRENT_USER_QUERY } from "./User";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION($email: String!, $password: String!) {
@@ -121,6 +124,10 @@ class Login extends React.Component<{}, IState> {
                   error={this.state.errors.password}
                   onChange={this.handleChange}
                 />
+                <LoadingSpinner
+                  loading={loading}
+                  style={{ alignSelf: "center" }}
+                />
                 <button
                   type="submit"
                   disabled={
@@ -138,6 +145,7 @@ class Login extends React.Component<{}, IState> {
                   </Link>
                 </h3>
               </div>
+
               <style jsx>{CardStyles}</style>
             </form>
           );
