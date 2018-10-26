@@ -7,7 +7,7 @@ import gql from "graphql-tag";
 interface IProps {
   section_id: string;
   client: ApolloClient<any>;
-  additionalChange?: (x: any) => any;
+  onChange?: (x: React.ChangeEvent<HTMLInputElement>) => void;
   field?: any;
   error?: string;
 }
@@ -35,10 +35,15 @@ export class SectionInputBase extends React.Component<IProps, any> {
     });
   }, 250);
 
-  handleChange = async ({
-    currentTarget: { name, value }
-  }: React.ChangeEvent<HTMLInputElement>) => {
+  handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      currentTarget: { name, value }
+    } = e;
+
     this.setState({ [name]: value, validating: true });
+    if (this.props.onChange) {
+      this.props.onChange(e);
+    }
     const section = await this.debounced(value);
     this.setState({ valid: !!section.data.validateSection, validating: false });
   };

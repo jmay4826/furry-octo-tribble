@@ -11,10 +11,13 @@ interface IState {
   valid: boolean;
 }
 
-interface IProps extends WithRouterProps<{ section_id: string }> {
+interface IProps extends IInputProps, WithRouterProps<{ section_id: string }> {}
+
+interface IInputProps {
   field?: any;
   form?: any;
   error?: string;
+  onChange?: (x: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 class SectionInputComponent extends React.Component<IProps, IState> {
@@ -51,6 +54,7 @@ class SectionInputComponent extends React.Component<IProps, IState> {
               (this.props.router.query && this.props.router.query.section_id) ||
               ""
             }
+            onChange={this.props.onChange}
           />
         )}
       </ApolloConsumer>
@@ -60,4 +64,4 @@ class SectionInputComponent extends React.Component<IProps, IState> {
 
 export const SectionInput = withRouter(
   SectionInputComponent
-) as React.ComponentType<{ form?: any; field?: any; error?: any }>;
+) as React.ComponentType<IInputProps>;

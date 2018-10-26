@@ -5,6 +5,7 @@ import { MainContentStyles } from "../styles/MainContentStyles";
 import { CardStyles } from "../styles/CardStyles";
 import { UpdatePassword } from "./UpdatePassword";
 import { UpdateUserInfo } from "./UpdateUserInfo";
+import { JoinSection } from "./JoinSection";
 
 export class Settings extends React.Component<{}, any> {
   constructor(props: {}) {
@@ -50,27 +51,19 @@ export class Settings extends React.Component<{}, any> {
                   <div style={{ flexBasis: "50%" }}>
                     <h3>Current Sections</h3>
                     <ul>
-                      {data.me.user_sections.map(({ id }: { id: number }) => (
-                        <li key={id}>{id}</li>
-                      ))}
+                      {data.me.user_sections.map(
+                        ({ section: { id, description } }) => (
+                          <li key={id}>
+                            {id} - {description}
+                          </li>
+                        )
+                      )}
                       {!data.me.user_sections.length && (
                         <li>Not enrolled in any sections yet.</li>
                       )}
                     </ul>
                   </div>
-                  <div style={{ flexBasis: "50%" }}>
-                    <div style={{ textAlign: "center" }}>
-                      <h3>Request to join a new section</h3>
-                      <SectionInput />
-                      <button
-                      // disabled={!this.state.valid}
-                      // onClick={this.handleSubmit}
-                      >
-                        Submit
-                      </button>
-                      {/* {this.state.success && "Added to section"} */}
-                    </div>
-                  </div>
+                  <JoinSection />
                 </div>
               </div>
               <style jsx>{MainContentStyles}</style>
