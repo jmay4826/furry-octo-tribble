@@ -11,7 +11,10 @@ export const CURRENT_USER_QUERY = gql`
       email
       role
       user_sections {
-        id
+        section {
+          id
+          description
+        }
       }
     }
   }

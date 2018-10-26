@@ -17,7 +17,7 @@ interface IStandardUser extends IPrivateUser {
   last_name: string;
   email: string;
   role: "student" | "instructor";
-  user_sections: [{ id: number }];
+  user_sections: [{ section: { id: number; description: string } }];
 }
 
 interface IConversationUser {
