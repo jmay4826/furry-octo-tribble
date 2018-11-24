@@ -23,7 +23,7 @@ export const CardStyles = css`
   .card-content {
     color: rgba(0, 0, 0, 0.5);
     text-overflow: ellipsis;
-    padding: 15px 5px;
+    padding: 5px 15px;
     transition: all 400ms;
   }
 

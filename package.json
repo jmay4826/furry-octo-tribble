@@ -32,6 +32,7 @@
     "papaparse": "^4.6.0",
     "query-string": "^6.2.0",
     "react": "^16.5.2",
+    "react-adopt": "^0.6.0",
     "react-apollo": "^2.2.4",
     "react-dom": "^16.5.2",
     "react-flip-toolkit": "^5.0.5",

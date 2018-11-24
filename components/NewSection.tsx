@@ -3,17 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Axios from "axios";
 import { Field, FieldArray, Form, Formik, ErrorMessage } from "formik";
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
 import * as Yup from "yup";
 import { BulkSectionUpload } from "./BulkSectionUpload";
 import { Input } from "./Input";
+import { Card } from "./Card";
 
-interface IParams {
-  section_id: string;
-}
+// interface IParams {
+//   section_id: string;
+// }
 
-interface IProps extends RouteComponentProps<IParams> {
-  refreshSections: () => Promise<void>;
+interface IProps {
+  // interface IProps extends RouteComponentProps<IParams> {
+  // refreshSections: () => Promise<void>;
 }
 
 class NewSection extends React.Component<IProps, any> {
@@ -22,24 +23,14 @@ class NewSection extends React.Component<IProps, any> {
     description: Yup.string().required(),
     id: Yup.string().required()
   });
-  public handleSubmit = (values: any) => {
-    console.log(values);
-    // Axios;
-    Axios.post("/api/sections/", values, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    })
-      .then(res => {
-        this.props
-          .refreshSections()
-          .then(() => this.props.history.push(`/sections/${res.data.id}`));
-      })
-      .catch(err => console.log("error", err));
-  };
+
   public render() {
     return (
       <React.Fragment>
-        <div className="messages-header">
-          <span style={{ visibility: "hidden" }}>Add a section</span>
+        <div className="main-content-header">
+          {/* <span style={{ visibility: "hidden" }}> */}
+          Add a section
+          {/* </span> */}
         </div>
         <div
           className="messages-list"
@@ -49,7 +40,7 @@ class NewSection extends React.Component<IProps, any> {
             flexDirection: "column"
           }}
         >
-          <div className="conversation-preview">
+          <Card header="">
             <Formik
               initialValues={{
                 collaborators: [""],
@@ -57,7 +48,7 @@ class NewSection extends React.Component<IProps, any> {
                 id: "",
                 type: "blank"
               }}
-              onSubmit={this.handleSubmit}
+              onSubmit={console.log}
               validationSchema={this.validationSchema}
             >
               {({ values, submitForm, errors }: any) => {
@@ -185,7 +176,7 @@ class NewSection extends React.Component<IProps, any> {
                 );
               }}
             </Formik>
-          </div>
+          </Card>
         </div>
       </React.Fragment>
     );

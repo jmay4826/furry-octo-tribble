@@ -72,6 +72,7 @@ class Login extends React.Component<{}, IState> {
         {}
       );
       this.setState({ [name as "email"]: value, errors });
+      console.log(err)
     }
   };
 

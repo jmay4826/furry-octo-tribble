@@ -9,10 +9,13 @@ interface IProps
   inputClassName?: string;
   field?: any;
   error?: string;
+  preserveSpace?: boolean;
+  copyOnClick?: boolean;
 }
 
 interface IState {
   touched: boolean;
+  copied: boolean;
 }
 
 export class Input extends React.Component<IProps, IState> {
@@ -20,7 +23,7 @@ export class Input extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.input = React.createRef();
-    this.state = { touched: false };
+    this.state = { touched: false, copied: false };
   }
   public handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     if (this.props.onFocus) {
@@ -29,12 +32,21 @@ export class Input extends React.Component<IProps, IState> {
     this.setState({ touched: true });
   };
 
-  public handleClick = (e: React.MouseEvent<HTMLLabelElement>) => {
+  public handleClick = (
+    e: React.MouseEvent<HTMLLabelElement | HTMLInputElement>
+  ) => {
     if (this.props.onClick) {
       this.props.onClick(e);
     }
     if (this.input.current) {
       this.input.current.focus();
+      if (this.props.copyOnClick) {
+        this.input.current.select();
+        document.execCommand("copy");
+        this.setState({ copied: true }, () =>
+          setTimeout(() => this.setState({ copied: false }), 3000)
+        );
+      }
     }
   };
 
@@ -60,6 +72,8 @@ export class Input extends React.Component<IProps, IState> {
       children,
       error,
       onChange,
+      preserveSpace = true,
+      copyOnClick,
       ...props
     } = this.props;
 
@@ -92,6 +106,7 @@ export class Input extends React.Component<IProps, IState> {
             {...props}
             onFocus={this.handleFocus}
             onChange={this.handleChange}
+            onClick={copyOnClick ? this.handleClick : undefined}
           />
         )}
         <label
@@ -100,14 +115,15 @@ export class Input extends React.Component<IProps, IState> {
             !this.input.current.value &&
             "placeholder"}`}
         >
-          {label}
+          {label} {this.state.copied && " -- copied!"}
         </label>
         <div
           className={`input-component-error ${
             this.state.touched && error ? "" : "hidden"
           }`}
+          style={preserveSpace ? {} : { display: "none" }}
         >
-          {error}
+          * {error}
         </div>
         <style jsx={true}>{`
           .input-component-container {
@@ -159,6 +175,7 @@ export class Input extends React.Component<IProps, IState> {
           .input-component-error {
             margin: 5px 5px;
             transition: opacity 250ms;
+            text-align: initial;
           }
 
           .input-component-error.hidden {

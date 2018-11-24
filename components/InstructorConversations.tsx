@@ -1,7 +1,6 @@
 import Axios from "axios";
 import * as React from "react";
-import { Route, RouteComponentProps } from "react-router";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { ConversationPreview } from "./ConversationPreview";
 import { NewConversation } from "./NewConversation";
 
@@ -10,7 +9,7 @@ interface IParams {
   section_id: string;
 }
 
-interface IProps extends RouteComponentProps<IParams> {
+interface IProps extends IParams {
   sections: ISection[];
   student?: { first_name: string; last_name: string; user_id: number };
 }
@@ -25,32 +24,32 @@ class InstructorConversations extends React.Component<IProps, any> {
     };
   }
 
-  public getConversations() {
-    Axios.get(
-      `/api/students/${this.props.match.params.student_id}/conversations`,
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      }
-    )
-      .then(({ data: { conversations } }) => {
-        // tslint:disable-next-line:no-console
-        console.log(conversations);
-        this.setState({ conversations, loading: false });
-      })
-      .catch(error => this.setState({ error }));
-  }
-  public componentDidMount() {
-    this.getConversations();
-  }
+  // public getConversations() {
+  //   Axios.get(
+  //     `/api/students/${this.props.match.params.student_id}/conversations`,
+  //     {
+  //       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+  //     }
+  //   )
+  //     .then(({ data: { conversations } }) => {
+  //       // tslint:disable-next-line:no-console
+  //       console.log(conversations);
+  //       this.setState({ conversations, loading: false });
+  //     })
+  //     .catch(error => this.setState({ error }));
+  // }
+  // public componentDidMount() {
+  //   this.getConversations();
+  // }
 
-  public componentDidUpdate(prevProps: IProps) {
-    if (
-      prevProps.match.params.student_id !== this.props.match.params.student_id
-    ) {
-      this.setState({ conversations: [], loading: true });
-      this.getConversations();
-    }
-  }
+  // public componentDidUpdate(prevProps: IProps) {
+  //   if (
+  //     prevProps.match.params.student_id !== this.props.match.params.student_id
+  //   ) {
+  //     this.setState({ conversations: [], loading: true });
+  //     this.getConversations();
+  //   }
+  // }
 
   public NewConversationComponent = (props: RouteComponentProps<IParams>) => {
     return (
@@ -85,7 +84,9 @@ class InstructorConversations extends React.Component<IProps, any> {
           <div className="conversation-preview">
             <p className="conversation-preview-users">
               <Link
-                to={`/sections/${this.props.match.params.section_id}/students/${
+                href={`/sections/${
+                  this.props.match.params.section_id
+                }/students/${
                   this.props.match.params.student_id
                 }/conversations/new`}
               >

@@ -1,38 +1,71 @@
 import { Field, Form, Formik } from "formik";
 import { Input } from "./Input";
 import * as Yup from "yup";
+import { adopt } from "react-adopt";
+import { User } from "./User";
+import gql from "graphql-tag";
+import { Mutation } from "react-apollo";
+
+const UPDATE_USER_MUTATION = gql`
+  mutation UPDATE_USER_MUTATION(
+    $first_name: String!
+    $last_name: String!
+    $email: String!
+  ) {
+    updateUser(first_name: $first_name, last_name: $last_name, email: $email) {
+      message
+    }
+  }
+`;
 
 const validationSchema = Yup.object().shape({
-  confirm_password: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords do not match.")
-    .label("Confirm password"),
   email: Yup.string()
     .email()
-    .label("Email"),
+    .label("Email")
+    .required(),
   first_name: Yup.string()
     .min(1)
+    .required()
     .label("First Name"),
   last_name: Yup.string()
     .min(1)
-    .label("Last Name"),
-  password: Yup.string()
-    .min(8)
-    .label("Password")
+    .required()
+    .label("Last Name")
+});
+
+const Composed = adopt({
+  user: ({ render }: any) => <User>{render}</User>,
+  updateUser: ({ render }: any) => (
+    <Mutation mutation={UPDATE_USER_MUTATION}>
+      {(mutation, result) => render({ mutation, result })}
+    </Mutation>
+  ),
+  formik: ({ user, updateUser, render }: any) => {
+    console.log(user);
+    return (
+      <Formik
+        initialValues={{
+          email: user.data.me.email,
+          first_name: user.data.me.first_name,
+          id: user.data.me.id,
+          last_name: user.data.me.last_name
+        }}
+        validationSchema={validationSchema}
+        onSubmit={values => {
+          console.log(values);
+          updateUser.mutation({ variables: values });
+        }}
+      >
+        {render}
+      </Formik>
+    );
+  }
 });
 
 export const UpdateUserInfo = ({ user }: { user: IStandardUser }) => (
-  <Formik
-    initialValues={{
-      email: user.email,
-      first_name: user.first_name,
-      id: user.id,
-      last_name: user.last_name
-    }}
-    validationSchema={validationSchema}
-    // onSubmit={this.handleSubmit}
-    onSubmit={() => true}
-  >
-    {({ errors, touched, values }: any) => {
+  <Composed>
+    {({ formik, updateUser }: any) => {
+      console.log(updateUser);
       return (
         <Form style={{ flexBasis: "50%", textAlign: "center" }}>
           <h3>User Information</h3>
@@ -43,7 +76,7 @@ export const UpdateUserInfo = ({ user }: { user: IStandardUser }) => (
             label="First Name"
             name="first_name"
             type="text"
-            error={errors.first_name}
+            error={formik.errors.first_name}
           />
 
           <Field
@@ -51,32 +84,33 @@ export const UpdateUserInfo = ({ user }: { user: IStandardUser }) => (
             label="Last Name"
             name="last_name"
             type="text"
-            error={errors.last_name}
+            error={formik.errors.last_name}
           />
           <Field
             component={Input}
             label="Email Address"
             name="email"
             type="email"
-            error={errors.email}
+            error={formik.errors.email}
           />
 
           <button type="submit">Update User Information</button>
           <p
-          // style={{
-          //   visibility:
-          //     this.state.userInformationSuccess ||
-          //     this.state.userInformationError
-          //       ? "visible"
-          //       : "hidden"
-          // }}
+            style={{
+              visibility: updateUser.result.error ? "visible" : "hidden"
+            }}
           >
-            {/* {this.state.userInformationSuccess ||
-          this.state.userInformationError} */}
-            Success message
+            A user already exists with this email address.
+          </p>
+          <p
+            style={{
+              visibility: updateUser.result.called ? "visible" : "hidden"
+            }}
+          >
+            Successfully Updated
           </p>
         </Form>
       );
     }}
-  </Formik>
+  </Composed>
 );
