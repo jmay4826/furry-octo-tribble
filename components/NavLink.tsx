@@ -8,6 +8,7 @@ const NavLink = withRouter((props: any) => {
     <React.Fragment>
       <Link href={props.href}>
         <a
+          onClick={props.onClick}
           className={`${props.className}
             ${props.router.pathname === props.href ? props.activeClassName : ""}
           `}
