@@ -5,6 +5,8 @@ import { Flipper, Flipped } from "react-flip-toolkit";
 import { ConversationPreview } from "./ConversationPreview";
 import { SidebarStyles } from "../styles/SidebarStyles";
 import { User } from "./User";
+import { Card } from "./Card";
+import { CardStyles } from "../styles/CardStyles";
 
 interface IProps {
   conversation_id: number;
@@ -124,20 +126,19 @@ export class Conversations extends React.Component<IProps, IState> {
                             </Flipped>
                           ))}
                       </Flipper>
-                      {!loading &&
-                        !data.conversations.length && (
-                          <div className="conversation-preview">
-                            <p className="conversation-preview-users">
-                              No conversations yet!
-                            </p>
-                            <p className="conversation-preview-content">
+                      {!loading && !data.conversations.length && (
+                        <Card header="No conversations yet!">
+                          <div>
+                            <p className="card-content">
                               When your instructor assigns a partner to you,
                               your messages will appear here. Check back soon!
                             </p>
                           </div>
-                        )}
+                        </Card>
+                      )}
                     </div>
                     <style jsx>{SidebarStyles}</style>
+                    <style jsx>{CardStyles}</style>
                   </div>
                 );
               }}
