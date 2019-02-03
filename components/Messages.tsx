@@ -25,7 +25,6 @@ export const GET_MESSAGES_QUERY = gql`
 
 export const MESSAGES_SUBSCRIPTION = gql`
   subscription MESSAGES_SUBSCRIPTION($id: Int!) {
-    # subscription MESSAGES_SUBSCRIPTION {
     message(where: { node: { conversation: { id: $id } } }) {
       node {
         id
