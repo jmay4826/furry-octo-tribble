@@ -1,1 +1,3 @@
-export default () => <h1>Signup</h1>;
+import { SignUp } from "../components/SignUp";
+
+export default () => <SignUp />;

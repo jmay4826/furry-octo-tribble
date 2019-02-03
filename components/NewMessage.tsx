@@ -142,48 +142,48 @@ class NewMessage extends React.Component<IProps, IState> {
   public render() {
     return (
       <Mutation
-        optimisticResponse={{
-          __typename: "Mutation",
-          createMessage: {
-            __typename: "Message",
-            id: -1,
-            content: this.state.value,
-            sent_at: Date.now(),
-            from: {
-              __typename: "Appuser",
-              id: -1,
-              first_name: "Sending..."
-            }
-          }
-        }}
-        update={(proxy, data) => {
-          const current = proxy.readQuery({
-            query: GET_MESSAGES_QUERY,
-            variables: {
-              where: {
-                conversation: { id: +this.props.conversation_id }
-              }
-            }
-          }) as { messages: any };
-          if (data.data && current) {
-            current.messages.push(data.data.createMessage);
-            proxy.writeQuery({
-              query: GET_MESSAGES_QUERY,
-              data: current,
-              variables: {
-                where: {
-                  conversation: { id: this.props.conversation_id }
-                }
-              }
-            });
-          }
-        }}
+        // optimisticResponse={{
+        //   __typename: "Mutation",
+        //   createMessage: {
+        //     __typename: "Message",
+        //     id: -1,
+        //     content: this.state.value,
+        //     sent_at: Date.now(),
+        //     from: {
+        //       __typename: "Appuser",
+        //       id: -1,
+        //       first_name: "Sending..."
+        //     }
+        //   }
+        // }}
+        // update={(proxy, data) => {
+        //   const current = proxy.readQuery({
+        //     query: GET_MESSAGES_QUERY,
+        //     variables: {
+        //       where: {
+        //         conversation: { id: +this.props.conversation_id }
+        //       }
+        //     }
+        //   }) as { messages: any };
+        //   if (data.data && current) {
+        //     current.messages.push(data.data.createMessage);
+        //     proxy.writeQuery({
+        //       query: GET_MESSAGES_QUERY,
+        //       data: current,
+        //       variables: {
+        //         where: {
+        //           conversation: { id: this.props.conversation_id }
+        //         }
+        //       }
+        //     });
+        //   }
+        // }}
         mutation={SEND_MESSAGE_MUTATION}
         variables={{
           content: this.state.value,
           conversation_id: this.props.conversation_id
         }}
-        refetchQueries={["GET_CONVERSATIONS_QUERY"]}
+        // refetchQueries={["GET_CONVERSATIONS_QUERY"]}
       >
         {(sendMessage, { loading, error, data }) => {
           this.sendMessage = sendMessage;

@@ -4,8 +4,9 @@ import { NewMessage } from "./NewMessage";
 import { MainContentStyles } from "../styles/MainContentStyles";
 
 interface IProps {
-  messages: [IMessage];
+  messages: IMessage[];
   conversation_id: number;
+  subscribeToMore: any;
 }
 
 export class MessagesList extends React.Component<IProps> {
@@ -19,6 +20,7 @@ export class MessagesList extends React.Component<IProps> {
   }
 
   componentDidMount() {
+    this.props.subscribeToMore();
     this.scrollToBottom();
   }
 

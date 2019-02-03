@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { Input } from "./Input";
 import { UserInformation } from "./UserInformation";
 import { SectionInput } from "./SectionInput";
+import { CardStyles } from "../styles/CardStyles";
 
 interface IState {
   user?: IDecodedUser;
@@ -85,7 +86,7 @@ class SignUp extends React.Component<{}, IState> {
   public render() {
     return (
       <div
-        className="conversation-preview"
+        className="card"
         style={{
           alignSelf: "center",
           display: "flex",
@@ -228,6 +229,7 @@ class SignUp extends React.Component<{}, IState> {
             );
           }}
         </Formik>
+        <style jsx>{CardStyles}</style>
       </div>
     );
   }
