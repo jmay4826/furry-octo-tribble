@@ -28,6 +28,7 @@ export const User = (props: {
 }) => (
   <Query query={CURRENT_USER_QUERY} {...props}>
     {(payload: QueryResult<{ me: IStandardUser }>) => {
+      console.log(payload);
       return props.children(payload);
     }}
   </Query>

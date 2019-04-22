@@ -24,8 +24,11 @@ export class MessagesList extends React.Component<IProps> {
     this.scrollToBottom();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: IProps) {
     this.scrollToBottom();
+    if (prevProps.conversation_id !== this.props.conversation_id) {
+      this.props.subscribeToMore();
+    }
   }
   scrollToBottom = () => {
     if (this.container.current && this.messagesBottom.current) {

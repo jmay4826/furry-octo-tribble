@@ -14,7 +14,7 @@ import { getMainDefinition } from "apollo-utilities";
 function createClient({ headers }: { headers: {} }) {
   const wsLink = process.browser
     ? new WebSocketLink({
-        uri: "ws://localhost:3001",
+        uri: "ws://localhost:4000",
         options: {
           reconnect: true
         }
@@ -22,7 +22,7 @@ function createClient({ headers }: { headers: {} }) {
     : undefined;
 
   const httpLink = new HttpLink({
-    uri: "http://localhost:3001",
+    uri: "http://localhost:4000",
     credentials: "include",
     headers
   });
